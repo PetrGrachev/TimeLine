@@ -1,19 +1,32 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <Navigation v-if="showNavigation" />
+    <router-view />
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { useRoute } from 'vue-router';
+import Navigation from '@/components/Navigation.vue';
+import { computed } from 'vue';
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
-  }
-}
-</script>
+    Navigation,
+  },
+  setup() {
+    const route = useRoute(); // Получаем информацию о текущем маршруте
+    const showNavigation = computed(() => {
+      const excludedRoutes = ['LoginForm']; // Имена маршрутов, где навигация не должна отображаться
+      return !excludedRoutes.includes(route.name);
+    });
 
+    return {
+      showNavigation,
+    };
+  },
+};
+</script>
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
