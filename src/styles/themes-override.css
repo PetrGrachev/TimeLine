@@ -2,3 +2,13 @@
   .p-rating .p-rating-icon {
     color: #0F4EB3 !important; /* Устанавливаем синий цвет */
   }
+
+  .p-dropdown .p-inputtext,
+  .p-calendar .p-inputtext {
+    border-color: #0F4EB3 !important; /* Синий цвет обводки */
+  }
+  
+  .p-dropdown .p-dropdown-trigger,
+  .p-calendar .p-datepicker-trigger {
+    color: #0F4EB3 !important; /* Синий цвет иконок */
+  }

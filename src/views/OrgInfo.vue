@@ -13,97 +13,31 @@
   
       <!-- Navigation Bar -->
       <nav class="navigation-bar">
-        <button @click="activeSection = 'info'" class="nav-btn">Информация</button>
-        <button @click="activeSection = 'employees'" class="nav-btn">Сотрудники</button>
-        <button @click="activeSection = 'images'" class="nav-btn">Изображения</button>
-        <button @click="activeSection = 'reviews'" class="nav-btn">Отзывы</button>
+      <button @click="changeSection('info')" class="nav-btn">Информация</button>
+      <button @click="changeSection('services')" class="nav-btn">Услуги</button>
+      <button @click="changeSection('employees')" class="nav-btn">Сотрудники</button>
+      <button @click="changeSection('images')" class="nav-btn">Изображения</button>
+      <button @click="changeSection('reviews')" class="nav-btn">Отзывы</button>
       </nav>
-  
-      <!-- Section: Information -->
-      <section v-if="activeSection === 'info'" id="info" class="section-container">
-        <h2>Информация</h2>
-        <div class="info-item">
-          <i class="fas fa-phone"></i>
-          <p>+7 999 666 5252</p>
-        </div>
-        <div class="info-item">
-          <i class="fas fa-map-marker-alt"></i>
-          <p>ул. Магомета Гаджиева, 16, Махачкала</p>
-        </div>
-        <div class="info-item">
-          <i class="fas fa-clock"></i>
-          <p>24/7</p>
-        </div>
-        <div class="info-item">
-          <i class="fas fa-envelope"></i>
-          <p>oldboybarbershop.com</p>
-        </div>
-      </section>
-  
-      <!-- Section: Employees -->
-      <section v-if="activeSection === 'employees'" id="employees" class="section-container">
-        <h2>Сотрудники</h2>
-        <div class="employee-card">
-          <img src="@/assets/emp1.jpg" alt="Фото сотрудника" class="employee-photo">
-          <div class="employee-info">
-            <div class="employee-info-item">
-              <p><strong>Должность:</strong> Стилист</p>
-            </div>
-            <div class="employee-info-item">
-              <p><strong>Имя:</strong> Магамед Магамедов</p>
-            </div>
-            <div class="employee-info-item">
-              <p><strong>Дни работы:</strong> Понедельник - Пятница</p>
-            </div>
-            <div class="employee-info-item">
-              <p><strong>Образование:</strong> Школа косметологии</p>
-            </div>
-          </div>
-        </div>
-      </section>
-  
-      <!-- Section: Images -->
-      <section v-if="activeSection === 'images'" id="images" class="section-container">
-        <h2>Изображения</h2>
-        <div class="images-grid">
-        <!-- Цикл по изображениям -->
-        <div 
-          v-for="(image, index) in images" 
-          :key="index" 
-          class="image-item" 
-          @click="showImage(image)"
-        >
-      <img :src="require(`@/assets/${image.src}`)" :alt="image.alt" />
-    </div>
 
-    <!-- Диалоговое окно для отображения выбранного изображения -->
-    <Dialog v-model:visible="visible" modal header="Изображение" :style="{ width: '50rem' }">
-      <img class="modal-content" :src="require(`@/assets/${selectedImage.src}`)" :alt="selectedImage.alt" />
-    </Dialog>
-  </div>
-      </section>
+      <router-view />
+
       </div>
-      <!-- Section: Reviews -->
-      <section v-if="activeSection === 'reviews'" id="reviews" class="section-container">
-        <h2>Отзывы</h2>
-        <p>Пока отзывов нет...</p>
-      </section>
+      
       
       
   </template>
   
   <script>
-  import Dialog from 'primevue/dialog';
+  
   export default {
     props: {
-    companyName: {
+    orgName: {
       type: String,
       required: true,
     },
   },
-  components: {
-    Dialog
-  },
+  
     data() {
       return {
         activeSection: 'info', // Отображаемая секция по умолчанию
@@ -118,6 +52,10 @@
     };
     },
     methods: {
+      changeSection(section) {
+      this.activeSection = section;
+      this.$router.push({ name: section.charAt(0).toUpperCase() + section.slice(1), params: { orgName: this.orgName } });
+    },
       showImage(image) {
       this.selectedImage = image; // Устанавливаем выбранное изображение
       this.visible = true; // Открываем диалог
@@ -194,7 +132,7 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: #0F4EB3;
     color: white;
     display: flex;
     justify-content: center;
