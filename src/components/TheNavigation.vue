@@ -2,19 +2,20 @@
     <!-- Sidebar Navigation at the Top -->
     <aside class="sidebar top-sidebar">
       <ul class="sidebar-menu">
+        <li class="menu-item" @click="goToMain">Записаться</li>
         <li class="menu-item" @click="goToMyRecords">Мои записи</li>
         <li class="menu-item" @click="goToProfile">Мой профиль</li>
         <li class="menu-item" @click="goToSettings">Настройки</li>
-        <li class="menu-item" @click="goToHistory">История</li>
+        <li class="menu-item" @click="goToLogin">Выйти</li>
       </ul>
     </aside>
   </template>
   
   <script>
   export default {
-    name: 'Navigation',
+    name: 'TheNavigation',
     methods: {
-      goToMyRecords() {
+      goToMain() {
         // Логика для перехода на страницу "Мои записи"
         this.$router.push({ name: 'MainPage' });
       },
@@ -22,11 +23,15 @@
         this.$router.push({ name: 'UserProfile' });
       },
       goToSettings() {
-        this.$router.push({ name: 'Settings' });
+        this.$router.push({ name: 'TheSettings' });
       },
-      goToHistory() {
-        this.$router.push({ name: 'UserHistory' });
+      goToMyRecords() {
+        this.$router.push({ name: 'UserRecords' });
+      },
+      goToLogin() {
+        this.$router.push({ name: 'LoginForm' });
       }
+      
     }
   };
   </script>

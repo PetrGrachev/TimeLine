@@ -78,7 +78,7 @@ methods: {
   }
 },
   goToCompanyInfo(org) {
-    this.$router.push({ name: 'CompanyInfo', params: { companyName: org.name } });
+    this.$router.push({ name: 'OrgInfo', params: { orgName: org.name } });
   },
   initializeMap() {
     if (this.map) {

@@ -1,42 +1,48 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import MainPage from '@/views/MainPage.vue';
-import CompanyInfo from '@/views/CompanyInfo.vue';
+import OrgInfo from '@/views/OrgInfo.vue';
 import LoginForm from '@/views/LoginForm.vue';
 import UserProfile from '@/views/UserProfile.vue';
-import Settings from '@/views/Settings.vue';
-import UserHistory from '@/views/UserHistory.vue';
+import TheSettings from '@/views/TheSettings.vue';
+import UserRecords from '@/views/UserRecords.vue';
+import OrgHistory from '@/views/OrgHistory.vue';
 
 const routes = [
   {
-    path: "/",
+    path: "/login",
     name: "LoginForm",
     component: LoginForm,
   },
   {
-    path: '/main',
+    path: '/user/main',
     name: 'MainPage',
     component: MainPage,
   },
   {
-    path: '/profile',
+    path: '/user/profile',
     name: 'UserProfile',
     component: UserProfile,
   },
   {
-    path: '/settings',
-    name: 'Settings',
-    component: Settings,
+    path: '/user/settings',
+    name: 'TheSettings',
+    component: TheSettings,
   },
   {
-    path: '/history',
-    name: 'UserHistory',
-    component: UserHistory,
+    path: '/user/records',
+    name: 'UserRecords',
+    component: UserRecords,
   },
   {
-    path: '/company/:companyName',
-    name: 'CompanyInfo',
-    component: CompanyInfo,
+    path: '/organization/:orgName',
+    name: 'OrgInfo',
+    component: OrgInfo,
     props: true,
+  },
+  {
+    path: '/org/main',
+    name: 'OrgHistory',
+    component: OrgHistory,
   },
 ];
 

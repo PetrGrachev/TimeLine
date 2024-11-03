@@ -12,112 +12,69 @@
     </div>
 
     <!-- Переключатель для типа регистрации -->
+
     <div v-if="!isLoginTab" class="toggle-container">
       <label class="switch">
         <input type="checkbox" v-model="isOrganization" />
         <span class="slider"></span>
       </label>
-      <span>{{ isOrganization ? 'Организация' : 'Клиент' }}</span>
+      <span>{{ isOrganization ? 'Клиент' : 'Организация' }}</span>
     </div>
 
+    <div v-if="!isLoginTab" class="radio-container">
+    <div class="radio-item">
+      <RadioButton v-model="isOrganization" inputId="ingredient1" name="pizza" :value="false" :pt="radioStyles" />
+      <label for="ingredient1" class="radio-label">Клиент</label>
+    </div>
+    <div class="radio-item">
+      <RadioButton v-model="isOrganization" inputId="ingredient2" name="pizza" :value="true" :pt="radioStyles" />
+      <label for="ingredient2" class="radio-label">Организация</label>
+    </div>
+  </div>
+
     <!-- Форма входа -->
-    <div v-if="isLoginTab" class="form-container">
-      <h2>Вход</h2>
-      <form @submit.prevent="handleLogin">
-        <div class="form-group">
-          <input
-            type="email"
-            v-model="email"
-            id="email"
-            placeholder="Email"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <input
-            type="password"
-            v-model="password"
-            id="password"
-            placeholder="Пароль"
-            required
-          />
-        </div>
-        <button type="submit">Войти</button>
-      </form>
-      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+    <div v-if="isLoginTab"  class="form-container">
+      <TheLogin/>
     </div>
 
     <!-- Форма регистрации -->
     <div v-else class="form-container">
-      <h2>Регистрация</h2>
-      <form @submit.prevent="handleRegister">
-        <div class="form-group">
-          <input
-        type="text"
-        v-model="registrationName"
-        :placeholder="isOrganization ? 'Название организации' : 'Имя'"
-        required
-      />
-        </div>
-        <div class="form-group">
-          <input
-            type="email"
-            v-model="email"
-            id="register-email"
-            placeholder="Email"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <input
-            type="password"
-            v-model="password"
-            id="register-password"
-            placeholder="Пароль"
-            required
-          />
-        </div>
-        <!-- Дополнительные поля для организации -->
-        <div v-if="isOrganization">
-          <div class="form-group">
-            <input
-              type="text"
-              v-model="address"
-              id="address"
-              placeholder="Адрес"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <input
-              type="text"
-              v-model="contactNumber"
-              id="contact-number"
-              placeholder="Контактный номер"
-              required
-            />
-          </div>
-        </div>
-        <button type="submit">Зарегистрироваться</button>
-      </form>
+      <TheRegistration :isOrganization="isOrganization"/>
     </div>
   </div>
 </template>
 
 <script>
+import TheLogin from '@/components/TheLogin.vue';
+import TheRegistration from '@/components/TheRegistration.vue';
+import RadioButton from 'primevue/radiobutton';
 export default {
+  components: {
+      TheLogin,
+      TheRegistration,
+      RadioButton,
+  },
+  
   name: "AuthForm",
   data() {
     return {
       isLoginTab: true, // Для переключения между входом и регистрацией
       isOrganization: false, // Для переключения между клиентом и организацией
-      email: "",
-      password: "",
-      name: "",
-      companyName: "",
-      address: "",
-      contactNumber: "",
-      errorMessage: "",
+      radioStyles: {
+        box: {
+          style: {
+            'border-color' : '#1A6CDB', // Синий цвет рамки радиокнопки
+            'background-color': '#1A6CDB',
+          },
+        },
+        icon: {
+          style: {
+            'color': '#1A6CDB', // Синий цвет для иконки внутри радиокнопки
+            
+          },
+          
+        },
+      },
     };
   },
   computed: {
@@ -146,7 +103,8 @@ export default {
     handleRegister() {
       alert("Регистрация выполнена!");
       this.$router.push({ name: "MainPage" });
-    }
+    },
+    
   }
 };
 </script>
@@ -315,5 +273,27 @@ button:hover {
   color: red;
   text-align: center;
   margin-top: 15px;
+}
+
+.map-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.radio-container {
+  display: flex;
+  flex-direction: column; /* Выровнять элементы друг под другом */
+  gap: 10px; /* Зазор между радиокнопками */
+}
+
+.radio-item {
+  display: flex;
+  align-items: right; /* Выровнять радиокнопку и текст по центру */
+}
+
+.radio-label {
+  margin-left: 8px; /* Отступ между радиокнопкой и текстом */
 }
 </style>

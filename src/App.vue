@@ -1,18 +1,18 @@
 <template>
   <div id="app">
-    <Navigation v-if="showNavigation" />
+    <TheNavigation v-if="showNavigation" />
     <router-view />
   </div>
 </template>
 
 <script>
 import { useRoute } from 'vue-router';
-import Navigation from '@/components/Navigation.vue';
+import TheNavigation from '@/components/TheNavigation.vue';
 import { computed } from 'vue';
 
 export default {
   components: {
-    Navigation,
+    TheNavigation,
   },
   setup() {
     const route = useRoute(); // Получаем информацию о текущем маршруте

@@ -66,33 +66,34 @@
       <section v-if="activeSection === 'images'" id="images" class="section-container">
         <h2>Изображения</h2>
         <div class="images-grid">
-          <div class="image-item" @click="openModal('img1.webp')">
-            <img :src="require('@/assets/img1.webp')" alt="Image 1" />
-          </div>
-          <div class="image-item" @click="openModal('img2.webp')">
-            <img :src="require('@/assets/img2.webp')" alt="Image 2" />
-          </div>
-          <div class="image-item" @click="openModal('img3.webp')">
-            <img :src="require('@/assets/img3.webp')" alt="Image 3" />
-          </div>
-        </div>
+        <!-- Цикл по изображениям -->
+        <div 
+          v-for="(image, index) in images" 
+          :key="index" 
+          class="image-item" 
+          @click="showImage(image)"
+        >
+      <img :src="require(`@/assets/${image.src}`)" :alt="image.alt" />
+    </div>
+
+    <!-- Диалоговое окно для отображения выбранного изображения -->
+    <Dialog v-model:visible="visible" modal header="Изображение" :style="{ width: '50rem' }">
+      <img class="modal-content" :src="require(`@/assets/${selectedImage.src}`)" :alt="selectedImage.alt" />
+    </Dialog>
+  </div>
       </section>
-  
+      </div>
       <!-- Section: Reviews -->
       <section v-if="activeSection === 'reviews'" id="reviews" class="section-container">
         <h2>Отзывы</h2>
         <p>Пока отзывов нет...</p>
       </section>
-  
-      <!-- Модальное окно для увеличенного изображения -->
-      <div v-if="isModalOpen" class="modal" @click="closeModal">
-        <span class="close" @click="closeModal">&times;</span>
-        <img class="modal-content" :src="require('@/assets/' + currentImage)" alt="Current Image" />
-      </div>
-    </div>
+      
+      
   </template>
   
   <script>
+  import Dialog from 'primevue/dialog';
   export default {
     props: {
     companyName: {
@@ -100,22 +101,28 @@
       required: true,
     },
   },
+  components: {
+    Dialog
+  },
     data() {
       return {
         activeSection: 'info', // Отображаемая секция по умолчанию
-        isModalOpen: false,
-        currentImage: '', // Путь к текущему изображению
-      };
+        
+        visible: false,
+        selectedImage: {},
+      images: [
+        { src: 'img1.webp', alt: 'Image 1' },
+        { src: 'img2.webp', alt: 'Image 2' },
+        { src: 'img3.webp', alt: 'Image 3' }
+      ]
+    };
     },
     methods: {
-      openModal(image) {
-        this.currentImage = image;
-        this.isModalOpen = true;
-      },
-      closeModal() {
-        this.isModalOpen = false;
-      }
+      showImage(image) {
+      this.selectedImage = image; // Устанавливаем выбранное изображение
+      this.visible = true; // Открываем диалог
     }
+  }
   };
   </script>
   
