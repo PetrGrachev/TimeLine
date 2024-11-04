@@ -7,104 +7,43 @@
 
     <!-- Вкладки для входа и регистрации -->
     <div class="tabs">
-      <button :class="{ active: isLoginTab }" @click="isLoginTab = true" class="align-left">Вход</button>
-      <button :class="{ active: !isLoginTab }" @click="isLoginTab = false" class="align-right">Регистрация</button>
+      <button :class="{ active: isLoginTab }" @click="switchToLogin" class="align-left">Вход</button>
+      <button :class="{ active: !isLoginTab }" @click="switchToRegistration" class="align-right">Регистрация</button>
     </div>
 
-    <!-- Переключатель для типа регистрации -->
-
-    <div v-if="!isLoginTab" class="toggle-container">
-      <label class="switch">
-        <input type="checkbox" v-model="isOrganization" />
-        <span class="slider"></span>
-      </label>
-      <span>{{ isOrganization ? 'Клиент' : 'Организация' }}</span>
-    </div>
-
-    <div v-if="!isLoginTab" class="radio-container">
-    <div class="radio-item">
-      <RadioButton v-model="isOrganization" inputId="ingredient1" name="pizza" :value="false" :pt="radioStyles" />
-      <label for="ingredient1" class="radio-label">Клиент</label>
-    </div>
-    <div class="radio-item">
-      <RadioButton v-model="isOrganization" inputId="ingredient2" name="pizza" :value="true" :pt="radioStyles" />
-      <label for="ingredient2" class="radio-label">Организация</label>
-    </div>
-  </div>
-
-    <!-- Форма входа -->
-    <div v-if="isLoginTab"  class="form-container">
-      <TheLogin/>
-    </div>
-
-    <!-- Форма регистрации -->
-    <div v-else class="form-container">
-      <TheRegistration :isOrganization="isOrganization"/>
-    </div>
+    <!-- Router View для отображения входа или регистрации -->
+    <router-view></router-view>
   </div>
 </template>
 
+
 <script>
-import TheLogin from '@/components/TheLogin.vue';
-import TheRegistration from '@/components/TheRegistration.vue';
-import RadioButton from 'primevue/radiobutton';
 export default {
-  components: {
-      TheLogin,
-      TheRegistration,
-      RadioButton,
-  },
-  
-  name: "AuthForm",
+  name: "LoginForm",
   data() {
     return {
-      isLoginTab: true, // Для переключения между входом и регистрацией
-      isOrganization: false, // Для переключения между клиентом и организацией
-      radioStyles: {
-        box: {
-          style: {
-            'border-color' : '#1A6CDB', // Синий цвет рамки радиокнопки
-            'background-color': '#1A6CDB',
-          },
-        },
-        icon: {
-          style: {
-            'color': '#1A6CDB', // Синий цвет для иконки внутри радиокнопки
-            
-          },
-          
-        },
-      },
+      
     };
   },
   computed: {
-    registrationName: {
-      get() {
-        return this.isOrganization ? this.companyName : this.name;
-      },
-      set(value) {
-        if (this.isOrganization) {
-          this.companyName = value;
-        } else {
-          this.name = value;
-        }
-      }
-    }
+    isLoginTab() {
+      return this.$route.name === 'Login';
+    },
   },
   methods: {
-    handleLogin() {
-      if (this.email === "admin@example.com" && this.password === "password") {
-        alert("Вход выполнен!");
-        this.$router.push({ name: "MainPage" });
+    switchToLogin() {
+      this.$router.push('/auth/login');
+    },
+    switchToRegistration() {
+      this.$router.push('/auth/registration/user');
+    },
+    updateRoute() {
+      if (this.isOrganization) {
+        this.$router.push('/auth/registration/org');
       } else {
-        this.errorMessage = "Неверный email или пароль";
+        this.$router.push('/auth/registration/user');
       }
     },
-    handleRegister() {
-      alert("Регистрация выполнена!");
-      this.$router.push({ name: "MainPage" });
-    },
-    
   }
 };
 </script>

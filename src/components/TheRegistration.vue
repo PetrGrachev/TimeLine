@@ -1,5 +1,16 @@
     <template>
         <h2>Регистрация</h2>
+        <div class="radio-container">
+        <div class="radio-item">
+      <RadioButton v-model="isOrganization" inputId="ingredient1" name="pizza" :value="false" :pt="radioStyles" />
+      <label for="ingredient1" class="radio-label">Клиент</label>
+    </div>
+    <div class="radio-item">
+      <RadioButton v-model="isOrganization" inputId="ingredient2" name="pizza" :value="true" :pt="radioStyles" />
+      <label for="ingredient2" class="radio-label">Организация</label>
+    </div>
+  </div>
+
       <form @submit.prevent="handleRegister">
         <div class="form-group">
           <input
@@ -56,16 +67,16 @@
     </template>
     
     <script>
+    import RadioButton from 'primevue/radiobutton';
     /* global DG */
     export default {
-        props: {
-    isOrganization: {
-      type: Boolean,
-      required: true,
-    },
+      components: {
+    RadioButton,
   },
+
       data() {
         return {
+            isOrganization: false,
             email: "",
             password: "",
             name: "",
@@ -74,6 +85,21 @@
             contactNumber: "",
             errorMessage: "",
             markerCoords: null,
+            radioStyles: {
+        box: {
+          style: {
+            'border-color' : '#1A6CDB', // Синий цвет рамки радиокнопки
+            'background-color': '#1A6CDB',
+          },
+        },
+        icon: {
+          style: {
+            'color': '#1A6CDB', // Синий цвет для иконки внутри радиокнопки
+            
+          },
+          
+        },
+      },
         };
     },
     mounted() {
@@ -306,4 +332,20 @@ button:hover {
     .map-text{
         text-align: left;
     }
+
+    .radio-container {
+  display: flex;
+  flex-direction: column; /* Выровнять элементы друг под другом */
+  gap: 10px; /* Зазор между радиокнопками */
+  margin-bottom: 20px;
+}
+
+.radio-item {
+  display: flex;
+  align-items: right; /* Выровнять радиокнопку и текст по центру */
+}
+
+.radio-label {
+  margin-left: 8px; /* Отступ между радиокнопкой и текстом */
+}
     </style>

@@ -6,17 +6,40 @@ import UserProfile from '@/views/UserProfile.vue';
 import TheSettings from '@/views/TheSettings.vue';
 import UserRecords from '@/views/UserRecords.vue';
 import OrgHistory from '@/views/OrgHistory.vue';
+import ErrorPage from '@/views/ErrorPage.vue';
 
 import InfoSection from '@/components/InfoSection.vue';
 import EmployeesSection from '@/components/EmployeesSection.vue';
 import ImagesSection from '@/components/ImagesSection.vue';
 import ReviewsSection from '@/components/ReviewsSection.vue';
 import ServicesSection from '@/components/ServicesSection.vue';
+
+import TheLogin from '@/components/TheLogin.vue';
+import TheRegistration from '@/components/TheRegistration.vue';
 const routes = [
   {
-    path: "/login",
+    path: "/auth",
     name: "LoginForm",
     component: LoginForm,
+    children: [
+      {
+        path: 'login',
+        name: 'Login',
+        component: TheLogin,
+      },
+      {
+        path: 'registration/user',
+        name: 'RegistrationUser',
+        component: TheRegistration,
+        
+      },
+      {
+        path: 'registration/org',
+        name: 'RegistrationOrg',
+        component: TheRegistration,
+        
+      },
+    ],
   },
   {
     path: '/user/main',
@@ -75,6 +98,15 @@ const routes = [
     path: '/org/main',
     name: 'OrgHistory',
     component: OrgHistory,
+  },
+  {
+    path: '/:catchAll(.*)',
+    name: 'NotFound',
+    component: ErrorPage,
+    props: {
+      errorCode: 404,
+      errorMessage: 'Страница не найдена',
+    },
   },
 ];
 

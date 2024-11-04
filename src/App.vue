@@ -17,7 +17,7 @@ export default {
   setup() {
     const route = useRoute(); // Получаем информацию о текущем маршруте
     const showNavigation = computed(() => {
-      const excludedRoutes = ['LoginForm']; // Имена маршрутов, где навигация не должна отображаться
+      const excludedRoutes = ['Login', 'RegistrationUser', 'RegistrationOrg', 'NotFound']; // Имена маршрутов, где навигация не должна отображаться
       return !excludedRoutes.includes(route.name);
     });
 
