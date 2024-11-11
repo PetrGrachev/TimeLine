@@ -29,7 +29,7 @@
         this.$router.push({ name: 'UserRecords' });
       },
       goToLogin() {
-        this.$router.push({ name: 'LoginForm' });
+        this.$router.push({ name: 'Login' });
       }
       
     }

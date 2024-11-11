@@ -62,21 +62,31 @@
           </div>
           
         </div>
-        <button type="submit">Зарегистрироваться</button>
+        <button @click="showConfirmationDialog" type="submit">Зарегистрироваться</button>
+
+        <ConfirmationCodeDialog
+      :isVisible="isConfirmationDialogVisible"
+      :email="email"
+      @update:isVisible="isConfirmationDialogVisible = $event"
+      
+    />
       </form>
     </template>
     
     <script>
     import RadioButton from 'primevue/radiobutton';
+    import ConfirmationCodeDialog from '@/components/ConfirmationCodeDialog.vue';
     /* global DG */
     export default {
       components: {
     RadioButton,
+    ConfirmationCodeDialog,
   },
 
       data() {
         return {
             isOrganization: false,
+            isConfirmationDialogVisible: false,
             email: "",
             password: "",
             name: "",
@@ -132,6 +142,10 @@
   }
 },
     methods:{
+      showConfirmationDialog() {
+      this.isConfirmationDialogVisible = true;
+    },
+
         initializeMap() {
     if (this.map) {
     this.map.remove();

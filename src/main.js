@@ -3,10 +3,11 @@ import App from './App.vue';
 import router from './router'; // Импортируйте роутер
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
-import './styles/themes-override.css';
+import ToastService from 'primevue/toastservice';
 const app = createApp(App);
 
 app.use(router); // Подключите роутер к приложению
+app.use(ToastService);
 app.use(PrimeVue, {
     // Default theme configuration
     theme: {

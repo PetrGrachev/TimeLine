@@ -51,6 +51,7 @@
       ]
     };
     },
+    
     methods: {
       changeSection(section) {
       this.activeSection = section;

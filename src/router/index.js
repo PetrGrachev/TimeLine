@@ -23,6 +23,11 @@ const routes = [
     component: LoginForm,
     children: [
       {
+        path: '',
+        name: 'Login',
+        component: TheLogin,
+      },
+      {
         path: 'login',
         name: 'Login',
         component: TheLogin,
@@ -67,6 +72,11 @@ const routes = [
     component: OrgInfo,
     props: true,
     children: [
+      {
+        path: '',
+        name: 'OrgInfo',
+        component: InfoSection, // По умолчанию загружаем InfoSection
+      },
       {
         path: 'info',
         name: 'Info',

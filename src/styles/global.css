@@ -1,0 +1,7 @@
+body, p, button, input, textarea, select, label, a, li, span {  
+    font-weight: 500;
+}
+
+*{
+  font-family: 'Manrope', sans-serif;
+}

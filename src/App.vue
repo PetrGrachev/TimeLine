@@ -9,6 +9,8 @@
 import { useRoute } from 'vue-router';
 import TheNavigation from '@/components/TheNavigation.vue';
 import { computed } from 'vue';
+import '@/styles/global.css';
+import '@/styles/themes-override.css';
 
 export default {
   components: {

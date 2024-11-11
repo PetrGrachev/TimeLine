@@ -1,6 +1,7 @@
 <template>
   
   <div class="order-history">
+    <Toast ref="toast" />
 
     <nav class="top-nav">
     <button @click="getRecords">Мои записи</button>
@@ -60,11 +61,13 @@
 import  Dialog  from 'primevue/dialog';
 import Rating from 'primevue/rating';
 import Textarea from 'primevue/textarea';
+import Toast from 'primevue/toast';
 export default {
   components: {
       Dialog,
       Rating,
       Textarea,
+      Toast,
     },
   
   data() {
@@ -116,6 +119,8 @@ export default {
         this.reviewRating = null;
         this.reviewText = '';
         this.currentOrder = null;
+
+        this.$refs.toast.add({ severity: 'success', summary: 'Успех', detail: 'Отзыв успешно отправлен', life: 3000 });
       },
     getHistory() {
       this.currentTab = 'history';
