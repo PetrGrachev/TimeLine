@@ -1,15 +1,6 @@
     <template>
-        <h2>Регистрация</h2>
-        <div class="radio-container">
-        <div class="radio-item">
-      <RadioButton v-model="isOrganization" inputId="ingredient1" name="pizza" :value="false" :pt="radioStyles" />
-      <label for="ingredient1" class="radio-label">Клиент</label>
-    </div>
-    <div class="radio-item">
-      <RadioButton v-model="isOrganization" inputId="ingredient2" name="pizza" :value="true" :pt="radioStyles" />
-      <label for="ingredient2" class="radio-label">Организация</label>
-    </div>
-  </div>
+        <h2>Регистрация</h2>   
+  <RadioUserOrg v-model="isOrganization"/>
 
       <form @submit.prevent="handleRegister">
         <div class="form-group">
@@ -74,13 +65,14 @@
     </template>
     
     <script>
-    import RadioButton from 'primevue/radiobutton';
-    import ConfirmationCodeDialog from '@/components/ConfirmationCodeDialog.vue';
+    import ConfirmationCodeDialog from '@/components/dialog/ConfirmationCodeDialog.vue';
+    import RadioUserOrg from '@/components/RadioUserOrg.vue';
+
     /* global DG */
     export default {
       components: {
-    RadioButton,
     ConfirmationCodeDialog,
+    RadioUserOrg,
   },
 
       data() {

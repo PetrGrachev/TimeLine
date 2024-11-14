@@ -33,7 +33,7 @@ export default {
   align-items: center;
   padding: 15px;
   margin-bottom: 10px;
-  background-color: #f9f9f9;
+  background-color: var(--background-color);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -58,6 +58,6 @@ export default {
 .organization-details p {
   margin: 5px 0 0;
   font-size: 14px;
-  color: #555;
+  color: var(--text-color);
 }
 </style>

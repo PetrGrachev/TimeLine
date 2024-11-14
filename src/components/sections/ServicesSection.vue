@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import BookingDialog from '@/components/BookingDialog.vue';
+import BookingDialog from '@/components/dialog/BookingDialog.vue';
 export default {
     name: 'ServicesSection',
     components: {

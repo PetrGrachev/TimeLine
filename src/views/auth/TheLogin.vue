@@ -1,5 +1,6 @@
 <template>
     <h2>Вход</h2>
+    <RadioUserOrg v-model="isOrganization"/>
       <form @submit.prevent="handleLogin">
         <div class="form-group">
           <input
@@ -19,21 +20,36 @@
             required
           />
         </div>
-        <button type="submit">Войти</button>
+        <button  type="submit">Войти</button>
       </form>
       <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 </template>
 
 <script>
+import RadioUserOrg from '@/components/RadioUserOrg.vue';
 export default {
-  
+  components: {
+    RadioUserOrg,
+  },
   data() {
     return {
+      isOrganization: false,
       email: "",
       password: "",
       errorMessage: "",
     };
-}
+},
+methods:{
+      /*loginUser(){
+        api.postLogin(this.email, this.password, this.isOrganization)
+        .then(tokens => {
+    console.log("Полученные токены:", tokens);
+  })
+  .catch(error => {
+    console.error("Ошибка авторизации:", error.message);
+  });
+      }*/
+  }
 }
 </script>
 

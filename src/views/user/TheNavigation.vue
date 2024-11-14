@@ -39,7 +39,7 @@
   <style scoped>
   .top-sidebar {
     width: 100%;
-    background-color: #f9f9f9;
+    background-color: var(--background-color);
     padding: 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     display: flex;
@@ -67,7 +67,7 @@
   }
   
   .menu-item:hover {
-    background-color: #e6e6e6;
+    background-color: var(--button-hover);
   }
   </style>
   

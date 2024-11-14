@@ -7,15 +7,17 @@
 
 <script>
 import { useRoute } from 'vue-router';
-import TheNavigation from '@/components/TheNavigation.vue';
+import TheNavigation from '@/views/user/TheNavigation.vue';
 import { computed } from 'vue';
 import '@/styles/global.css';
 import '@/styles/themes-override.css';
+import '@/styles/themes.css'
 
 export default {
   components: {
     TheNavigation,
   },
+
   setup() {
     const route = useRoute(); // Получаем информацию о текущем маршруте
     const showNavigation = computed(() => {
@@ -35,7 +37,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: var(--text-color);
   margin-top: 60px;
 }
 </style>

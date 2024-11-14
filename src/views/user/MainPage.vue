@@ -142,28 +142,28 @@ methods: {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s;
-  background-color: #fff;
+  background-color: var(--card-background-color);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .top-nav button.active {
   background-color: #0F4EB3;
-  color: #fff;
+  color: var(--input-background-color);
 }
 
 .top-nav button:hover {
-  background-color: #e6e6e6;
+  background-color: var(--button-hover);
 }
 
 .organization-list {
-  background-color: #fff;
+  background-color: var(--card-background-color);
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .organization-map {
-  background-color: #f4f4f4;
+  background-color: var(--background-color);
   height: 80%;
   display: flex;
   justify-content: center;
@@ -177,5 +177,9 @@ methods: {
   height: 100%;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+select {
+  background-color: var(--background-color); /* Фон select */
+  color: var(--text-color); /* Цвет текста */
 }
 </style>

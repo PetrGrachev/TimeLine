@@ -1,21 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import MainPage from '@/views/MainPage.vue';
+//user
+import MainPage from '@/views/user/MainPage.vue';
+import UserProfile from '@/views/user/UserProfile.vue';
+import UserRecords from '@/views//user/UserRecords.vue';
+
 import OrgInfo from '@/views/OrgInfo.vue';
-import LoginForm from '@/views/LoginForm.vue';
-import UserProfile from '@/views/UserProfile.vue';
 import TheSettings from '@/views/TheSettings.vue';
-import UserRecords from '@/views/UserRecords.vue';
-import OrgHistory from '@/views/OrgHistory.vue';
 import ErrorPage from '@/views/ErrorPage.vue';
-
-import InfoSection from '@/components/InfoSection.vue';
-import EmployeesSection from '@/components/EmployeesSection.vue';
-import ImagesSection from '@/components/ImagesSection.vue';
-import ReviewsSection from '@/components/ReviewsSection.vue';
-import ServicesSection from '@/components/ServicesSection.vue';
-
-import TheLogin from '@/components/TheLogin.vue';
-import TheRegistration from '@/components/TheRegistration.vue';
+//sections
+import InfoSection from '@/components/sections/InfoSection.vue';
+import EmployeesSection from '@/components/sections/EmployeesSection.vue';
+import ImagesSection from '@/components/sections/ImagesSection.vue';
+import ReviewsSection from '@/components/sections/ReviewsSection.vue';
+import ServicesSection from '@/components/sections/ServicesSection.vue';
+//auth
+import TheLogin from '@/views/auth/TheLogin.vue';
+import TheRegistration from '@/views/auth/TheRegistration.vue';
+import LoginForm from '@/views/auth/LoginForm.vue';
 const routes = [
   {
     path: "/auth",
@@ -103,11 +104,6 @@ const routes = [
         component: ReviewsSection,
       },
     ],
-  },
-  {
-    path: '/org/main',
-    name: 'OrgHistory',
-    component: OrgHistory,
   },
   {
     path: '/:catchAll(.*)',
