@@ -40,6 +40,11 @@ export default {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.organization-item:hover {
+  background-color: var(--button-hover);
+  transform: translateY(-2px);
+}
+
 .organization-icon {
   width: 40px;
   height: 40px;

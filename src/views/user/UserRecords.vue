@@ -6,12 +6,13 @@
     <nav class="top-nav">
       <button @click="getRecords">Мои записи</button>
       <button @click="getHistory">История</button>
-      <OrganizationSelect v-model="selectedOrganizationType" @change="filterOrganizations"/>
+      <OrganizationSelect v-model="selectedOrganizationType" @change="filterOrganizations" />
     </nav>
 
     <RecordsList :orders="filteredOrganizations" 
       @leave-review="leaveReview" 
-      @repeat-order="repeatOrder" />
+      @repeat-order="repeatOrder" 
+      @organization-click="goToCompanyInfo"/>
 
       <ReviewingDialog 
   v-model:visible="isReviewDialogVisible" 
@@ -98,6 +99,9 @@ export default {
       this.filteredOrganizations = this.orders; // Здесь вы можете добавить логику для запроса записей
       this.filterOrganizations();
     },
+    goToCompanyInfo(order) {
+    this.$router.push({ name: 'OrgInfo', params: { orgName: order.organization.name } });
+  },
   },
 };
 </script>

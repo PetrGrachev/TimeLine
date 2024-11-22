@@ -9,7 +9,7 @@
         <span class="column-title">Действия</span>
       </div>
       <ul class="order-history-list">
-        <li v-for="order in orders" :key="order.id" class="order-item">
+        <li v-for="order in orders" :key="order.id" class="order-item" @click="$emit('organization-click', order)">
           <img :src="require(`@/assets/${order.organization.type}-icon.png`)" alt="icon" class="organization-icon" />
           <span class="order-detail">{{ order.organization.name }}</span>
           <span class="order-detail">{{ order.service }}</span>
@@ -84,10 +84,15 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
+  .order-item:hover {
+  background-color: var(--button-hover); /* Измените цвет фона при наведении */
+  transform: translateY(-2px); /* Добавляет небольшой подъем при наведении */
+}
   .organization-icon {
     width: 40px;
     height: 40px;
     margin-right: 15px;
+    filter: var(--icon-filter);
   }
   
   .order-detail {
