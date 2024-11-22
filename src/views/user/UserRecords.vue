@@ -4,70 +4,36 @@
     <Toast ref="toast" />
 
     <nav class="top-nav">
-    <button @click="getRecords">Мои записи</button>
-    <button @click="getHistory">История</button>
-    <select v-model="selectedOrganizationType" @change="filterOrganizations">
-      <option value="">Все организации</option>
-      <option value="barbershop">Парикмахерские</option>
-      <option value="gym">Фитнес-клубы</option>
-      <option value="carservice">Авто-сервис</option>
-      <option value="cafe">Кафе и рестораны</option>
-      <option value="pharmacy">Медучреждения</option>
-    </select>
-  </nav>
+      <button @click="getRecords">Мои записи</button>
+      <button @click="getHistory">История</button>
+      <OrganizationSelect v-model="selectedOrganizationType" @change="filterOrganizations"/>
+    </nav>
 
-    <div class="order-header">
-      <span class="column-title column-icon">Иконка</span>
-      <span class="column-title">Название организации</span>
-      <span class="column-title">Услуга</span>
-      <span class="column-title">Сотрудник</span>
-      <span class="column-title">Дата и время</span>
-      <span class="column-title">Действия</span>
-    </div>
-    <ul class="order-history-list">
-      <li v-for="order in filteredOrganizations" :key="order.id" class="order-item">
-        <img :src="require(`@/assets/${order.organization.type}-icon.png`)" alt="icon" class="organization-icon" />
-        <span class="order-detail">{{ order.organization.name }}</span>
-        <span class="order-detail">{{ order.service }}</span>
-        <span class="order-detail">{{ order.employee }}</span>
-        <span class="order-detail">{{ order.dateTime }}</span>
-        <div class="order-actions">
-          <button @click="leaveReview(order)" class="action-button">Оставить отзыв</button>
-          <button @click="repeatOrder(order)" class="action-button">Повторить</button>
-        </div>
-      </li>
-    </ul>
+    <RecordsList :orders="filteredOrganizations" 
+      @leave-review="leaveReview" 
+      @repeat-order="repeatOrder" />
 
+      <ReviewingDialog 
+  v-model:visible="isReviewDialogVisible" 
+  :reviewRating="reviewRating" 
+  :reviewText="reviewText" 
+  @submit-review="submitReview" 
+/>
 
-    
-    <!-- Модальное окно для отзыва -->
-    <Dialog v-model:visible="isReviewDialogVisible" modal header="Оставить отзыв" :style="{ width: '30rem' }">
-        <div class="review-form">
-          <Rating v-model="reviewRating" :stars="5" cancel="false" class="mb-4" :pt="{
-          icon: {
-            style: {
-              'color': '#0F4EB3'
-            }
-          }
-        }"></Rating>
-          <Textarea v-model="reviewText" rows="5" placeholder="Введите ваш отзыв" class="mb-4"></Textarea>
-          <button @click="submitReview" class="action-button">Отправить</button>
-        </div>
-      </Dialog>
   </div>
 </template>
 
 <script>
-import  Dialog  from 'primevue/dialog';
-import Rating from 'primevue/rating';
-import Textarea from 'primevue/textarea';
+import OrganizationSelect from '@/components/OrganizationSelect.vue';
 import Toast from 'primevue/toast';
+import RecordsList from '../../components/RecordsList.vue';
+import ReviewingDialog from '../../components/dialog/ReviewingDialog.vue';
 export default {
   components: {
-      Dialog,
-      Rating,
-      Textarea,
       Toast,
+      OrganizationSelect,
+      RecordsList,
+      ReviewingDialog
     },
   
   data() {
@@ -146,7 +112,7 @@ export default {
     display: flex;
     justify-content: space-between;
     padding: 10px 15px;
-    background-color: #f1f1f1;
+    background-color: var(--input-background-color);
     font-weight: bold;
     border-radius: 8px;
     margin-bottom: 10px;
@@ -175,7 +141,7 @@ export default {
     justify-content: space-between;
     padding: 15px;
     margin-bottom: 10px;
-    background-color: #f9f9f9;
+    background-color: var(--background-color);
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
@@ -200,7 +166,7 @@ export default {
   .action-button {
     padding: 8px 12px;
     background-color: #0F4EB3;
-    color: white;
+    color: var(--text-color);
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -223,23 +189,23 @@ export default {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s;
-  background-color: #fff;
+  background-color: var(--input-background-color);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .top-nav button.active {
   background-color: #0F4EB3;
-  color: #fff;
+  color: var(--input-background-color);
 }
 
 .top-nav button:hover {
-  background-color: #e6e6e6;
+  background-color: var(--button-hover);
 }
 
 .action-button {
     padding: 8px 12px;
     background-color: #0F4EB3;
-    color: white;
+    color: var(--card-background-color);
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -257,6 +223,11 @@ export default {
   
   .mb-4 {
     margin-bottom: 1rem;
+  }
+  
+  select{
+    background-color: var(--input-background-color);
+    color: var(--text-color);
   }
 
   </style>

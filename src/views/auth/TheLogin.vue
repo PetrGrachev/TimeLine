@@ -20,13 +20,14 @@
             required
           />
         </div>
-        <button  type="submit">Войти</button>
+        <button @click="loginUser" type="submit">Войти</button>
       </form>
       <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 </template>
 
 <script>
 import RadioUserOrg from '@/components/RadioUserOrg.vue';
+import { login } from '@/api/axiosInstance';
 export default {
   components: {
     RadioUserOrg,
@@ -40,15 +41,16 @@ export default {
     };
 },
 methods:{
-      /*loginUser(){
-        api.postLogin(this.email, this.password, this.isOrganization)
+      loginUser(){
+        login(this.email, this.password, this.isOrganization)
         .then(tokens => {
     console.log("Полученные токены:", tokens);
+    this.$router.push({ name: 'MainPage' });
   })
   .catch(error => {
     console.error("Ошибка авторизации:", error.message);
   });
-      }*/
+      }
   }
 }
 </script>
@@ -183,12 +185,13 @@ input:checked + .slider:before {
 input {
   width: calc(100% - 24px); /* Учитываем отступы, чтобы выровнять с кнопкой */
   padding: 12px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
   font-size: 16px;
   transition: border 0.3s ease, box-shadow 0.3s ease;
-  background-color: #fafafa;
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
 input:focus {
@@ -201,7 +204,7 @@ button {
   width: 100%;
   padding: 12px;
   background-color: #0F4EB3;
-  color: white;
+  color: var(--text-color);
   border: none;
   border-radius: 8px;
   font-size: 16px;

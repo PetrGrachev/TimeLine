@@ -7,14 +7,7 @@
       <nav class="top-nav">
           <button @click="viewMode = 'list'" :class="{ active: viewMode === 'list' }">Список организаций</button>
           <button @click="viewMode = 'map'" :class="{ active: viewMode === 'map' }">Карта</button>
-          <select v-model="selectedOrganizationType" @change="filterOrganizations">
-              <option value="">Все организации</option>
-              <option value="barbershop">Парикмахерские</option>
-              <option value="gym">Фитнес-клубы</option>
-              <option value="carservice">Авто-сервис</option>
-              <option value="cafe">Кафе и рестораны</option>
-              <option value="pharmacy">Медучреждения</option>
-            </select>
+          <OrganizationSelect v-model="selectedOrganizationType" @change="filterOrganizations"/>
       </nav>
   
       <!-- List or Map Display -->
@@ -32,13 +25,16 @@
 
 <script>
 import OrganizationList from '@/components/OrganizationList.vue';
+import OrganizationSelect from '../../components/OrganizationSelect.vue';
 /* global DG */
 export default {
   components: {
       OrganizationList,
+      OrganizationSelect,
   },
   data() {
     return {
+      selectedOrganizationType: '',
       viewMode: 'list', // Режим отображения по умолчанию (список)
       organizations: [
   { coords: [42.98306, 47.50462], name: 'Парикмахерская GACHI HAIR', type: 'barbershop' },
@@ -177,9 +173,5 @@ methods: {
   height: 100%;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-select {
-  background-color: var(--background-color); /* Фон select */
-  color: var(--text-color); /* Цвет текста */
 }
 </style>

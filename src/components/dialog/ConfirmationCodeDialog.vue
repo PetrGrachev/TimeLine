@@ -23,6 +23,7 @@
   import Button from 'primevue/button';
   import Toast from 'primevue/toast';
   import ProgressSpinner from 'primevue/progressspinner';
+  import { verifyCode } from '@/api/axiosInstance';
 
   export default {
     name: 'ConfirmationDialog',
@@ -40,6 +41,14 @@
       },
       email: {
         type: String,
+        required: true,
+      },
+      id: {
+        type: Number,
+        required: true,
+      },
+      isOrg: {
+        type: Boolean,
         required: true,
       },
     },
@@ -86,13 +95,21 @@
         // Логика для подтверждения кода
         if (this.confirmationCode.length === 4) {
           console.log('Код подтверждения введён:', this.confirmationCode);
+          verifyCode(this.confirmationCode, this.email, this.id, this.isOrg)
+          .then(tokens => {
+          console.log("Полученные токены:", tokens);
+
           this.isLoading = true;
           this.$toast.add({ severity: 'success', summary: 'Успех', detail: 'Вы успешно зарегистрировались!', life: 3000 });
-          setTimeout(() => {
-            this.isLoading = false;
-            this.$emit('update:isVisible', false);
-            this.$router.push({ name: 'MainPage' });
-          }, 1000);
+          this.isLoading = false;
+          this.$emit('update:isVisible', false);
+          this.$router.push({ name: 'MainPage' });
+            })
+        .catch(error => {
+          console.error("Ошибка авторизации:", error.message);
+        });
+          
+         
           
         } else {
           alert('Введите 4-значный код подтверждения');
@@ -124,6 +141,7 @@
   }
   
   .resend-button {
+    margin-top: 1rem;
     margin-bottom: 1rem;
     background-color: #0F4EB3;
     color: white;

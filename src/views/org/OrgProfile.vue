@@ -4,32 +4,32 @@
       <form @submit.prevent="handleSave">
         <!-- Имя пользователя -->
         <div class="form-group">
-          <label for="name">Имя:</label>
-          <input type="text" v-model="user.name" id="name" required />
+          <label for="name">Название организации:</label>
+          <input type="text" v-model="org.name" id="name" required />
         </div>
   
         <!-- Телефон пользователя -->
         <div class="form-group">
           <label for="phone">Телефон:</label>
-          <input type="tel" v-model="user.phone" id="phone" />
+          <input type="tel" v-model="org.phone" id="phone" />
         </div>
   
         <!-- Email пользователя -->
         <div class="form-group">
           <label for="email">Email:</label>
-          <input type="email" v-model="user.email" id="email" required />
+          <input type="email" v-model="org.email" id="email" required />
         </div>
   
         <!-- Соцсети пользователя -->
         <div class="form-group">
           <label for="social">Социальные сети:</label>
-          <input type="text" v-model="user.social" id="social" placeholder="Например, ссылка на VK или Instagram" />
+          <input type="text" v-model="org.social" id="social" placeholder="Например, ссылка на VK или Instagram" />
         </div>
   
         <!-- Раздел о себе -->
         <div class="form-group">
-          <label for="about">О себе:</label>
-          <textarea v-model="user.about" id="about" rows="5" placeholder="Расскажите немного о себе"></textarea>
+          <label for="about">Об организации:</label>
+          <textarea v-model="org.about" id="about" rows="5" placeholder="Расскажите немного о вашей организации"></textarea>
         </div>
   
         <!-- Кнопка сохранения -->
@@ -43,7 +43,7 @@
     name: "UserProfile",
     data() {
       return {
-        user: {
+        org: {
           name: "",
           phone: "",
           email: "",
@@ -104,7 +104,8 @@
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
     font-size: 16px;
     transition: border 0.3s ease, box-shadow 0.3s ease;
-  }
+    color: var(--text-color);
+}
   
   input:focus,
   textarea:focus {

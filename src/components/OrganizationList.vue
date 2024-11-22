@@ -4,6 +4,8 @@
       <img :src="require(`@/assets/${org.type}-icon.png`)" alt="icon" class="organization-icon" />
       <div class="organization-details">
         <h3>{{ org.name }}</h3>
+        рейтинг
+        адрес
       </div>
     </li>
   </ul>
@@ -42,6 +44,7 @@ export default {
   width: 40px;
   height: 40px;
   margin-right: 15px;
+  filter: var(--icon-filter);
 }
 
 .organization-details {

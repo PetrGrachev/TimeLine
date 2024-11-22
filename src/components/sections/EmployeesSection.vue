@@ -2,28 +2,18 @@
     <!-- Section: Employees -->
     <section id="employees" class="section-container">
         <h2>Сотрудники</h2>
-        <div class="employee-card">
-          <img src="@/assets/emp1.jpg" alt="Фото сотрудника" class="employee-photo">
-          <div class="employee-info">
-            <div class="employee-info-item">
-              <p><strong>Должность:</strong> Стилист</p>
-            </div>
-            <div class="employee-info-item">
-              <p><strong>Имя:</strong> Магамед Магамедов</p>
-            </div>
-            <div class="employee-info-item">
-              <p><strong>Дни работы:</strong> Понедельник - Пятница</p>
-            </div>
-            <div class="employee-info-item">
-              <p><strong>Образование:</strong> Школа косметологии</p>
-            </div>
-          </div>
-        </div>
+        <EmployeeCard/>
       </section>
   </template>
   
   <script>
+import EmployeeCard from '../EmployeeCard.vue';
+
+
   export default {
+    components:{
+      EmployeeCard,
+    },
     name: 'EmployeesSection',
   };
   </script>
@@ -33,7 +23,7 @@
   .section-container {
     padding: 20px;
     margin: 20px;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: var(--transparent-color);
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
@@ -42,11 +32,11 @@
   .employee-card {
     display: flex;
     align-items: center;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     padding: 10px;
     margin-top: 10px;
     border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: var(--transparent-color);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   

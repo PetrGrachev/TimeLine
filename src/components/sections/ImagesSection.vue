@@ -54,7 +54,7 @@
   .section-container {
     padding: 20px;
     margin: 20px;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: var(--transparent-color);
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
@@ -69,7 +69,7 @@
     height: 150px;
     overflow: hidden;
     border-radius: 8px;
-    background-color: #f0f0f0;
+    background-color: var(--background-color);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -108,7 +108,7 @@
     position: absolute;
     top: 20px;
     right: 30px;
-    color: white;
+    color: var(--card-background-color);
     font-size: 30px;
     font-weight: bold;
     cursor: pointer;

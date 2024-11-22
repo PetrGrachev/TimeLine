@@ -5,7 +5,7 @@ import UserProfile from '@/views/user/UserProfile.vue';
 import UserRecords from '@/views//user/UserRecords.vue';
 
 import OrgInfo from '@/views/OrgInfo.vue';
-import TheSettings from '@/views/TheSettings.vue';
+import TheSettings from '@/views/user/TheSettings.vue';
 import ErrorPage from '@/views/ErrorPage.vue';
 //sections
 import InfoSection from '@/components/sections/InfoSection.vue';
@@ -17,17 +17,19 @@ import ServicesSection from '@/components/sections/ServicesSection.vue';
 import TheLogin from '@/views/auth/TheLogin.vue';
 import TheRegistration from '@/views/auth/TheRegistration.vue';
 import LoginForm from '@/views/auth/LoginForm.vue';
+//org
+import OrgRecords from '../views/org/OrgRecords.vue';
+import OrgStatistics from '../views/org/OrgStatistics.vue';
+import OrgShedule from '../views/org/OrgShedule.vue';
+import TheOrgSettings from '../views/org/TheOrgSettings.vue';
+import OrgProfile from '../views/org/OrgProfile.vue';
 const routes = [
   {
     path: "/auth",
     name: "LoginForm",
     component: LoginForm,
+    redirect: '/auth/login',
     children: [
-      {
-        path: '',
-        name: 'Login',
-        component: TheLogin,
-      },
       {
         path: 'login',
         name: 'Login',
@@ -72,12 +74,8 @@ const routes = [
     name: 'OrgInfo',
     component: OrgInfo,
     props: true,
+    redirect: '/organization/:orgName/info',
     children: [
-      {
-        path: '',
-        name: 'OrgInfo',
-        component: InfoSection, // По умолчанию загружаем InfoSection
-      },
       {
         path: 'info',
         name: 'Info',
@@ -104,6 +102,31 @@ const routes = [
         component: ReviewsSection,
       },
     ],
+  },
+  {
+    path: '/org/main',
+    name: 'OrgMainPage',
+    component: OrgRecords,
+  },
+  {
+    path: '/org/profile',
+    name: 'OrgProfile',
+    component: OrgProfile,
+  },
+  {
+    path: '/org/settings',
+    name: 'TheOrgSettings',
+    component: TheOrgSettings,
+  },
+  {
+    path: '/org/shedule',
+    name: 'OrgShedule',
+    component: OrgShedule,
+  },
+  {
+    path: '/org/statistics',
+    name: 'OrgStatistics',
+    component: OrgStatistics,
   },
   {
     path: '/:catchAll(.*)',

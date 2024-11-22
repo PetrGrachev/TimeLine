@@ -11,6 +11,15 @@
         required
       />
         </div>
+        <div class="form-group" v-if="!isOrganization">
+          <input
+            type="text"
+            v-model="lastName"
+            id="register-lastname"
+            placeholder="Фамилия"
+            required
+          />
+        </div>
         <div class="form-group">
           <input
             type="email"
@@ -20,6 +29,7 @@
             required
           />
         </div>
+
         <div class="form-group">
           <input
             type="password"
@@ -32,6 +42,12 @@
         <!-- Дополнительные поля для организации -->
         <div v-if="isOrganization">
           <div class="form-group">
+          <div class="organization-select">
+            <OrganizationSelect v-model="type"/>
+          </div>
+          </div>
+          <div class="form-group">
+            
             <input
               type="text"
               v-model="contactNumber"
@@ -53,11 +69,13 @@
           </div>
           
         </div>
-        <button @click="showConfirmationDialog" type="submit">Зарегистрироваться</button>
+        <button @click="register" type="submit">Зарегистрироваться</button>
 
         <ConfirmationCodeDialog
       :isVisible="isConfirmationDialogVisible"
       :email="email"
+      :id="id"
+      :isOrg="isOrganization"
       @update:isVisible="isConfirmationDialogVisible = $event"
       
     />
@@ -67,12 +85,15 @@
     <script>
     import ConfirmationCodeDialog from '@/components/dialog/ConfirmationCodeDialog.vue';
     import RadioUserOrg from '@/components/RadioUserOrg.vue';
+import { registerOrg, registerUser } from '../../api/axiosInstance';
+import OrganizationSelect from '../../components/OrganizationSelect.vue';
 
     /* global DG */
     export default {
       components: {
     ConfirmationCodeDialog,
     RadioUserOrg,
+    OrganizationSelect,
   },
 
       data() {
@@ -82,11 +103,14 @@
             email: "",
             password: "",
             name: "",
+            lastName: "",
             companyName: "",
             address: "",
             contactNumber: "",
             errorMessage: "",
             markerCoords: null,
+            type: "",
+            id: 0,
             radioStyles: {
         box: {
           style: {
@@ -134,6 +158,30 @@
   }
 },
     methods:{
+      register(){
+        if (this.isOrganization){
+          registerOrg(this.address, "Махачкала", this.email, this.markerCoords.lat, this.markerCoords.lng, this.companyName, this.password, this.type)
+          .then(id => {
+          console.log("Полученный id:", id);
+          this.id=id;
+          this.showConfirmationDialog();
+            })
+        .catch(error => {
+          console.error("Ошибка авторизации:", error.message);
+        });
+        }
+        else{
+          registerUser(this.email, this.name, this.lastName, this.password)
+          .then(id => {
+          console.log("Полученный id:", id);
+          this.id=id;
+          this.showConfirmationDialog();
+            })
+        .catch(error => {
+          console.error("Ошибка авторизации:", error.message);
+        });
+        }
+      },
       showConfirmationDialog() {
       this.isConfirmationDialogVisible = true;
     },
@@ -293,12 +341,13 @@ input:checked + .slider:before {
 input {
   width: calc(100% - 24px); /* Учитываем отступы, чтобы выровнять с кнопкой */
   padding: 12px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
   font-size: 16px;
   transition: border 0.3s ease, box-shadow 0.3s ease;
-  background-color: #fafafa;
+  background-color: var(--background-color);
+  color: var(--text-color)
 }
 
 input:focus {
@@ -353,5 +402,18 @@ button:hover {
 
 .radio-label {
   margin-left: 8px; /* Отступ между радиокнопкой и текстом */
+}
+
+.organization-select select{
+  padding: 10px 10px;
+  border-color: var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  background-color: var(--card-background-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  height: 100%;
+  
 }
     </style>

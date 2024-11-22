@@ -3,7 +3,7 @@
       <!-- Organization Header -->
       <header class="header-container">
         <div class="header-left">
-          <h1></h1>
+          <h1>ORG</h1>
         </div>
         <div class="header-right">
           <p>Рейтинг:</p>
@@ -106,15 +106,15 @@
     background-image: url('@/assets/facade.webp');
     background-size: cover;
     background-position: center;
-    color: white;
-    border-bottom: 1px solid #ddd;
+    color: var(--card-background-color);
+    border-bottom: 1px solid var(--border-color);
   }
   
   .header-left h1 {
     margin: 0;
     font-size: 24px;
     font-weight: bold;
-    color: #fff;
+    color: var(--light-text);
     background-color: rgba(0, 0, 0, 0.5);
     padding: 5px;
     border-radius: 5px;
@@ -122,6 +122,7 @@
   }
   
   .header-right {
+    color: var(--light-text);
     display: flex;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.5);
@@ -134,7 +135,7 @@
     height: 50px;
     border-radius: 50%;
     background-color: #0F4EB3;
-    color: white;
+    color: var(--light-text);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -146,14 +147,14 @@
   .navigation-bar {
     display: flex;
     justify-content: space-around;
-    background-color: #f9f9f9;
+    background-color: var(--background-color);
     padding: 15px 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-top: 10px;
   }
   
   .nav-btn {
-    background-color: #ffffff;
+    background-color: var(--card-background-color);
     border: none;
     padding: 10px 20px;
     border-radius: 8px;
@@ -163,14 +164,14 @@
   }
   
   .nav-btn:hover {
-    background-color: #f0f0f0;
+    background-color: var(--background-color);
   }
   
   /* General section styles */
   .section-container {
     padding: 20px;
     margin: 20px;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: var(--transparent-color);
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }

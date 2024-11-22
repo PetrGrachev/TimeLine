@@ -2,7 +2,7 @@
   <div class="auth-container">
     <!-- Логотип -->
     <div class="logo-container">
-      <img :src="require('@/assets/full-logo.png')" alt="Логотип" class="logo">
+      <img :src="logoSrc" alt="Логотип" class="logo">
     </div>
 
     <!-- Вкладки для входа и регистрации -->
@@ -29,6 +29,15 @@ export default {
     isLoginTab() {
       return this.$route.name === 'Login';
     },
+    logoSrc() {
+      // Получаем тему из localStorage
+      const theme = localStorage.getItem("theme");
+      
+      // Возвращаем путь к нужному изображению
+      return theme === "dark"
+        ? require("@/assets/full-logo-white.png")
+        : require("@/assets/full-logo-black.png");
+    },
   },
   methods: {
     switchToLogin() {
@@ -54,7 +63,7 @@ export default {
   width: 400px;
   margin: 0 auto;
   padding: 40px;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--card-background-color);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -82,7 +91,7 @@ export default {
   width: 48%;
   padding: 10px;
   background-color: #0F4EB3;
-  color: white;
+  color: var(--text-color);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -137,7 +146,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: var(--border-color);
   transition: .4s;
   border-radius: 34px;
 }
@@ -149,7 +158,7 @@ export default {
   width: 19px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
+  background-color: var(--card-background-color);
   transition: .4s;
   border-radius: 50%;
 }
@@ -166,7 +175,7 @@ input:checked + .slider:before {
 .form-container h2 {
   text-align: center;
   font-weight: 500;
-  color: #333;
+  color: var(--text-color);
   margin-bottom: 20px;
 }
 
@@ -178,12 +187,12 @@ input:checked + .slider:before {
 input {
   width: calc(100% - 24px); /* Учитываем отступы, чтобы выровнять с кнопкой */
   padding: 12px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
   font-size: 16px;
   transition: border 0.3s ease, box-shadow 0.3s ease;
-  background-color: #fafafa;
+  background-color: var(--background-color);
 }
 
 input:focus {
@@ -196,7 +205,7 @@ button {
   width: 100%;
   padding: 12px;
   background-color: #0F4EB3;
-  color: white;
+  color: var(--card-background-color);
   border: none;
   border-radius: 8px;
   font-size: 16px;

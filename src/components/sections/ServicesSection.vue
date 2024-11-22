@@ -57,10 +57,10 @@ export default {
             this.isBookingDialogVisible = true;
         },
         hoverService(event) {
-            event.currentTarget.style.backgroundColor = '#f0f0f0';
+            event.currentTarget.style.backgroundColor = 'var(--input-background-color)';
         },
         leaveService(event) {
-            event.currentTarget.style.backgroundColor = '#ffffff';
+            event.currentTarget.style.backgroundColor = 'var(--card-background-color)';
         },
     },
 };
@@ -71,7 +71,7 @@ export default {
 .section-container {
     padding: 20px;
     margin: 20px;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: var(--transparent-color);
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
@@ -86,7 +86,7 @@ export default {
 /* Service card */
 .service-card {
     padding: 20px;
-    background-color: #ffffff;
+    background-color: var(--card-background-color);
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
@@ -95,7 +95,7 @@ export default {
 }
 
 .service-card:hover {
-    background-color: #f0f0f0;
+    background-color: var(--background-color);
 }
 
 .service-name {
