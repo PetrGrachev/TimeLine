@@ -1,46 +1,78 @@
 <template>
-    <h2>Вход</h2>
-    <RadioUserOrg v-model="isOrganization"/>
-      <form @submit.prevent="handleLogin">
-        <div class="form-group">
-          <input
-            type="email"
-            v-model="email"
-            id="email"
-            placeholder="Email"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <input
-            type="password"
-            v-model="password"
-            id="password"
-            placeholder="Пароль"
-            required
-          />
-        </div>
-        <button @click="loginUser" type="submit">Войти</button>
-      </form>
-      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+  <h2>Вход</h2>
+  <RadioUserOrg v-model="isOrganization" />
+  <form @submit.prevent="handleLogin">
+    <div class="form-group">
+      <InputText
+        v-model="email"
+        id="email"
+        type="email"
+        placeholder="Email"
+        class="mb-4"
+        :class="{ 'p-invalid': emailError }"
+        @blur="validateEmail"
+        required
+      />
+      <small v-if="emailError" class="p-error">Введите корректный email.</small>
+    </div>
+    <div class="form-group">
+      <Password
+        v-model="password"
+        id="password"
+        placeholder="Пароль"
+        feedback="false"
+        :toggleMask="true"
+        class="mb-4"
+        :class="{ 'p-invalid': passwordError }"
+        @blur="validatePassword"
+        required
+      />
+      <small v-if="passwordError" class="p-error">Пароль должен содержать не менее 12 символов.</small>
+    </div>
+    <Button label="Войти" @click="loginUser" type="submit"></Button>
+  </form>
+  <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 </template>
 
 <script>
+import InputText from 'primevue/inputtext';
+import Password from 'primevue/password';
+import Button from 'primevue/button';
 import RadioUserOrg from '@/components/RadioUserOrg.vue';
+
 import { login } from '@/api/axiosInstance';
 export default {
   components: {
+    InputText,
+    Password,
+    Button,
     RadioUserOrg,
   },
   data() {
     return {
+      email: '',
+      password: '',
       isOrganization: false,
-      email: "",
-      password: "",
-      errorMessage: "",
+      emailError: false,
+      passwordError: false,
+      errorMessage: '',
     };
 },
 methods:{
+  validateEmail() {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      this.emailError = !emailPattern.test(this.email);
+    },
+    validatePassword() {
+      this.passwordError = this.password.length < 12;
+    },
+    handleLogin() {
+      this.validateEmail();
+      this.validatePassword();
+      if (!this.emailError && !this.passwordError) {
+        this.loginUser();
+      }
+    },
       loginUser(){
         login(this.email, this.password, this.isOrganization)
         .then(tokens => {
@@ -178,6 +210,7 @@ input:checked + .slider:before {
 }
 
 .form-group {
+  flex-direction: column;
   margin-bottom: 20px;
   width: 100%;
 }
@@ -216,10 +249,17 @@ button:hover {
   background-color: #1A6CDB;
 }
 
+.form-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.p-error {
+  color: #f00;
+  font-size: 0.875rem;
+}
 .error {
-  color: red;
-  text-align: center;
-  margin-top: 15px;
+  color: #f00;
+  margin-top: 1rem;
 }
 
 .map-container {
@@ -228,4 +268,21 @@ button:hover {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
+:deep(.p-password){
+  width: 100%; /* Учитываем отступы, чтобы выровнять с кнопкой */
+  padding: 12px;
+}
+:deep(.p-password-input){
+  width: calc(100% - 24px); /* Учитываем отступы, чтобы выровнять с кнопкой */
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  font-size: 16px;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
 </style>

@@ -2,7 +2,8 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router'; // Импортируйте роутер
 import PrimeVue from 'primevue/config';
-import Aura from '@primevue/themes/aura';
+//import Aura from '@primevue/themes/aura';
+import {MyPreset} from './styles/mytheme'
 import ToastService from 'primevue/toastservice';
 import { setRouter } from '@/api/errorHandler';
 setRouter(router);
@@ -14,7 +15,7 @@ app.use(ToastService);
 app.use(PrimeVue, {
     // Default theme configuration
     theme: {
-        preset: Aura,
+        preset: MyPreset,
         options: {
             prefix: 'p',
             darkModeSelector: 'system',

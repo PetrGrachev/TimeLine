@@ -1,131 +1,138 @@
-    <template>
-        <h2>Регистрация</h2>   
-  <RadioUserOrg v-model="isOrganization"/>
-
-      <form @submit.prevent="handleRegister">
-        <div class="form-group">
-          <input
-        type="text"
+<template>
+  <h2>Регистрация</h2>
+  <RadioUserOrg v-model="isOrganization" />
+  <form @submit.prevent="handleRegister">
+    <div class="form-group">
+      <InputText
         v-model="registrationName"
+        id="registrationName"
         :placeholder="isOrganization ? 'Название организации' : 'Имя'"
+        class="mb-4"
+        :class="{ 'p-invalid': registrationNameError }"
+        @blur="validateRegistrationName"
         required
       />
-        </div>
-        <div class="form-group" v-if="!isOrganization">
-          <input
-            type="text"
-            v-model="lastName"
-            id="register-lastname"
-            placeholder="Фамилия"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <input
-            type="email"
-            v-model="email"
-            id="register-email"
-            placeholder="Email"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <input
-            type="password"
-            v-model="password"
-            id="register-password"
-            placeholder="Пароль"
-            required
-          />
-        </div>
-        <!-- Дополнительные поля для организации -->
-        <div v-if="isOrganization">
-          <div class="form-group">
-          <div class="organization-select">
-            <OrganizationSelect v-model="type"/>
-          </div>
-          </div>
-          <div class="form-group">
-            
-            <input
-              type="text"
-              v-model="contactNumber"
-              id="contact-number"
-              placeholder="Контактный номер"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <input
-              type="text"
-              v-model="address"
-              id="address"
-              placeholder="Адрес"
-              required
-            />
-            <p class="map-text">Укажите адрес на карте:</p>
-            <div id="map" class="map-container"></div>
-          </div>
-          
-        </div>
-        <button @click="register" type="submit">Зарегистрироваться</button>
-
-        <ConfirmationCodeDialog
+      <small v-if="registrationNameError" class="p-error">Имя должно содержать не менее 3 символов.</small>
+    </div>
+    <div class="form-group" v-if="!isOrganization">
+      <InputText
+        v-model="lastName"
+        id="lastName"
+        placeholder="Фамилия"
+        class="mb-4"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <InputText
+        v-model="email"
+        id="email"
+        type="email"
+        placeholder="Email"
+        class="mb-4"
+        :class="{ 'p-invalid': emailError }"
+        @blur="validateEmail"
+        required
+      />
+      <small v-if="emailError" class="p-error">Введите корректный email.</small>
+    </div>
+    <div class="form-group">
+      <Password
+        v-model="password"
+        id="password"
+        placeholder="Пароль"
+        feedback="false"
+        :toggleMask="true"
+        class="mb-4"
+        :class="{ 'p-invalid': passwordError }"
+        @blur="validatePassword"
+        required
+      />
+      <small v-if="passwordError" class="p-error">Пароль должен содержать не менее 12 символов.</small>
+    </div>
+    <div v-if="isOrganization">
+      <div class="form-group">
+        <OrganizationSelect v-model="type" class="org-select" />
+      </div>
+      <div class="form-group">
+        <InputText
+          v-model="contactNumber"
+          id="contactNumber"
+          placeholder="Контактный номер" 
+          class="mb-4"
+          required
+        />
+        <!-- TODO Сделать валидацию по e164-->
+      </div>
+      <div class="form-group">
+        <CitySelect class="city-select"/>
+      </div>
+      <div class="form-group">
+        <InputText
+          v-model="address"
+          id="address"
+          placeholder="Адрес"
+          class="mb-4"
+          required
+        />
+        <p class="map-text">Укажите адрес на карте:</p>
+        <div id="map" class="map-container"></div>
+      </div>
+    </div>
+    <Button
+      label="Зарегистрироваться"
+      @click="register"
+      type="submit"
+      :disabled="isSubmitDisabled"
+    />
+    <ConfirmationCodeDialog
       :isVisible="isConfirmationDialogVisible"
       :email="email"
       :id="id"
       :isOrg="isOrganization"
       @update:isVisible="isConfirmationDialogVisible = $event"
-      
     />
-      </form>
-    </template>
+  </form>
+</template>
+
     
     <script>
-    import ConfirmationCodeDialog from '@/components/dialog/ConfirmationCodeDialog.vue';
-    import RadioUserOrg from '@/components/RadioUserOrg.vue';
+    import InputText from 'primevue/inputtext';
+import Password from 'primevue/password';
+import Button from 'primevue/button';
+import RadioUserOrg from '@/components/RadioUserOrg.vue';
+import OrganizationSelect from '@/components/OrganizationSelect.vue';
+import ConfirmationCodeDialog from '@/components/dialog/ConfirmationCodeDialog.vue';
 import { registerOrg, registerUser } from '../../api/axiosInstance';
-import OrganizationSelect from '../../components/OrganizationSelect.vue';
+import CitySelect from '../../components/CitySelect.vue';
 
     /* global DG */
     export default {
       components: {
-    ConfirmationCodeDialog,
+        InputText,
+    Password,
+    Button,
     RadioUserOrg,
     OrganizationSelect,
+    ConfirmationCodeDialog,
+    CitySelect,
   },
 
       data() {
         return {
-            isOrganization: false,
-            isConfirmationDialogVisible: false,
-            email: "",
-            password: "",
-            name: "",
-            lastName: "",
-            companyName: "",
-            address: "",
-            contactNumber: "",
-            errorMessage: "",
-            markerCoords: null,
-            type: "",
-            id: 0,
-            radioStyles: {
-        box: {
-          style: {
-            'border-color' : '#1A6CDB', // Синий цвет рамки радиокнопки
-            'background-color': '#1A6CDB',
-          },
-        },
-        icon: {
-          style: {
-            'color': '#1A6CDB', // Синий цвет для иконки внутри радиокнопки
-            
-          },
-          
-        },
-      },
+          registrationName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      isOrganization: false,
+      type: '',
+      contactNumber: '',
+      address: '',
+      emailError: false,
+      passwordError: false,
+      isConfirmationDialogVisible: false,
+      id: null,
+      markerCoords: null,
         };
     },
     mounted() {
@@ -133,20 +140,6 @@ import OrganizationSelect from '../../components/OrganizationSelect.vue';
     this.initializeMap();
   });
     },
-    computed: {
-    registrationName: {
-      get() {
-        return this.isOrganization ? this.companyName : this.name;
-      },
-      set(value) {
-        if (this.isOrganization) {
-          this.companyName = value;
-        } else {
-          this.name = value;
-        }
-      }
-    }
-  },
   watch: {
   isOrganization(newVal) {
     if (newVal) {
@@ -157,7 +150,47 @@ import OrganizationSelect from '../../components/OrganizationSelect.vue';
     
   }
 },
+computed: {
+    isSubmitDisabled() {
+      return (
+        !this.registrationName ||
+        this.registrationName.length < 3 ||
+        (this.isOrganization && !this.type) ||
+        !this.email ||
+        !this.validateEmailFormat(this.email) ||
+        !this.password ||
+        this.password.length < 12 ||
+        (this.isOrganization && (!this.contactNumber || !this.address || !this.markerCoords))
+      );
+    },
+  },
     methods:{
+      validateEmail() {
+      this.emailError = !this.validateEmailFormat(this.email);
+    },
+    validatePassword() {
+      this.passwordError = this.password.length < 12;
+    },
+    validateRegistrationName() {
+      this.registrationNameError = this.registrationName.length < 3;
+    },
+    validateEmailFormat(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    },
+    handleRegister() {
+      // Логика для регистрации
+      console.log('Регистрация', {
+        registrationName: this.registrationName,
+        lastName: this.lastName,
+        email: this.email,
+        password: this.password,
+        type: this.type,
+        contactNumber: this.contactNumber,
+        address: this.address,
+      });
+      this.register()
+    },
       register(){
         if (this.isOrganization){
           registerOrg(this.address, "Махачкала", this.email, this.markerCoords.lat, this.markerCoords.lng, this.companyName, this.password, this.type)
@@ -372,10 +405,18 @@ button:hover {
   background-color: #1A6CDB;
 }
 
+.form-label {
+  font-weight: bold;
+  padding: 10px;
+  margin: 10px;
+}
+.p-error {
+  color: #f00;
+  font-size: 0.875rem;
+}
 .error {
-  color: red;
-  text-align: center;
-  margin-top: 15px;
+  color: #f00;
+  margin-top: 1rem;
 }
 
 .map-container {
@@ -415,5 +456,30 @@ button:hover {
   width: 300px;
   height: 100%;
   
+}
+
+:deep(.p-password){
+  width: 100%; /* Учитываем отступы, чтобы выровнять с кнопкой */
+  padding: 12px;
+}
+:deep(.p-password-input){
+  width: calc(100% - 24px); /* Учитываем отступы, чтобы выровнять с кнопкой */
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  font-size: 16px;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.org-select{
+  margin-right: auto;
+  width: calc(100% - 24px);
+}
+.city-select{
+  width: calc(100% - 24px);
+  margin: 10px;
 }
     </style>

@@ -93,6 +93,24 @@ methods: {
 
         
   this.filteredOrganizations.forEach(org => {
+    //TODO сделать нормальную разметку для маркера с названием, типом и рейтингом
+    const popupContent = `
+        <div style="font-family: Arial, sans-serif; color: #0F4EB3; text-align: center; background-color: white;">
+          <h3 style="margin: 0; font-size: 16px;">${org.name}</h3>
+          <p style="margin: 5px 0;">${org.type}</p>
+          <button style="
+            padding: 8px 12px;
+            background-color: #0F4EB3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;">
+            Подробнее
+          </button>
+        </div>
+      `;
+
   DG.marker(org.coords, {
     icon: DG.icon({
       iconUrl: require(`@/assets/${org.type}-icon.png`),
@@ -101,13 +119,30 @@ methods: {
       popupAnchor: [0, -32]
     })
   }).addTo(this.map)
-        .bindPopup(org.name)
+        .bindPopup(popupContent)
         .on('dblclick', () => {
           this.goToCompanyInfo(org);
         });
     });
+    this.map.on('moveend', () => {
+      this.getMapBounds();
+    });
+    
   });
+  },
+  getMapBounds() {
+  if (this.map) {
+    const bounds = this.map.getBounds();
+    const northEast = bounds.getNorthEast();
+    const southWest = bounds.getSouthWest();
+
+    console.log('Верхний левый угол:', southWest.lat, southWest.lng);
+    console.log('Правый нижний угол:', northEast.lat, northEast.lng);
+
+    // Теперь у вас есть координаты углов карты
+    // Вы можете использовать их для фильтрации данных или других нужд
   }
+}
 }
 };
 </script>
