@@ -72,7 +72,7 @@ export function refreshToken(refresh_token){
     });    
 }
 
-export function registerOrg(address, city, email, lat, long, name, password, type){
+export function registerOrg(address, city, email, lat, long, name, password, type, telephone){
   const data = {
     address: address,
     city: city,
@@ -83,8 +83,7 @@ export function registerOrg(address, city, email, lat, long, name, password, typ
     password: password,
     type: type,
     about: "",
-    social: "https://default-social-url.com",
-    telephone: "+70000000000"
+    telephone: telephone
   };
   console.log("Запрос", data);
   return axiosInstance.post('/auth/register/org', data)
@@ -107,11 +106,12 @@ export function registerOrg(address, city, email, lat, long, name, password, typ
     });
 }
 
-export function registerUser(email, name, last_name, password){
+export function registerUser(email, name, last_name, city, password){
   const data = {
     email: email,
     first_name: name,
     last_name: last_name,
+    city: city,
     password: password,
     about: "",
     social: "https://default-social-url.com",
@@ -178,7 +178,7 @@ export function sendCode(email, id, is_org){
     id: id,
     is_org: is_org,
   };
-
+  console.log("Отправка запроса", data);
   return axiosInstance.post('/auth/send/code', data)
     .then(response => {
       if (response.status === 201) {
@@ -198,6 +198,96 @@ export function sendCode(email, id, is_org){
 
 function isOK(status) {
   return status >= 200 && status < 300;
+}
+
+export function showMap(southWest, northEast) {
+  const params = {  
+      min_lat: southWest.lat,
+      min_long: southWest.lng, 
+      max_lat: northEast.lat,
+      max_long: northEast.lng
+    }
+
+  return axiosInstance.get('/user/show/map', {params}) 
+    .then(response => {
+      if (response.status === 200) {
+        console.log("Успешный ответ:", response.data);
+
+
+      // Проверка на наличие ключа "map_orgs" и его длину
+      if (!response.data.map_orgs || response.data.map_orgs.length === 0) {
+        console.log("Ответ содержит пустой массив. Нет доступных организаций на карте.");
+        return []; // Можно вернуть пустой массив или обработать как нужно
+      }
+
+      // Преобразуем ответ в нужную структуру
+      const mapOrgs = response.data.map_orgs.map(org => ({
+        name: org.name,
+        org_id: org.org_id,
+        rating: org.rating,
+        type: org.type,
+        coords: [org.coords.lat, org.coords.long]
+      }));
+
+      return mapOrgs;
+      }
+    })
+    .catch(error => {
+      if (error.response && error.response.status === 400) {
+        console.log("Ошибка 400:", error.response.data);
+        throw new Error(error.response.data);
+      } else {
+        console.log("Ошибка:", error.message);
+        throw new Error("Произошла ошибка запроса");
+      }
+    });
+}
+
+export function findOrgs(limit, page, name, type) {
+  const params = {  
+      limit: limit,
+      page: page, 
+      name: name,
+      type: type
+    }
+
+    return axiosInstance.get('/user/find/orgs', { params })
+    .then(response => {
+      if (response.status === 200) {
+        console.log("Успешный ответ:", response.data);
+
+        // Проверка на наличие ключа "orgs" и его длину
+        if (!response.data.orgs || response.data.orgs.length === 0) {
+          console.log("Ответ содержит пустой массив. Нет доступных организаций.");
+          return []; // Можно вернуть пустой массив или обработать как нужно
+        }
+
+        // Преобразуем ответ в нужную структуру
+        const orgs = response.data.orgs.map(org => ({
+          id: org.id,
+          about: org.info.about,
+          address: org.info.address,
+          city: org.info.city,
+          lat: org.info.lat,
+          long: org.info.long,
+          name: org.info.name,
+          rating: org.info.rating,
+          telephone: org.info.telephone,
+          type: org.info.type,
+        }));
+        console.log(orgs);
+        return orgs;
+      }
+    })
+    .catch(error => {
+      if (error.response && error.response.status === 400) {
+        console.log("Ошибка 400:", error.response.data);
+        throw new Error(error.response.data);
+      } else {
+        console.log("Ошибка:", error.message);
+        throw new Error("Произошла ошибка запроса");
+      }
+    });
 }
 
 // Используем интерсептор для обработки ошибок и вызова функции handleServerError

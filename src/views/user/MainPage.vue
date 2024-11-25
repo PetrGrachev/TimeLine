@@ -7,12 +7,17 @@
       <nav class="top-nav">
           <button @click="viewMode = 'list'" :class="{ active: viewMode === 'list' }">Список организаций</button>
           <button @click="viewMode = 'map'" :class="{ active: viewMode === 'map' }">Карта</button>
-          <OrganizationSelect v-model="selectedOrganizationType" @change="filterOrganizations"/>
+          <InputGroup v-if="viewMode === 'list'" class="search">
+            <Button label="Поиск" @click="filterOrgs"/>
+            <InputText v-model="query" placeholder="Введите ключевое слово" />
+          </InputGroup>
+          <OrganizationSelect v-model="selectedOrganizationType" @change="filterOrgs"/>
       </nav>
-  
+      <!-- TODO Добавить поле для поиска-->
       <!-- List or Map Display -->
       <div v-if="viewMode === 'list'" class="organization-list">
-          <OrganizationList :organizations="filteredOrganizations" @organization-click="goToCompanyInfo" />
+          <OrganizationList :organizations="filteredOrgList" @organization-click="goToCompanyInfo" />
+          <Paginator :rows="rowsPerPage" :totalRecords="totalRecords" :page="currentPage" @page="onPageChange" class="pagination" />
       </div>
 
       <div v-if="viewMode === 'map'" class="organization-map">
@@ -24,33 +29,41 @@
 </template>
 
 <script>
+import InputGroup from 'primevue/inputgroup';
+
 import OrganizationList from '@/components/OrganizationList.vue';
 import OrganizationSelect from '../../components/OrganizationSelect.vue';
+import { findOrgs, showMap } from '../../api/axiosInstance';
+import Button from 'primevue/button';
+import InputText from 'primevue/inputtext';
+import Paginator from 'primevue/paginator';
 /* global DG */
 export default {
   components: {
       OrganizationList,
       OrganizationSelect,
+      InputGroup,
+      Button,
+     InputText,
+     Paginator
   },
   data() {
     return {
       selectedOrganizationType: '',
+      query: "",
       viewMode: 'list', // Режим отображения по умолчанию (список)
-      organizations: [
-  { coords: [42.98306, 47.50462], name: 'Парикмахерская GACHI HAIR', type: 'barbershop' },
-  { coords: [42.98150, 47.50200], name: 'Фитнес-клуб GymFit', type: 'gym' },
-  { coords: [42.98400, 47.50600], name: 'Барбершоп AlfaMed', type: 'barbershop' },
-  { coords: [42.98200, 47.50800], name: 'Сервис 24', type: 'carservice' },
-  { coords: [42.98000, 47.50700], name: 'Кафе Aroma', type: 'cafe' },
-  { coords: [42.98500, 47.50900], name: 'Ресторан Gusto', type: 'cafe' },
-  { coords: [42.98350, 47.50350], name: 'Клиника PharmaPlus', type: 'pharmacy' }
-  ],
-  filteredOrganizations: []
+      orgsList: [],
+      filteredOrgList:[],
+      mapOrgs: [],
+      filteredMapOrgs:[],
+      currentPage: 0, // PrimeVue страницы начинаются с 0
+      rowsPerPage: 5,
+      totalRecords: 100,
     };
   },
   mounted() {
-  this.filteredOrganizations = this.organizations;
   this.initializeMap();
+  this.updateList(5, 1, "", "");
 },
 watch: {
   viewMode(newMode) {
@@ -60,87 +73,153 @@ watch: {
   }
 },
 methods: {
-  
-  filterOrganizations() {
+  onPageChange(event) {
+      this.currentPage = event.page; // Обновляем текущую страницу
+      this.updateList(this.rowsPerPage, this.currentPage+1, this.query, this.selectedOrganizationType); // Загружаем данные для выбранной страницы
+    },
+  updateList(limit, page, name, type){
+
+    findOrgs(limit, page, name, type)
+    .then(orgs => {
+      if (Array.isArray(orgs)) {
+        this.orgsList=orgs;
+        console.log("OrgsList",this.orgsList);
+        this.filterOrgList();
+        console.log("filteredOrgList",this.filteredOrgList);
+      }
+  })
+  .catch(error => {
+    console.error("Ошибка ", error.message);
+  });
+    
+  },
+  filterOrgs(){
+    console.log(this.currentPage)
+      if (this.viewMode=== 'map'){
+        this.getMapBounds();
+      }
+      else{//TODO сделать новый findOrgs и фильтр
+        this.updateList(this.rowsPerPage, this.currentPage+1, this.query, this.selectedOrganizationType);
+      }
+  },
+  filterMapOrgs() {
+    console.log("Фильтруем по ", this.selectedOrganizationType);
   if (this.selectedOrganizationType) {
-    this.filteredOrganizations = this.organizations.filter(
+    this.filteredMapOrgs = this.mapOrgs.filter(
       org => org.type === this.selectedOrganizationType
     );
   } else {
-    this.filteredOrganizations = this.organizations;
-  }
-  if (this.viewMode === 'map') {
-    this.initializeMap();
+    this.filteredMapOrgs = this.mapOrgs;
   }
 },
+  filterOrgList(){
+    if (this.selectedOrganizationType) {
+    this.filteredOrgList = this.orgsList.filter(
+      org => org.type === this.selectedOrganizationType
+    );
+  } else {
+    this.filteredOrgList = this.orgsList;
+  }
+  },
   goToCompanyInfo(org) {
     this.$router.push({ name: 'OrgInfo', params: { orgName: org.name } });
   },
   initializeMap() {
-    if (this.map) {
+  if (this.map) {
     this.map.remove();
     this.map = null;
   }
   this.mapInitialized = true;
-      DG.then(() => {
-        this.map = DG.map('map', {
-          center: [42.98306, 47.50462], // Центр карты (Махачкала)
-          zoom: 13,
-        });
 
-        // Добавление маркеров для парикмахерских в Махачкале
-        
+  this.markers = [];
 
-        
-  this.filteredOrganizations.forEach(org => {
-    //TODO сделать нормальную разметку для маркера с названием, типом и рейтингом
-    const popupContent = `
-        <div style="font-family: Arial, sans-serif; color: #0F4EB3; text-align: center; background-color: white;">
-          <h3 style="margin: 0; font-size: 16px;">${org.name}</h3>
-          <p style="margin: 5px 0;">${org.type}</p>
-          <button style="
-            padding: 8px 12px;
-            background-color: #0F4EB3;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;">
-            Подробнее
-          </button>
-        </div>
-      `;
 
-  DG.marker(org.coords, {
-    icon: DG.icon({
-      iconUrl: require(`@/assets/${org.type}-icon.png`),
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-      popupAnchor: [0, -32]
-    })
-  }).addTo(this.map)
-        .bindPopup(popupContent)
-        .on('dblclick', () => {
-          this.goToCompanyInfo(org);
-        });
+  DG.then(() => {
+    this.map = DG.map('map', {
+      center: [42.98306, 47.50462], // Центр карты (Махачкала)
+      zoom: 13,
     });
+
+    // Добавление слушателя для обновления карты при окончании движения
     this.map.on('moveend', () => {
       this.getMapBounds();
     });
-    
+
+    // Начальная загрузка данных и добавление маркеров
+    this.getMapBounds();
   });
-  },
-  getMapBounds() {
+},
+
+getMapBounds() {
   if (this.map) {
     const bounds = this.map.getBounds();
-    const northEast = bounds.getNorthEast();
-    const southWest = bounds.getSouthWest();
+    const southWest = bounds.getSouthWest(); // Левый нижний угол (юго-западный)
+    const northEast = bounds.getNorthEast(); // Правый верхний угол (северо-восточный)
 
-    console.log('Верхний левый угол:', southWest.lat, southWest.lng);
-    console.log('Правый нижний угол:', northEast.lat, northEast.lng);
+    console.log('Левый нижний угол (Юго-западный):', southWest.lat, southWest.lng);
+    console.log('Правый верхний угол (Северо-восточный):', northEast.lat, northEast.lng);
 
-    // Теперь у вас есть координаты углов карты
-    // Вы можете использовать их для фильтрации данных или других нужд
+    showMap(southWest, northEast)
+      .then(orgs => {
+        if (Array.isArray(orgs)) {
+          this.mapOrgs = orgs;
+
+          this.clearMarkers();
+
+          this.filterMapOrgs();
+          
+          //TODO сделать нормальное отображение маркеров
+          this.filteredMapOrgs.forEach(org => { //TODO вынести в отдельную функцию
+            const popupContent = `
+              <div style="font-family: Arial, sans-serif; color: #a2b7d6; text-align: center; ">
+                <h3 style="margin: 0; font-size: 16px;">${org.name}</h3>
+                <p style="margin: 5px 0;">${org.type}</p>
+                <p style="margin: 5px 0;">${org.rating} *</p>
+                <button style="
+                  padding: 8px 12px;
+                  background-color: #0F4EB3;
+                  color: white;
+                  border: none;
+                  border-radius: 5px;
+                  cursor: pointer;
+                  font-size: 14px;">
+                  Подробнее
+                </button>
+              </div>
+            `;
+
+            const marker = DG.marker(org.coords, {
+              icon: DG.icon({
+                iconUrl: require(`@/assets/${org.type}-icon.png`),
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32]
+              })
+            }).addTo(this.map)
+              .bindPopup(popupContent)
+              .on('dblclick', () => {
+                this.goToCompanyInfo(org);
+              });
+
+              this.markers.push(marker);
+
+          });
+        } else {
+          console.error('Полученные данные не являются массивом:', orgs);
+        }
+      })
+      .catch(error => {
+        console.error('Ошибка при получении организаций:', error);
+      });
+  }
+  
+},
+clearMarkers() {
+  if (this.markers && this.markers.length > 0) {
+    this.markers.forEach(marker => {
+      this.map.removeLayer(marker); // Удаляем каждый маркер с карты
+    });
+    this.markers = []; // Очищаем массив маркеров
   }
 }
 }
@@ -208,5 +287,9 @@ methods: {
   height: 100%;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.search{
+  height: 80%;
+  margin-right: 400px;
 }
 </style>

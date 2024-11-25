@@ -1,11 +1,11 @@
 <template>
   <ul class="organization-list-items">
-    <li v-for="org in organizations" :key="org.name" class="organization-item" @click="$emit('organization-click', org)">
+    <li v-for="org in organizations" :key="org.id" class="organization-item" @click="$emit('organization-click', org)">
       <img :src="require(`@/assets/${org.type}-icon.png`)" alt="icon" class="organization-icon" />
       <div class="organization-details">
         <h3>{{ org.name }}</h3>
-        рейтинг
-        адрес
+        {{ org.address }}
+        <p>{{ org.rating !== undefined ? org.rating : 'Нет рейтинга' }}</p>
       </div>
     </li>
   </ul>

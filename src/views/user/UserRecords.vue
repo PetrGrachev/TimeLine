@@ -8,7 +8,7 @@
       <button @click="getHistory">История</button>
       <OrganizationSelect v-model="selectedOrganizationType" @change="filterOrganizations" />
     </nav>
-
+    <!-- TODO Добавить поле для поиска-->
     <RecordsList :orders="filteredOrganizations" 
       @leave-review="leaveReview" 
       @repeat-order="repeatOrder" 

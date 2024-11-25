@@ -24,6 +24,9 @@
       />
     </div>
     <div class="form-group">
+        <CitySelect v-model="city" class="city-select"/>
+      </div>
+    <div class="form-group">
       <InputText
         v-model="email"
         id="email"
@@ -55,18 +58,18 @@
         <OrganizationSelect v-model="type" class="org-select" />
       </div>
       <div class="form-group">
-        <InputText
-          v-model="contactNumber"
-          id="contactNumber"
-          placeholder="Контактный номер" 
-          class="mb-4"
-          required
-        />
+        <InputMask
+      v-model="contactNumber"
+      id="contactNumber"
+      placeholder="Контактный номер" 
+      mask="+79999999999"
+      class="mb-4"
+      required
+      
+    />
         <!-- TODO Сделать валидацию по e164-->
       </div>
-      <div class="form-group">
-        <CitySelect class="city-select"/>
-      </div>
+      
       <div class="form-group">
         <InputText
           v-model="address"
@@ -81,7 +84,6 @@
     </div>
     <Button
       label="Зарегистрироваться"
-      @click="register"
       type="submit"
       :disabled="isSubmitDisabled"
     />
@@ -98,6 +100,7 @@
     
     <script>
     import InputText from 'primevue/inputtext';
+    import InputMask from 'primevue/inputmask';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
 import RadioUserOrg from '@/components/RadioUserOrg.vue';
@@ -110,6 +113,7 @@ import CitySelect from '../../components/CitySelect.vue';
     export default {
       components: {
         InputText,
+        InputMask,
     Password,
     Button,
     RadioUserOrg,
@@ -133,6 +137,7 @@ import CitySelect from '../../components/CitySelect.vue';
       isConfirmationDialogVisible: false,
       id: null,
       markerCoords: null,
+      city: '',
         };
     },
     mounted() {
@@ -155,16 +160,18 @@ computed: {
       return (
         !this.registrationName ||
         this.registrationName.length < 3 ||
+        !this.city ||
         (this.isOrganization && !this.type) ||
         !this.email ||
         !this.validateEmailFormat(this.email) ||
         !this.password ||
         this.password.length < 12 ||
-        (this.isOrganization && (!this.contactNumber || !this.address || !this.markerCoords))
+        (this.isOrganization && (this.contactNumber.length==10 || !this.address || !this.markerCoords))
       );
     },
   },
     methods:{
+      
       validateEmail() {
       this.emailError = !this.validateEmailFormat(this.email);
     },
@@ -193,7 +200,7 @@ computed: {
     },
       register(){
         if (this.isOrganization){
-          registerOrg(this.address, "Махачкала", this.email, this.markerCoords.lat, this.markerCoords.lng, this.companyName, this.password, this.type)
+          registerOrg(this.address, this.city, this.email, this.markerCoords.lat, this.markerCoords.lng, this.registrationName, this.password, this.type, this.contactNumber)
           .then(id => {
           console.log("Полученный id:", id);
           this.id=id;
@@ -204,7 +211,7 @@ computed: {
         });
         }
         else{
-          registerUser(this.email, this.name, this.lastName, this.password)
+          registerUser(this.email, this.registrationName, this.lastName, this.city, this.password)
           .then(id => {
           console.log("Полученный id:", id);
           this.id=id;

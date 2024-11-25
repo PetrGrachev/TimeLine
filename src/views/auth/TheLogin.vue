@@ -20,7 +20,7 @@
         v-model="password"
         id="password"
         placeholder="Пароль"
-        feedback="false"
+        :feedback="false"
         :toggleMask="true"
         class="mb-4"
         :class="{ 'p-invalid': passwordError }"
@@ -29,7 +29,7 @@
       />
       <small v-if="passwordError" class="p-error">Пароль должен содержать не менее 12 символов.</small>
     </div>
-    <Button label="Войти" @click="loginUser" type="submit"></Button>
+    <Button label="Войти" type="submit"></Button>
   </form>
   <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 </template>

@@ -24,6 +24,7 @@
   import Toast from 'primevue/toast';
   import ProgressSpinner from 'primevue/progressspinner';
   import { verifyCode } from '@/api/axiosInstance';
+import { sendCode } from '../../api/axiosInstance';
 
   export default {
     name: 'ConfirmationDialog',
@@ -88,6 +89,8 @@
         this.seconds = 0;
         this.isTimerActive = true;
         this.startTimer();
+
+        sendCode(this.email, this.id, this.isOrg);
         // Логика для повторной отправки кода подтверждения
         console.log('Код подтверждения отправлен повторно на', this.email);
       },
@@ -103,7 +106,12 @@
           this.$toast.add({ severity: 'success', summary: 'Успех', detail: 'Вы успешно зарегистрировались!', life: 3000 });
           this.isLoading = false;
           this.$emit('update:isVisible', false);
-          this.$router.push({ name: 'MainPage' });
+          if (this.isOrg){
+            this.$router.push({ name: 'OrgMainPage' });
+          }
+          else{
+            this.$router.push({ name: 'MainPage' });
+          }
             })
         .catch(error => {
           console.error("Ошибка авторизации:", error.message);
