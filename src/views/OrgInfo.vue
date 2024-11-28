@@ -10,7 +10,7 @@
           <div class="rating-circle">4.75</div>
         </div>
       </header>
-  
+      
       <!-- Navigation Bar -->
       <nav class="navigation-bar">
       <button @click="changeSection('info')" class="nav-btn">Информация</button>
@@ -37,7 +37,7 @@
       required: true,
     },
   },
-  
+  //TODO добавить получение информации с сервера
     data() {
       return {
         activeSection: 'info', // Отображаемая секция по умолчанию

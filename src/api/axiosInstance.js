@@ -2,8 +2,33 @@
 import axios from 'axios';
 import { handleServerError } from '@/api/errorHandler';
 
+
+export function getUserLocation() {
+  return axios
+    .get('https://ipinfo.io/json?token=f50432262e4df6')
+    .then((response) => {
+      if (response.status === 200) {
+        console.log(response.data)
+        const location = response.data.loc.split(','); // loc возвращает строку вида "lat,lng"
+        return {
+          latitude: parseFloat(location[0]),
+          longitude: parseFloat(location[1]),
+        };
+      }
+    })
+    .catch((error) => {
+      console.error("Ошибка получения местоположения:", error.message);
+      // Используйте координаты по умолчанию (например, Москва)
+      return {
+        latitude: 55.7558,
+        longitude: 37.6176,
+      };
+    });
+}
+
+
 const axiosInstance = axios.create({
-  baseURL: '/api', // Базовый URL для всех запросов
+  baseURL: '/api/v1', // Базовый URL для всех запросов
   timeout: 10000, // Максимальное время ожидания ответа
   headers: { 'Content-Type': 'application/json' }, // Заголовки по умолчанию
 });
@@ -45,7 +70,7 @@ export function refreshToken(refresh_token){
   const data = {
     refresh_token: refresh_token
   };
-  return axiosInstance.put('/auth/refresh/token', data)
+  return axiosInstance.put('/auth/tokens/refresh', data)
     .then(response => {
       if (response.status === 200) {
         console.log("Успешный ответ:", response.data);
@@ -86,7 +111,7 @@ export function registerOrg(address, city, email, lat, long, name, password, typ
     telephone: telephone
   };
   console.log("Запрос", data);
-  return axiosInstance.post('/auth/register/org', data)
+  return axiosInstance.post('/auth/orgs', data)
     .then(response => {
       if (isOK(response.status)) {
         console.log("Успешный ответ:", response.data);
@@ -114,11 +139,10 @@ export function registerUser(email, name, last_name, city, password){
     city: city,
     password: password,
     about: "",
-    social: "https://default-social-url.com",
     telephone: "+70000000000" 
   };
   console.log("Запрос", data);
-  return axiosInstance.post('/auth/register/user', data)
+  return axiosInstance.post('/auth/users', data)
     .then(response => {
       
         console.log("Успешный ответ:", response.data);
@@ -146,7 +170,7 @@ export function verifyCode(code, email, id, is_org){
     is_org: is_org,
   };
 
-  return axiosInstance.post('/auth/verify/code', data)
+  return axiosInstance.post('/auth/codes/verify', data)
     .then(response => {
       if (response.status === 200) {
         console.log("Успешный ответ:", response.data);
@@ -179,7 +203,7 @@ export function sendCode(email, id, is_org){
     is_org: is_org,
   };
   console.log("Отправка запроса", data);
-  return axiosInstance.post('/auth/send/code', data)
+  return axiosInstance.post('/auth/codes/send', data)
     .then(response => {
       if (response.status === 201) {
         console.log("Успешный ответ:", response.data);
@@ -208,7 +232,7 @@ export function showMap(southWest, northEast) {
       max_long: northEast.lng
     }
 
-  return axiosInstance.get('/user/show/map', {params}) 
+  return axiosInstance.get('/users/map/orgs', {params}) 
     .then(response => {
       if (response.status === 200) {
         console.log("Успешный ответ:", response.data);
@@ -251,7 +275,7 @@ export function findOrgs(limit, page, name, type) {
       type: type
     }
 
-    return axiosInstance.get('/user/find/orgs', { params })
+    return axiosInstance.get('/users/search/orgs', { params })
     .then(response => {
       if (response.status === 200) {
         console.log("Успешный ответ:", response.data);
@@ -275,8 +299,147 @@ export function findOrgs(limit, page, name, type) {
           telephone: org.info.telephone,
           type: org.info.type,
         }));
-        console.log(orgs);
         return orgs;
+      }
+    })
+    .catch(error => {
+      if (error.response && error.response.status === 400) {
+        console.log("Ошибка 400:", error.response.data);
+        throw new Error(error.response.data);
+      } else {
+        console.log("Ошибка:", error.message);
+        throw new Error("Произошла ошибка запроса");
+      }
+    });
+}
+
+export function getUser(id) {
+  
+  // Проверка, что id существует
+  if (!id) {
+    console.error("ID пользователя отсутствует в localStorage");
+    return Promise.reject(new Error("ID пользователя отсутствует в localStorage"));
+  }
+
+  // Формирование URL с использованием id
+  const url = `/users/info/${id}`;
+
+  return axiosInstance.get(url)
+    .then(response => {
+      if (response.status === 200) {
+        console.log("Успешный ответ:", response.data);
+
+        // Преобразуем ответ в нужную структуру
+        const user = {
+          about: response.data.about,
+          city: response.data.city,
+          first_name: response.data.first_name,
+          last_name: response.data.last_name,
+          telephone: response.data.telephone,
+          user_id: response.data.user_id
+        };
+
+        return user;
+      }
+    })
+    .catch(error => {
+      if (error.response && error.response.status === 400) {
+        console.log("Ошибка 400:", error.response.data);
+        throw new Error(error.response.data);
+      } else {
+        console.log("Ошибка:", error.message);
+        throw new Error("Произошла ошибка запроса");
+      }
+    });
+}
+
+export function updateUser(about, first_name, last_name, city, telephone, id){
+  const data = {
+    first_name: first_name,
+    last_name: last_name,
+    city: city,
+    about: about,
+    telephone: telephone,
+    id: id,
+  };
+
+  return axiosInstance.put("/users/update", data)
+    .then(response => {
+      if (response.status === 200) {
+        console.log("Успешный ответ:", response.data);
+      }
+    })
+    .catch(error => {
+      if (error.response && error.response.status === 400) {
+        console.log("Ошибка 400:", error.response.data);
+        throw new Error(error.response.data);
+      } else {
+        console.log("Ошибка:", error.message);
+        throw new Error("Произошла ошибка запроса");
+      }
+    });
+}
+
+export function getOrg(id) {
+  
+  // Проверка, что id существует
+  if (!id) {
+    console.error("ID пользователя отсутствует в localStorage");
+    return Promise.reject(new Error("ID пользователя отсутствует в localStorage"));
+  }
+
+  // Формирование URL с использованием id
+  const url = `/orgs/info/${id}`;
+
+  return axiosInstance.get(url)
+    .then(response => {
+      if (response.status === 200) {
+        console.log("Успешный ответ:", response.data);
+
+        // Преобразуем ответ в нужную структуру
+        const org = {
+            about: response.data.info.about,
+            address: response.data.info.address,
+            city: response.data.info.city,
+            lat: response.data.info.lat,
+            long: response.data.info.long,
+            name: response.data.info.name,
+            org_id: response.data.id,
+            telephone: response.data.info.telephone,
+            type: response.data.info.type
+          };
+
+        return org;
+      }
+    })
+    .catch(error => {
+      if (error.response && error.response.status === 400) {
+        console.log("Ошибка 400:", error.response.data);
+        throw new Error(error.response.data);
+      } else {
+        console.log("Ошибка:", error.message);
+        throw new Error("Произошла ошибка запроса");
+      }
+    });
+}
+
+export function updateOrg(about, address, name, city, telephone, id, lat, long, type){
+  const data = {
+    name: name,
+    city: city,
+    about: about,
+    telephone: telephone,
+    org_id: id,
+    address: address,
+    lat: lat,
+    long: long,
+    type,
+  };
+
+  return axiosInstance.put("/orgs/update", data)
+    .then(response => {
+      if (response.status === 200) {
+        console.log("Успешный ответ:", response.data);
       }
     })
     .catch(error => {
