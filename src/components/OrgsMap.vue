@@ -1,34 +1,82 @@
 <template>
+    <nav class="top-nav">
+            <OrganizationSelect v-model="selectedOrganizationType" @change="getMapBounds" class="custom-select"/>
+            
+        </nav>
     <!-- 2GIS Integration Placeholder -->
     <div id="map" class="map-container"></div>
 </template>
 
 <script>
-import { showMap, getUserLocation } from '../api/axiosInstance';
+import { showMap} from '../api/userApi';
+import { getUserLocation } from '../api/axiosInstance';
+import OrganizationSelect from './OrganizationSelect.vue';
 
 
 /* global DG */
 export default{
     props: {
-    selectedOrganizationType: {
-      type: String,
-      required: true,
+    lat: {
+      type: Number,
+      
     },
+    lng: {
+      type: Number,
+      
+    },
+    zoom: {
+      type: Number,
+      
+    }
   },
+    components:{
+        OrganizationSelect,
+    },
     data() {
     return {
         mapOrgs: [],
       filteredMapOrgs:[],
+      selectedOrganizationType: '',
+      localLat: null,
+      localLong: null,
+      localZoom: 13,
         }
     },
-mounted() {
-    this.initializeMap();
-},
+    mounted() {
+        this.loadMapScript();
+    
+    const { lat, lng, zoom } = this.$route.query;
+
+    if (lat && lng && zoom) {
+      this.localLat = parseFloat(lat);
+      this.localLong = parseFloat(lng);
+      this.localZoom = parseInt(zoom, 10);
+      this.initializeMap();
+    } else {
+      getUserLocation()
+        .then((userLocation) => {
+          const { latitude, longitude } = userLocation;
+          this.localLat = latitude;
+          this.localLong = longitude;
+          this.localZoom = 13; // Значение по умолчанию
+          this.initializeMap();
+        })
+        .catch((error) => {
+          console.error("Ошибка при получении местоположения:", error.message);
+          this.localLat = 55.7558; // Москва по умолчанию
+          this.localLong = 37.6176;
+          this.localZoom = 13;
+          this.initializeMap();
+        });
+    }
+  },
 watch: {
     selectedOrganizationType() {
       this.getMapBounds();
     },
   },
+  
+
 methods:{
     filterMapOrgs() {
     console.log("Фильтруем по ", this.selectedOrganizationType);
@@ -40,40 +88,75 @@ methods:{
     this.filteredMapOrgs = this.mapOrgs;
   }
 },
-    initializeMap() {
-  if (this.map) {
-    this.map.remove();
-    this.map = null;
-  }
+loadMapScript() {
+    return new Promise((resolve, reject) => {
+      if (document.getElementById('2gis-script')) {
+        // Скрипт уже загружен
+        resolve();
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.id = '2gis-script';
+      script.src = 'https://maps.api.2gis.ru/2.0/loader.js?pkg=full';
+      script.onload = () => {
+        resolve();
+      };
+      script.onerror = () => {
+        reject(new Error('Ошибка при загрузке скрипта карты.'));
+      };
+      document.body.appendChild(script);
+    });
+  },
+    initializeMap() { //TODO сделать сохранение координат центра и зума в query
+        
+        if (this.map) {
+            this.map.remove();
+            this.map = null;
+        }
   this.mapInitialized = true;
 
   this.markers = [];
 
-  getUserLocation()
-  .then((userLocation) => {
-    const { latitude, longitude } = userLocation;
-    this.createMap([latitude, longitude]); // Инициализируем карту по координатам пользователя
-  })
-  .catch((error) => {
-    console.error("Ошибка ", error.message);
-
-    // Используем координаты по умолчанию в случае ошибки
-    const defaultCenter = [55.7558, 37.6176]; // Москва
-    this.createMap(defaultCenter); // Инициализируем карту по координатам по умолчанию
-  });
+  this.createMap();
 
 },
-createMap(center){
-  DG.then(() => {
-    this.map = DG.map('map', {
-      center: center,
-      zoom: 13,
-    });
+throttle(func, limit) {
+  let inThrottle;
+  return function() {
+    const args = arguments;
+    const context = this;
+    if (!inThrottle) {
+      func.apply(context, args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
+    }
+  }
+},
+createMap(){
+    console.log(this.localLat, this.localLong, this.localZoom)
+    DG.then(() => {
+        this.map = DG.map('map', {
+        center: [this.localLat, this.localLong],
+        zoom: this.localZoom,
+        });
+        
 
     // Добавление слушателя для обновления карты при окончании движения
-    this.map.on('moveend', () => {
-      this.getMapBounds();
-    });
+    this.map.on('moveend', this.throttle(() => {
+        const center = this.map.getCenter();
+        const zoom = this.map.getZoom();
+
+        this.$router.replace({
+            name: 'OrgsMap',
+            query: {
+            lat: center.lat,
+            lng: center.lng,
+            zoom: zoom
+            }
+        });
+        this.getMapBounds();
+    }, 1000));
 
     // Начальная загрузка данных и добавление маркеров
     this.getMapBounds();
@@ -96,12 +179,20 @@ getMapBounds() {
           this.clearMarkers();
 
           this.filterMapOrgs();
-          //TODO заменить {org.type} на расписание
+        
             this.filteredMapOrgs.forEach(org => {
+
+                let scheduleText = 'Закрыто';
+                if (org.schedule) {
+                    scheduleText = `Открыто: ${org.schedule.open} - ${org.schedule.close}`;
+                if (org.schedule.break_start && org.schedule.break_end) {
+                    scheduleText += ` (Перерыв: ${org.schedule.break_start} - ${org.schedule.break_end})`;
+                }
+                }
             const popupContent = `
             <div style="font-family: Arial, sans-serif; color: #a2b7d6; text-align: center;">
                 <h3 style="margin: 0; font-size: 16px;">${org.name}</h3>
-                <p style="margin: 5px 0;">${org.type}</p> 
+                <p style="margin: 5px 0;">${scheduleText}</p> 
                 <p style="margin: 5px 0;">
                 ${org.rating} <span style="color: #FFD700;">&#9733;</span>
                 </p>
@@ -160,7 +251,7 @@ clearMarkers() {
   }
 },
 goToCompanyInfo(org) {
-    this.$router.push({ name: 'OrgInfo', params: { orgName: org.name } });
+    this.$router.push({ name: 'OrgInfo', params: { id: org.org_id } });
   },
 }
 };

@@ -62,7 +62,7 @@
   
   <script>
 import Textarea from 'primevue/textarea';
-import { getUser, updateUser } from '../../api/axiosInstance';
+import { getUser, updateUser } from '../../api/userApi';
 import CitySelect from '../../components/CitySelect.vue';
 import InputText from 'primevue/inputtext';
 import InputMask from 'primevue/inputmask';

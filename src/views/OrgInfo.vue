@@ -1,13 +1,13 @@
 <template>
-    <div class="page-container" :class="{ 'modal-open': isModalOpen }">
+    <div class="page-container"  v-if="organization">
       <!-- Organization Header -->
-      <header class="header-container">
+      <header class="header-container" >
         <div class="header-left">
-          <h1>ORG</h1>
+          <h1>{{organization.name}}</h1>
         </div>
         <div class="header-right">
           <p>Рейтинг:</p>
-          <div class="rating-circle">4.75</div>
+          <div class="rating-circle">{{ organization.rating }}</div>
         </div>
       </header>
       
@@ -20,46 +20,46 @@
       <button @click="changeSection('reviews')" class="nav-btn">Отзывы</button>
       </nav>
 
-      <router-view />
+      <router-view :org="organization" />
 
-      </div>
-      
-      
+      </div>  
       
   </template>
   
   <script>
+import { getOrg } from '../api/orgApi';
+
   
   export default {
     props: {
-    orgName: {
+    id: {
       type: String,
       required: true,
     },
   },
-  //TODO добавить получение информации с сервера
+  //TODO использовать Pinia, когда появяться другие сервисы
     data() {
       return {
-        activeSection: 'info', // Отображаемая секция по умолчанию
-        
-        visible: false,
-        selectedImage: {},
-      images: [
-        { src: 'img1.webp', alt: 'Image 1' },
-        { src: 'img2.webp', alt: 'Image 2' },
-        { src: 'img3.webp', alt: 'Image 3' }
-      ]
+        organization: null,
+
     };
     },
-    
+    mounted(){
+      this.loadOrg();
+    },
     methods: {
       changeSection(section) {
       this.activeSection = section;
-      this.$router.push({ name: section.charAt(0).toUpperCase() + section.slice(1), params: { orgName: this.orgName } });
+      this.$router.push({ name: section.charAt(0).toUpperCase() + section.slice(1) });
     },
-      showImage(image) {
-      this.selectedImage = image; // Устанавливаем выбранное изображение
-      this.visible = true; // Открываем диалог
+    loadOrg(){
+      getOrg(this.id)
+      .then( org =>{
+        this.organization=org;
+      })
+      .catch(error => {
+        console.error('Ошибка при получении организации:', error);
+      });
     }
   }
   };

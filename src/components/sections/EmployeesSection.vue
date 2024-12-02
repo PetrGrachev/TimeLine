@@ -1,20 +1,53 @@
 <template>
-    <!-- Section: Employees -->
-    <section id="employees" class="section-container">
-        <h2>Сотрудники</h2>
-        <EmployeeCard/>
-      </section>
-  </template>
+  <!-- Section: Employees -->
+  <section id="employees" class="section-container">
+      <h2>Сотрудники</h2>
+      <div class="employees-list">
+          <EmployeeCard
+              v-for="employee in employees"
+              :key="employee.worker_id"
+              :employee="employee"
+          />
+      </div>
+  </section>
+</template>
   
   <script>
+import { getWorkers } from '../../api/workersApi';
 import EmployeeCard from '../EmployeeCard.vue';
 
 
   export default {
+    props:{
+      id:{
+      type: String,
+      required: true,
+      }
+    },
     components:{
       EmployeeCard,
     },
     name: 'EmployeesSection',
+    data(){
+      return{
+        employees: [],
+      }
+    },
+    mounted(){
+      this.loadEmployees();
+    },
+    methods:{
+      loadEmployees(){
+        getWorkers(this.id)
+        .then( workers =>{
+        this.employees=workers;
+        console.log(this.employees)
+      })
+      .catch(error => {
+        console.error('Ошибка при получении работников:', error);
+      });
+      }
+    }
   };
   </script>
 
@@ -55,5 +88,6 @@ import EmployeeCard from '../EmployeeCard.vue';
     align-items: flex-start;
 }
   
+
 </style>
   

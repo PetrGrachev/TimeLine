@@ -23,8 +23,8 @@
   import Button from 'primevue/button';
   import Toast from 'primevue/toast';
   import ProgressSpinner from 'primevue/progressspinner';
-  import { verifyCode } from '@/api/axiosInstance';
-import { sendCode } from '../../api/axiosInstance';
+  import { verifyCode } from '@/api/authApi';
+import { sendCode } from '../../api/authApi';
 
   export default {
     name: 'ConfirmationDialog',

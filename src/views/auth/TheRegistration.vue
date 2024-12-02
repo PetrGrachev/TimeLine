@@ -67,7 +67,6 @@
       required
       
     />
-        <!-- TODO Сделать валидацию по e164-->
       </div>
       
       <div class="form-group">
@@ -106,7 +105,7 @@ import Button from 'primevue/button';
 import RadioUserOrg from '@/components/RadioUserOrg.vue';
 import OrganizationSelect from '@/components/OrganizationSelect.vue';
 import ConfirmationCodeDialog from '@/components/dialog/ConfirmationCodeDialog.vue';
-import { registerOrg, registerUser } from '../../api/axiosInstance';
+import { registerOrg, registerUser } from '../../api/authApi';
 import CitySelect from '../../components/CitySelect.vue';
 
     /* global DG */

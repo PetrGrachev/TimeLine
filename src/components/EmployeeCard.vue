@@ -1,15 +1,15 @@
 <template>
     <div class="employee-card">
-          <img :src="employee.photo" alt="Фото сотрудника" class="employee-photo">
+          <!-- TODO сделать обработку фото <img :src="employee.photo" alt="Фото сотрудника" class="employee-photo">--> 
           <div class="employee-info">
             <div class="employee-info-item">
               <p><strong>Должность:</strong>{{ employee.position }}</p>
             </div>
             <div class="employee-info-item">
-              <p><strong>Имя:</strong>{{ employee.name }}</p>
+              <p><strong>Имя:</strong>{{ employee.first_name }}</p>
             </div>
             <div class="employee-info-item">
-              <p><strong>Дни работы:</strong>{{ employee.work_time }}</p>
+              <p><strong>Фамилия:</strong>{{ employee.last_name }}</p>
             </div>
             <div class="employee-info-item">
               <p><strong>Образование:</strong>{{ employee.degree }}</p>
@@ -20,15 +20,14 @@
 
 <script>
 export default{
+    props:{
+      employee:{
+        type: Object,
+        required: true,
+      }
+    },
     data() {
       return {
-        employee: {
-          position: "Стилист",
-          name: "Магамед Магамедов",
-          work_time: "Понедельник - Пятница",
-          degree: "Школа косметологии",
-          photo: require('@/assets/emp1.jpg')
-        },
       };
     },
 }

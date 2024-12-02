@@ -25,14 +25,16 @@ export default {
     },
   },
   data() {
-    return { // TODO Добавь и переименуй на: Образование, Медучреждения -> Медицина, Фитнес-клубы -> Спорт, Развлечения (аквапарки, кино),
+    return {
       organizationOptions: [
         { label: 'Все организации', value: '' },
         { label: 'Парикмахерские', value: 'barbershop' },
-        { label: 'Фитнес-клубы', value: 'gym' },
+        { label: 'Спорт', value: 'gym' },
         { label: 'Авто-сервис', value: 'carservice' },
         { label: 'Кафе и рестораны', value: 'cafe' },
-        { label: 'Медучреждения', value: 'pharmacy' },
+        { label: 'Медицина', value: 'pharmacy' },
+        { label: 'Образование', value: 'education' },
+        { label: 'Развлечения', value: 'entertainment' },
       ],
     };
   },

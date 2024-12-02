@@ -7,7 +7,7 @@
             <div v-for="(service, index) in services" :key="index" class="service-card" @click="openBooking(service)" @mouseover="hoverService" @mouseleave="leaveService">
                 <h3 class="service-name">{{ service.name }}</h3>
                 <p class="service-description">{{ service.description }}</p>
-                <p class="service-price"><strong>{{ service.price }} ₽</strong></p>
+                <p class="service-price"><strong>{{ service.cost }} ₽</strong></p>
             </div>
         </div>
     </section>
@@ -18,40 +18,39 @@
 
 <script>
 import BookingDialog from '@/components/dialog/BookingDialog.vue';
+import { getServices } from '../../api/servicesApi';
 export default {
+    props:{
+      id:{
+      type: String,
+      required: true,
+      }
+    },
     name: 'ServicesSection',
     components: {
         BookingDialog,
     },
     data() {
         return {
-            services: [
-                { 
-                    name: 'Стрижка', 
-                    price: 1500, 
-                    description: 'Классическая мужская стрижка с укладкой.'
-                },
-                { 
-                    name: 'Бритье', 
-                    price: 800, 
-                    description: 'Классическое бритье с горячим полотенцем.'
-                },
-                { 
-                    name: 'Окрашивание волос', 
-                    price: 2500, 
-                    description: 'Окрашивание волос по вашему выбору.'
-                },
-                { 
-                    name: 'Массаж головы', 
-                    price: 500, 
-                    description: 'Расслабляющий массаж головы перед стрижкой.'
-                },
-            ],
+            services: [],
             isBookingDialogVisible: false,
             selectedService: null,
         };
     },
+    mounted(){
+        this.loadServices();
+    },
     methods: {
+        loadServices(){
+            getServices(this.id)
+        .then( services =>{
+        this.services=services;
+        console.log(this.services)
+      })
+      .catch(error => {
+        console.error('Ошибка при получении услуг:', error);
+      });
+        },
         openBooking(service) {
             this.selectedService = service;
             this.isBookingDialogVisible = true;

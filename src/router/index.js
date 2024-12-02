@@ -3,6 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import MainPage from '@/views/user/MainPage.vue';
 import UserProfile from '@/views/user/UserProfile.vue';
 import UserRecords from '@/views//user/UserRecords.vue';
+import MainList from '../components/MainList.vue';
+import OrgsMap from '../components/OrgsMap.vue';
 
 import OrgInfo from '@/views/OrgInfo.vue';
 import TheSettings from '@/views/user/TheSettings.vue';
@@ -53,6 +55,25 @@ const routes = [
     path: '/user/main',
     name: 'MainPage',
     component: MainPage,
+    redirect: '/user/main/list',
+    children: [
+      {
+        path: 'list',
+        name: 'MainList',
+        component: MainList,
+        
+      },
+      {
+        path: 'map',
+        name: 'OrgsMap',
+        component: OrgsMap,
+        props: (route) => ({
+          lat: route.query.lat,
+          lng: route.query.lng,
+          zoom: route.query.zoom
+        }),
+      },
+    ],
   },
   {
     path: '/user/profile',
@@ -70,36 +91,41 @@ const routes = [
     component: UserRecords,
   },
   {
-    path: '/organization/:orgName',
+    path: '/organization/:id',
     name: 'OrgInfo',
     component: OrgInfo,
     props: true,
-    redirect: '/organization/:orgName/info',
+    redirect: to => `/organization/${to.params.id}/info`,
     children: [
       {
         path: 'info',
         name: 'Info',
         component: InfoSection,
+        props: true,
       },
       {
         path: 'services',
         name: 'Services',
         component: ServicesSection,
+        props: true,
       },
       {
         path: 'employees',
         name: 'Employees',
         component: EmployeesSection,
+        props: true,
       },
       {
         path: 'images',
         name: 'Images',
         component: ImagesSection,
+        props: true,
       },
       {
         path: 'reviews',
         name: 'Reviews',
         component: ReviewsSection,
+        props: true,
       },
     ],
   },

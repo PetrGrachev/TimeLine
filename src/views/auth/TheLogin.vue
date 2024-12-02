@@ -40,7 +40,7 @@ import Password from 'primevue/password';
 import Button from 'primevue/button';
 import RadioUserOrg from '@/components/RadioUserOrg.vue';
 
-import { login } from '@/api/axiosInstance';
+import { login } from '@/api/authApi';
 export default {
   components: {
     InputText,

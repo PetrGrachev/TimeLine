@@ -1,28 +1,58 @@
 <template>
-    <section class="section-container">
-      <h2>Информация</h2>
-      <div class="info-item">
-        <i class="fas fa-phone"></i>
-        <p>+7 999 666 5252</p>
+  <section class="section-container">
+    <h2>Информация</h2>
+    <div class="info-item">
+      <i class="fas fa-phone"></i>
+      <p>{{ org.telephone }}</p>
+    </div>
+    <div class="info-item">
+      <i class="fas fa-map-marker-alt"></i>
+      <p>{{ org.address }}, {{ org.city }}</p>
+    </div>
+    <div class="info-item">
+      <i class="fas fa-clock"></i>
+      
+      
+      <div class="timetable">
+        <div v-for="day in org.timetable" :key="day.weekday" class="timetable-day">
+          <strong>{{ getWeekdayName(day.weekday) }}:</strong>
+          <span v-if="day.open && day.close">
+            {{ day.open }} - {{ day.close }}
+            <span v-if="day.break_start && day.break_end">
+              (Перерыв: {{ day.break_start }} - {{ day.break_end }})
+            </span>
+          </span>
+          <span v-else>Выходной</span>
+        </div>
       </div>
-      <div class="info-item">
-        <i class="fas fa-map-marker-alt"></i>
-        <p>ул. Магомета Гаджиева, 16, Махачкала</p>
-      </div>
-      <div class="info-item">
-        <i class="fas fa-clock"></i>
-        <p>24/7</p>
-      </div>
-      <div class="info-item">
-        <i class="fas fa-envelope"></i>
-        <p>oldboybarbershop.com</p>
-      </div>
-    </section>
-  </template>
+      
+    </div>
+  </section>
+</template>
   
   <script>
   export default {
     name: 'InfoSection',
+    props:{
+      org:{
+      type: Object,
+      required: true,
+      }
+    },
+    methods: {
+    getWeekdayName(weekday) {
+      const weekdays = [
+        'Понедельник',
+        'Вторник',
+        'Среда',
+        'Четверг',
+        'Пятница',
+        'Суббота',
+        'Воскресенье'
+      ];
+      return weekdays[weekday - 1]; // Учитываем, что weekday начинается с 1
+    },
+  },
   };
   </script>
 
@@ -47,5 +77,16 @@
     margin-right: 10px;
   }
   
+  .timetable {
+  display: flex;
+  flex-direction: column; /* Располагаем элементы в колонку */
+  gap: 5px; /* Добавляем небольшой отступ между днями */
+}
+
+.timetable-day {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Отступ между днем недели и временем */
+}
 </style>
   

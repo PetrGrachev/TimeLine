@@ -68,7 +68,7 @@
 
 <script>
 import Textarea from 'primevue/textarea';
-import { getOrg, updateOrg } from '../../api/axiosInstance';
+import { getOrg, updateOrg } from '../../api/orgApi';
 import CitySelect from '../../components/CitySelect.vue';
 import InputText from 'primevue/inputtext';
 import InputMask from 'primevue/inputmask';
