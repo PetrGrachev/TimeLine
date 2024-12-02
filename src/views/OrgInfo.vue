@@ -1,69 +1,73 @@
 <template>
-    <div class="page-container"  v-if="organization">
-      <!-- Organization Header -->
-      <header class="header-container" >
-        <div class="header-left">
-          <h1>{{organization.name}}</h1>
-        </div>
-        <div class="header-right">
-          <p>Рейтинг:</p>
-          <div class="rating-circle">{{ organization.rating }}</div>
-        </div>
-      </header>
-      
-      <!-- Navigation Bar -->
-      <nav class="navigation-bar">
+  <div class="page-container" v-if="organization">
+    <!-- Organization Header -->
+    <header class="header-container">
+      <div class="header-left">
+        <h1>{{ organization.name }}</h1>
+      </div>
+      <div class="header-right">
+        <p>Рейтинг:</p>
+        <div class="rating-circle">{{ organization.rating }}</div>
+      </div>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="navigation-bar">
       <button @click="changeSection('info')" class="nav-btn">Информация</button>
       <button @click="changeSection('services')" class="nav-btn">Услуги</button>
       <button @click="changeSection('employees')" class="nav-btn">Сотрудники</button>
       <button @click="changeSection('images')" class="nav-btn">Изображения</button>
       <button @click="changeSection('reviews')" class="nav-btn">Отзывы</button>
-      </nav>
+    </nav>
 
-      <router-view :org="organization" />
+    <router-view :org="organization" />
+  </div>
+</template>
 
-      </div>  
-      
-  </template>
-  
-  <script>
-import { getOrg } from '../api/orgApi';
+<script>
+import { useOrganizationStore } from '../stores/useOrganizationStore';
+import { mapState } from 'pinia';
 
-  
-  export default {
-    props: {
+export default {
+  props: {
     id: {
       type: String,
       required: true,
     },
   },
-  //TODO использовать Pinia, когда появяться другие сервисы
-    data() {
-      return {
-        organization: null,
-
+  data() {
+    return {
+     
     };
+  },
+  computed: {
+    // Используем storeToRefs для реактивного связывания
+    ...mapState(useOrganizationStore, ['organization']),
+  },
+  methods: {
+    changeSection(section) {
+      const routeName = section.charAt(0).toUpperCase() + section.slice(1);
+      this.$router.push({ name: routeName }); // Навигация через this.$router
     },
-    mounted(){
-      this.loadOrg();
-    },
-    methods: {
-      changeSection(section) {
-      this.activeSection = section;
-      this.$router.push({ name: section.charAt(0).toUpperCase() + section.slice(1) });
-    },
-    loadOrg(){
-      getOrg(this.id)
-      .then( org =>{
-        this.organization=org;
-      })
-      .catch(error => {
-        console.error('Ошибка при получении организации:', error);
-      });
-    }
-  }
-  };
-  </script>
+  },
+  mounted() {
+    // Правильный вызов useOrganizationStore
+    const organizationStore = useOrganizationStore();
+
+    // Загружаем данные организации
+    organizationStore.loadOrganization(this.id);
+    
+    // Сохраняем ссылку на данные для локального использования
+    this.organization = organizationStore.organization;
+  },
+  beforeUnmount() {
+    const organizationStore = useOrganizationStore();
+    organizationStore.clearData(); // Очистка данных при выходе
+  },
+};
+</script>
+
+
   
   <style scoped>
   /* Container for the entire page */

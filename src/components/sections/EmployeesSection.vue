@@ -13,8 +13,9 @@
 </template>
   
   <script>
-import { getWorkers } from '../../api/workersApi';
 import EmployeeCard from '../EmployeeCard.vue';
+import { useOrganizationStore } from '../../stores/useOrganizationStore';
+import { mapState } from 'pinia';
 
 
   export default {
@@ -30,23 +31,23 @@ import EmployeeCard from '../EmployeeCard.vue';
     name: 'EmployeesSection',
     data(){
       return{
-        employees: [],
+        
       }
     },
-    mounted(){
-      this.loadEmployees();
-    },
+    computed: {
+    
+    ...mapState(useOrganizationStore, ['employees']),
+  },
+  mounted() {
+    // Правильный вызов useOrganizationStore
+    const organizationStore = useOrganizationStore();
+
+    // Загружаем данные организации
+    organizationStore.loadEmployees(this.id);
+    
+  },
     methods:{
-      loadEmployees(){
-        getWorkers(this.id)
-        .then( workers =>{
-        this.employees=workers;
-        console.log(this.employees)
-      })
-      .catch(error => {
-        console.error('Ошибка при получении работников:', error);
-      });
-      }
+      
     }
   };
   </script>
