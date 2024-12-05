@@ -22,9 +22,13 @@ import LoginForm from '@/views/auth/LoginForm.vue';
 //org
 import OrgRecords from '../views/org/OrgRecords.vue';
 import OrgStatistics from '../views/org/OrgStatistics.vue';
-import OrgShedule from '../views/org/OrgShedule.vue';
+
 import TheOrgSettings from '../views/org/TheOrgSettings.vue';
 import OrgProfile from '../views/org/OrgProfile.vue';
+import OrgManaging from '../views/org/OrgManaging.vue';
+import EmployeeManaging from '../views/org/managing/EmployeeManaging.vue';
+import ServicesManaging from '../views/org/managing/ServicesManaging.vue';
+import ScheduleManaging from '../views/org/managing/ScheduleManaging.vue';
 const routes = [
   {
     path: "/auth",
@@ -41,13 +45,13 @@ const routes = [
         path: 'registration/user',
         name: 'RegistrationUser',
         component: TheRegistration,
-        
+
       },
       {
         path: 'registration/org',
         name: 'RegistrationOrg',
         component: TheRegistration,
-        
+
       },
     ],
   },
@@ -61,7 +65,7 @@ const routes = [
         path: 'list',
         name: 'MainList',
         component: MainList,
-        
+
       },
       {
         path: 'map',
@@ -145,9 +149,29 @@ const routes = [
     component: TheOrgSettings,
   },
   {
-    path: '/org/shedule',
-    name: 'OrgShedule',
-    component: OrgShedule,
+    path: '/org/managing',
+    name: 'OrgManaging',
+    component: OrgManaging,
+    redirect: '/org/managing/employees',
+    children: [
+      {
+        path: 'employees',
+        name: 'EmployeeManaging',
+        component: EmployeeManaging,
+      },
+      {
+        path: 'services',
+        name: 'ServicesManaging',
+        component: ServicesManaging,
+
+      },
+      {
+        path: 'schedule',
+        name: 'ScheduleManaging',
+        component: ScheduleManaging,
+
+      },
+    ],
   },
   {
     path: '/org/statistics',

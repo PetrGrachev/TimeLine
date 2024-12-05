@@ -3,54 +3,25 @@
   <RadioUserOrg v-model="isOrganization" />
   <form @submit.prevent="handleRegister">
     <div class="form-group">
-      <InputText
-        v-model="registrationName"
-        id="registrationName"
-        :placeholder="isOrganization ? 'Название организации' : 'Имя'"
-        class="mb-4"
-        :class="{ 'p-invalid': registrationNameError }"
-        @blur="validateRegistrationName"
-        required
-      />
+      <InputText v-model="registrationName" id="registrationName"
+        :placeholder="isOrganization ? 'Название организации' : 'Имя'" class="mb-4"
+        :class="{ 'p-invalid': registrationNameError }" @blur="validateRegistrationName" required />
       <small v-if="registrationNameError" class="p-error">Имя должно содержать не менее 3 символов.</small>
     </div>
     <div class="form-group" v-if="!isOrganization">
-      <InputText
-        v-model="lastName"
-        id="lastName"
-        placeholder="Фамилия"
-        class="mb-4"
-        required
-      />
+      <InputText v-model="lastName" id="lastName" placeholder="Фамилия" class="mb-4" required />
     </div>
     <div class="form-group">
-        <CitySelect v-model="city" class="city-select"/>
-      </div>
+      <CitySelect v-model="city" class="city-select" />
+    </div>
     <div class="form-group">
-      <InputText
-        v-model="email"
-        id="email"
-        type="email"
-        placeholder="Email"
-        class="mb-4"
-        :class="{ 'p-invalid': emailError }"
-        @blur="validateEmail"
-        required
-      />
+      <InputText v-model="email" id="email" type="email" placeholder="Email" class="mb-4"
+        :class="{ 'p-invalid': emailError }" @blur="validateEmail" required />
       <small v-if="emailError" class="p-error">Введите корректный email.</small>
     </div>
     <div class="form-group">
-      <Password
-        v-model="password"
-        id="password"
-        placeholder="Пароль"
-        feedback="false"
-        :toggleMask="true"
-        class="mb-4"
-        :class="{ 'p-invalid': passwordError }"
-        @blur="validatePassword"
-        required
-      />
+      <Password v-model="password" id="password" placeholder="Пароль" feedback="false" :toggleMask="true" class="mb-4"
+        :class="{ 'p-invalid': passwordError }" @blur="validatePassword" required />
       <small v-if="passwordError" class="p-error">Пароль должен содержать не менее 12 символов.</small>
     </div>
     <div v-if="isOrganization">
@@ -58,48 +29,26 @@
         <OrganizationSelect v-model="type" class="org-select" />
       </div>
       <div class="form-group">
-        <InputMask
-      v-model="contactNumber"
-      id="contactNumber"
-      placeholder="Контактный номер" 
-      mask="+79999999999"
-      class="mb-4"
-      required
-      
-    />
+        <InputMask v-model="contactNumber" id="contactNumber" placeholder="Контактный номер" mask="+79999999999"
+          class="mb-4" required />
       </div>
-      
+
       <div class="form-group">
-        <InputText
-          v-model="address"
-          id="address"
-          placeholder="Адрес"
-          class="mb-4"
-          required
-        />
+        <InputText v-model="address" id="address" placeholder="Адрес" class="mb-4" required />
         <p class="map-text">Укажите адрес на карте:</p>
         <div id="map" class="map-container"></div>
       </div>
     </div>
-    <Button
-      label="Зарегистрироваться"
-      type="submit"
-      :disabled="isSubmitDisabled"
-    />
-    <ConfirmationCodeDialog
-      :isVisible="isConfirmationDialogVisible"
-      :email="email"
-      :id="id"
-      :isOrg="isOrganization"
-      @update:isVisible="isConfirmationDialogVisible = $event"
-    />
+    <Button label="Зарегистрироваться" type="submit" :disabled="isSubmitDisabled" />
+    <ConfirmationCodeDialog :isVisible="isConfirmationDialogVisible" :email="email" :id="id" :isOrg="isOrganization"
+      @update:isVisible="isConfirmationDialogVisible = $event" />
   </form>
 </template>
 
-    
-    <script>
-    import InputText from 'primevue/inputtext';
-    import InputMask from 'primevue/inputmask';
+
+<script>
+import InputText from 'primevue/inputtext';
+import InputMask from 'primevue/inputmask';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
 import RadioUserOrg from '@/components/RadioUserOrg.vue';
@@ -107,12 +56,12 @@ import OrganizationSelect from '@/components/OrganizationSelect.vue';
 import ConfirmationCodeDialog from '@/components/dialog/ConfirmationCodeDialog.vue';
 import { registerOrg, registerUser } from '../../api/authApi';
 import CitySelect from '../../components/CitySelect.vue';
-
-    /* global DG */
-    export default {
-      components: {
-        InputText,
-        InputMask,
+//TODO добавить динамическую загрузку скрипта карты
+/* global DG */
+export default {
+  components: {
+    InputText,
+    InputMask,
     Password,
     Button,
     RadioUserOrg,
@@ -121,9 +70,9 @@ import CitySelect from '../../components/CitySelect.vue';
     CitySelect,
   },
 
-      data() {
-        return {
-          registrationName: '',
+  data() {
+    return {
+      registrationName: '',
       lastName: '',
       email: '',
       password: '',
@@ -137,24 +86,25 @@ import CitySelect from '../../components/CitySelect.vue';
       id: null,
       markerCoords: null,
       city: '',
-        };
-    },
-    mounted() {
-  this.$nextTick(() => {
-    this.initializeMap();
-  });
-    },
+    };
+  },
+  mounted() {
+    this.loadMapScript();
+    this.$nextTick(() => {
+      this.initializeMap();
+    });
+  },
   watch: {
-  isOrganization(newVal) {
-    if (newVal) {
-      this.$nextTick(() => {
-        this.initializeMap();
-      });
+    isOrganization(newVal) {
+      if (newVal) {
+        this.$nextTick(() => {
+          this.initializeMap();
+        });
+      }
+
     }
-    
-  }
-},
-computed: {
+  },
+  computed: {
     isSubmitDisabled() {
       return (
         !this.registrationName ||
@@ -165,13 +115,32 @@ computed: {
         !this.validateEmailFormat(this.email) ||
         !this.password ||
         this.password.length < 12 ||
-        (this.isOrganization && (this.contactNumber.length==10 || !this.address || !this.markerCoords))
+        (this.isOrganization && (this.contactNumber.length == 10 || !this.address || !this.markerCoords))
       );
     },
   },
-    methods:{
-      
-      validateEmail() {
+  methods: {
+    loadMapScript() {
+      return new Promise((resolve, reject) => {
+        if (document.getElementById('2gis-script')) {
+          // Скрипт уже загружен
+          resolve();
+          return;
+        }
+
+        const script = document.createElement('script');
+        script.id = '2gis-script';
+        script.src = 'https://maps.api.2gis.ru/2.0/loader.js?pkg=full';
+        script.onload = () => {
+          resolve();
+        };
+        script.onerror = () => {
+          reject(new Error('Ошибка при загрузке скрипта карты.'));
+        };
+        document.body.appendChild(script);
+      });
+    },
+    validateEmail() {
       this.emailError = !this.validateEmailFormat(this.email);
     },
     validatePassword() {
@@ -197,40 +166,40 @@ computed: {
       });
       this.register()
     },
-      register(){
-        if (this.isOrganization){
-          registerOrg(this.address, this.city, this.email, this.markerCoords.lat, this.markerCoords.lng, this.registrationName, this.password, this.type, this.contactNumber)
+    register() {
+      if (this.isOrganization) {
+        registerOrg(this.address, this.city, this.email, this.markerCoords.lat, this.markerCoords.lng, this.registrationName, this.password, this.type, this.contactNumber)
           .then(id => {
-          console.log("Полученный id:", id);
-          this.id=id;
-          this.showConfirmationDialog();
-            })
-        .catch(error => {
-          console.error("Ошибка авторизации:", error.message);
-        });
-        }
-        else{
-          registerUser(this.email, this.registrationName, this.lastName, this.city, this.password)
+            console.log("Полученный id:", id);
+            this.id = id;
+            this.showConfirmationDialog();
+          })
+          .catch(error => {
+            console.error("Ошибка авторизации:", error.message);
+          });
+      }
+      else {
+        registerUser(this.email, this.registrationName, this.lastName, this.city, this.password)
           .then(id => {
-          console.log("Полученный id:", id);
-          this.id=id;
-          this.showConfirmationDialog();
-            })
-        .catch(error => {
-          console.error("Ошибка авторизации:", error.message);
-        });
-        }
-      },
-      showConfirmationDialog() {
+            console.log("Полученный id:", id);
+            this.id = id;
+            this.showConfirmationDialog();
+          })
+          .catch(error => {
+            console.error("Ошибка авторизации:", error.message);
+          });
+      }
+    },
+    showConfirmationDialog() {
       this.isConfirmationDialogVisible = true;
     },
 
-        initializeMap() {
-    if (this.map) {
-    this.map.remove();
-    this.map = null;
-  }
-  this.mapInitialized = true;
+    initializeMap() {
+      if (this.map) {
+        this.map.remove();
+        this.map = null;
+      }
+      this.mapInitialized = true;
       DG.then(() => {
         this.map = DG.map('map', {
           center: [42.98306, 47.50462], // Центр карты (Махачкала)
@@ -245,13 +214,14 @@ computed: {
           this.markerCoords = event.target.getLatLng(); // Сохраняем координаты маркера
           console.log('Координаты маркера:', this.markerCoords);
         });
-    });},
-    }
+      });
+    },
+  }
 }
-    </script>
-    
-    <style scoped>
-    /* Общие стили для формы входа и регистрации */
+</script>
+
+<style scoped>
+/* Общие стили для формы входа и регистрации */
 .auth-container {
   width: 400px;
   margin: 0 auto;
@@ -356,11 +326,11 @@ computed: {
   border-radius: 50%;
 }
 
-input:checked + .slider {
+input:checked+.slider {
   background-color: #2196F3;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   transform: translateX(26px);
 }
 
@@ -378,7 +348,8 @@ input:checked + .slider:before {
 }
 
 input {
-  width: calc(100% - 24px); /* Учитываем отступы, чтобы выровнять с кнопкой */
+  width: calc(100% - 24px);
+  /* Учитываем отступы, чтобы выровнять с кнопкой */
   padding: 12px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
@@ -416,10 +387,12 @@ button:hover {
   padding: 10px;
   margin: 10px;
 }
+
 .p-error {
   color: #f00;
   font-size: 0.875rem;
 }
+
 .error {
   color: #f00;
   margin-top: 1rem;
@@ -431,27 +404,32 @@ button:hover {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-    .map-text{
-        text-align: left;
-    }
 
-    .radio-container {
+.map-text {
+  text-align: left;
+}
+
+.radio-container {
   display: flex;
-  flex-direction: column; /* Выровнять элементы друг под другом */
-  gap: 10px; /* Зазор между радиокнопками */
+  flex-direction: column;
+  /* Выровнять элементы друг под другом */
+  gap: 10px;
+  /* Зазор между радиокнопками */
   margin-bottom: 20px;
 }
 
 .radio-item {
   display: flex;
-  align-items: right; /* Выровнять радиокнопку и текст по центру */
+  align-items: right;
+  /* Выровнять радиокнопку и текст по центру */
 }
 
 .radio-label {
-  margin-left: 8px; /* Отступ между радиокнопкой и текстом */
+  margin-left: 8px;
+  /* Отступ между радиокнопкой и текстом */
 }
 
-.organization-select select{
+.organization-select select {
   padding: 10px 10px;
   border-color: var(--border-color);
   border-radius: 8px;
@@ -461,15 +439,18 @@ button:hover {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   width: 300px;
   height: 100%;
-  
+
 }
 
-:deep(.p-password){
-  width: 100%; /* Учитываем отступы, чтобы выровнять с кнопкой */
+:deep(.p-password) {
+  width: 100%;
+  /* Учитываем отступы, чтобы выровнять с кнопкой */
   padding: 12px;
 }
-:deep(.p-password-input){
-  width: calc(100% - 24px); /* Учитываем отступы, чтобы выровнять с кнопкой */
+
+:deep(.p-password-input) {
+  width: calc(100% - 24px);
+  /* Учитываем отступы, чтобы выровнять с кнопкой */
   padding: 12px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
@@ -480,12 +461,13 @@ button:hover {
   color: var(--text-color);
 }
 
-.org-select{
+.org-select {
   margin-right: auto;
   width: calc(100% - 24px);
 }
-.city-select{
+
+.city-select {
   width: calc(100% - 24px);
   margin: 10px;
 }
-    </style>
+</style>

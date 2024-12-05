@@ -4,16 +4,9 @@
     <form @submit.prevent="handleSave">
 
       <div class="form-group">
-        <InputText
-      v-model="org.name"
-      id="registrationName"
-      placeholder='Название'
-      class="mb-4"
-      :class="{ 'p-invalid': registrationNameError }"
-      @blur="validateRegistrationName"
-      required
-    />
-    <small v-if="registrationNameError" class="p-error">Название должно содержать не менее 3 символов.</small>
+        <InputText v-model="org.name" id="registrationName" placeholder='Название' class="mb-4"
+          :class="{ 'p-invalid': registrationNameError }" @blur="validateRegistrationName" required />
+        <small v-if="registrationNameError" class="p-error">Название должно содержать не менее 3 символов.</small>
       </div>
 
       <div class="form-group">
@@ -23,45 +16,29 @@
 
       <!-- Телефон пользователя -->
       <div class="form-group">
-      <InputMask
-        v-model="org.telephone"
-        id="contactNumber"
-        placeholder="Контактный номер" 
-        mask="+79999999999"
-        class="mb-4"
-        required
-    
-      />
-    </div>
+        <InputMask v-model="org.telephone" id="contactNumber" placeholder="Контактный номер" mask="+79999999999"
+          class="mb-4" required />
+      </div>
 
       <!-- Раздел о себе -->
       <div class="form-group">
-        <Textarea v-model="org.about" id="about" rows="5" placeholder="Расскажите немного о вашей организации"></Textarea>
+        <Textarea v-model="org.about" id="about" rows="5"
+          placeholder="Расскажите немного о вашей организации"></Textarea>
       </div>
 
       <div class="form-group">
-      <CitySelect v-model="org.city" class="city-select"/>
+        <CitySelect v-model="org.city" class="city-select" />
       </div>
       <div class="form-group">
-        <InputText
-          v-model="org.address"
-          id="address"
-          placeholder="Адрес"
-          class="mb-4"
-          required
-        />
+        <InputText v-model="org.address" id="address" placeholder="Адрес" class="mb-4" required />
       </div>
-        <p class="map-text">Укажите адрес на карте:</p>
-        <div id="map" class="map-container"></div>
-        
-     
+      <p class="map-text">Укажите адрес на карте:</p>
+      <div id="map" class="map-container"></div>
+
+
 
       <!-- Кнопка сохранения -->
-      <Button
-    label="Сохранить изменения"
-    type="submit"
-    :disabled="isSubmitDisabled"
-  />
+      <Button label="Сохранить изменения" type="submit" :disabled="isSubmitDisabled" />
     </form>
   </div>
 </template>
@@ -74,11 +51,10 @@ import InputText from 'primevue/inputtext';
 import InputMask from 'primevue/inputmask';
 import Button from 'primevue/button';
 import OrganizationSelect from '../../components/OrganizationSelect.vue'
-
 /* global DG */
 export default {
   name: "OrgProfile",
-  components:{
+  components: {
     InputText,
     InputMask,
     CitySelect,
@@ -89,61 +65,82 @@ export default {
   data() {
     return {
       org: {
-            about: "",
-            address: "",
-            city: "",
-            lat: 0,
-            long: 0,
-            name: "",
-            org_id: 0,
-            telephone: "",
-            type: "",
-          },
+        about: "",
+        address: "",
+        city: "",
+        lat: 0,
+        long: 0,
+        name: "",
+        org_id: 0,
+        telephone: "",
+        type: "",
+      },
       markerCoords: null,
 
       registrationNameError: false,
     };
   },
   mounted() {
+    this.loadMapScript();
     this.loadOrgData()
-    .then(() => {
-      this.initializeMap();
-    })
-    .catch(error => {
-      console.error("Ошибка загрузки данных:", error);
-    });
+      .then(() => {
+        this.initializeMap();
+      })
+      .catch(error => {
+        console.error("Ошибка загрузки данных:", error);
+      });
   },
   methods: {
+    loadMapScript() {
+      return new Promise((resolve, reject) => {
+        if (document.getElementById('2gis-script')) {
+          // Скрипт уже загружен
+          resolve();
+          return;
+        }
+
+        const script = document.createElement('script');
+        script.id = '2gis-script';
+        script.src = 'https://maps.api.2gis.ru/2.0/loader.js?pkg=full';
+        script.onload = () => {
+          resolve();
+        };
+        script.onerror = () => {
+          reject(new Error('Ошибка при загрузке скрипта карты.'));
+        };
+        document.body.appendChild(script);
+      });
+    },
     async loadOrgData() {
-    try {
-      // Получение id из localStorage
-      const id = localStorage.getItem('id');
-      const org = await getOrg(id); // Асинхронное ожидание завершения запроса
-      this.org = org;
-    } catch (error) {
-      console.error("Ошибка при загрузке данных:", error);
-      throw error; // Перебрасываем ошибку, чтобы её можно было поймать в `mounted`
-    }
-  },
+      try {
+        // Получение id из localStorage
+        const id = localStorage.getItem('id');
+        const org = await getOrg(id); // Асинхронное ожидание завершения запроса
+        this.org = org;
+      } catch (error) {
+        console.error("Ошибка при загрузке данных:", error);
+        throw error; // Перебрасываем ошибку, чтобы её можно было поймать в `mounted`
+      }
+    },
     handleSave() {
-      updateOrg(this.org.about, this.org.address, this.org.name, this.org.city, this.org.telephone, this.org.org_id, this.org.lat, this.org.long, this.org.type )
+      updateOrg(this.org.about, this.org.address, this.org.name, this.org.city, this.org.telephone, this.org.org_id, this.org.lat, this.org.long, this.org.type)
       console.log("Изменения сохранены", this.org);
       this.$toast.add({ severity: 'success', summary: 'Успех', detail: 'Изменения сохранены', life: 3000 });
 
     },
     validateRegistrationName() {
-    this.registrationNameError = this.org.name.length < 3;
-  },
-  //isSubmitDisabled(){
-  //  return (!this.user.first_name || //TODO добавить валидацию на остальные поля
-  //  this.user.first_name.length < 3)
-  //},
-  initializeMap() {
-    if (this.map) {
-    this.map.remove();
-    this.map = null;
-  }
-  this.mapInitialized = true;
+      this.registrationNameError = this.org.name.length < 3;
+    },
+    //isSubmitDisabled(){
+    //  return (!this.user.first_name || //TODO добавить валидацию на остальные поля
+    //  this.user.first_name.length < 3)
+    //},
+    initializeMap() {
+      if (this.map) {
+        this.map.remove();
+        this.map = null;
+      }
+      this.mapInitialized = true;
       DG.then(() => {
         this.map = DG.map('map', {
           center: [this.org.lat, this.org.long], // Центр карты (Махачкала)
@@ -158,10 +155,11 @@ export default {
           this.markerCoords = event.target.getLatLng(); // Сохраняем координаты маркера
           console.log('Координаты маркера:', this.markerCoords);
 
-          this.org.lat=this.markerCoords.lat;
-          this.org.long=this.markerCoords.long;
+          this.org.lat = this.markerCoords.lat;
+          this.org.long = this.markerCoords.long;
         });
-    });},
+      });
+    },
   },
 };
 //TODO сделать поля нормальными по ширине
@@ -229,6 +227,7 @@ textarea:focus {
 .save-button:hover {
   background-color: #1A6CDB;
 }
+
 .map-container {
   width: 100%;
   height: 400px;

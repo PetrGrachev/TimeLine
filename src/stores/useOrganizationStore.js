@@ -4,13 +4,13 @@ import { getServices } from '../api/servicesApi';
 import { getWorkers } from '../api/workersApi';
 
 export const useOrganizationStore = defineStore('organization', {
-    state: () => ({
-      organization: null,
-      services: null,
-      employees: null,
-      images: null,
-      reviews: null,
-    }),
+  state: () => ({
+    organization: null,
+    services: null,
+    employees: null,
+    images: null,
+    reviews: null,
+  }),
 
   actions: {
     async loadOrganization(id) {

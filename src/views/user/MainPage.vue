@@ -1,14 +1,14 @@
 <template>
   <div class="main-page-container">
-    
+
     <!-- Main Content -->
     <div class="main-content">
       <!-- Top Navigation Bar -->
-        <nav class="top-nav">
-            <Button @click="goToRoute('list')" :class="{ active: currentRoute === 'list' }">Список организаций</button>
-            <Button @click="goToRoute('map')"  :class="{ active: currentRoute === 'map' }">Карта</button>
-        </nav>
-        <router-view />
+      <nav class="top-nav">
+        <Button @click="goToRoute('list')" :class="{ active: currentRoute === 'list' }">Список организаций</button>
+        <Button @click="goToRoute('map')" :class="{ active: currentRoute === 'map' }">Карта</button>
+      </nav>
+      <router-view />
     </div>
   </div>
 </template>
@@ -19,8 +19,8 @@ import Button from 'primevue/button';
 
 export default {
   components: {
-      Button,
-     
+    Button,
+
   },
   data() {
     return {
@@ -28,16 +28,16 @@ export default {
       query: "",
       viewMode: 'list', // Режим отображения по умолчанию (список)
       orgsList: [],
-      filteredOrgList:[],
+      filteredOrgList: [],
       currentPage: 0, // PrimeVue страницы начинаются с 0
       rowsPerPage: 5,
       totalRecords: 0,
-      noOrgs:false,
+      noOrgs: false,
 
       currentRoute: 'list',
     };
   },
-watch: {
+  watch: {
     '$route'(to) {
       // Автоматически устанавливать текущий маршрут при изменении
       if (to.name === 'MainList' || to.name === 'OrgsMap') {
@@ -51,8 +51,8 @@ watch: {
       this.currentRoute = this.$route.name === 'MainList' ? 'list' : 'map';
     }
   },
-methods: {
-  goToRoute(route) {
+  methods: {
+    goToRoute(route) {
       this.currentRoute = route;
       this.$router.push({ name: route === 'list' ? 'MainList' : 'OrgsMap' });
     },
@@ -75,7 +75,30 @@ methods: {
   padding: 20px;
 }
 
+.top-nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
 
+.top-nav button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  background-color: var(--input-background-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.top-nav button.active {
+  background-color: #0F4EB3;
+  color: var(--input-background-color);
+}
+
+.top-nav button:hover {
+  background-color: var(--button-hover);
+}
 
 .organization-map {
   background-color: var(--background-color);
@@ -93,5 +116,4 @@ methods: {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-
 </style>

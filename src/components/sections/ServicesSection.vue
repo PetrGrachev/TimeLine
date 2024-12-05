@@ -4,16 +4,16 @@
         <h2>Услуги</h2>
         <!-- Перебираем каждую услугу из списка services и выводим информацию -->
         <div class="services-grid">
-            <div v-for="(service, index) in services" :key="index" class="service-card" @click="openBooking(service)" @mouseover="hoverService" @mouseleave="leaveService">
-                <h3 class="service-name">{{ service.name }}</h3>
-                <p class="service-description">{{ service.description }}</p>
-                <p class="service-price"><strong>{{ service.cost }} ₽</strong></p>
+            <div v-for="(service, index) in services" :key="index" class="service-card" @click="openBooking(service)"
+                @mouseover="hoverService" @mouseleave="leaveService">
+                <ServiceCard :service="service" />
             </div>
         </div>
     </section>
-    
+
     <!-- Компонент для модального окна записи -->
-    <BookingDialog :visible="isBookingDialogVisible" :service="selectedService" @update:visible="isBookingDialogVisible = $event" />
+    <BookingDialog :visible="isBookingDialogVisible" :service="selectedService"
+        @update:visible="isBookingDialogVisible = $event" />
 </template>
 
 <script>
@@ -21,47 +21,49 @@ import BookingDialog from '@/components/dialog/BookingDialog.vue';
 import { getServices } from '../../api/servicesApi';
 import { useOrganizationStore } from '../../stores/useOrganizationStore';
 import { mapState } from 'pinia';
+import ServiceCard from '../ServiceCard.vue';
 
 export default {
-    props:{
-      id:{
-      type: String,
-      required: true,
-      }
+    props: {
+        id: {
+            type: String,
+            required: true,
+        }
     },
     name: 'ServicesSection',
     components: {
         BookingDialog,
+        ServiceCard,
     },
     data() {
         return {
-            
+
             isBookingDialogVisible: false,
             selectedService: null,
         };
     },
     computed: {
-    
-    ...mapState(useOrganizationStore, ['services']),
-  },
+
+        ...mapState(useOrganizationStore, ['services']),
+    },
     mounted() {
-    // Правильный вызов useOrganizationStore
-    const organizationStore = useOrganizationStore();
+        // Правильный вызов useOrganizationStore
+        const organizationStore = useOrganizationStore();
 
-    // Загружаем данные организации
-    organizationStore.loadServices(this.id);
+        // Загружаем данные организации
+        organizationStore.loadServices(this.id);
 
-  },
+    },
     methods: {
-        loadServices(){
+        loadServices() {
             getServices(this.id)
-        .then( services =>{
-        this.services=services;
-        console.log(this.services)
-      })
-      .catch(error => {
-        console.error('Ошибка при получении услуг:', error);
-      });
+                .then(services => {
+                    this.services = services;
+                    console.log(this.services)
+                })
+                .catch(error => {
+                    console.error('Ошибка при получении услуг:', error);
+                });
         },
         openBooking(service) {
             this.selectedService = service;

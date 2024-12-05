@@ -1,50 +1,50 @@
 <template>
-    <nav class="top-nav">
-            <OrganizationSelect v-model="selectedOrganizationType" @change="getMapBounds" class="custom-select"/>
-            
-        </nav>
-    <!-- 2GIS Integration Placeholder -->
-    <div id="map" class="map-container"></div>
+  <nav class="top-nav">
+    <OrganizationSelect v-model="selectedOrganizationType" @change="getMapBounds" class="custom-select" />
+
+  </nav>
+  <!-- 2GIS Integration Placeholder -->
+  <div id="map" class="map-container"></div>
 </template>
 
 <script>
-import { showMap} from '../api/userApi';
+import { showMap } from '../api/userApi';
 import { getUserLocation } from '../api/axiosInstance';
 import OrganizationSelect from './OrganizationSelect.vue';
 
 
 /* global DG */
-export default{
-    props: {
+export default {
+  props: {
     lat: {
       type: Number,
-      
+
     },
     lng: {
       type: Number,
-      
+
     },
     zoom: {
       type: Number,
-      
+
     }
   },
-    components:{
-        OrganizationSelect,
-    },
-    data() {
+  components: {
+    OrganizationSelect,
+  },
+  data() {
     return {
-        mapOrgs: [],
-      filteredMapOrgs:[],
+      mapOrgs: [],
+      filteredMapOrgs: [],
       selectedOrganizationType: '',
       localLat: null,
       localLong: null,
       localZoom: 13,
-        }
-    },
-    mounted() {
-        this.loadMapScript();
-    
+    }
+  },
+  mounted() {
+    this.loadMapScript();
+
     const { lat, lng, zoom } = this.$route.query;
 
     if (lat && lng && zoom) {
@@ -70,126 +70,126 @@ export default{
         });
     }
   },
-watch: {
+  watch: {
     selectedOrganizationType() {
       this.getMapBounds();
     },
   },
-  
 
-methods:{
+
+  methods: {
     filterMapOrgs() {
-    console.log("Фильтруем по ", this.selectedOrganizationType);
-  if (this.selectedOrganizationType) {
-    this.filteredMapOrgs = this.mapOrgs.filter(
-      org => org.type === this.selectedOrganizationType
-    );
-  } else {
-    this.filteredMapOrgs = this.mapOrgs;
-  }
-},
-loadMapScript() {
-    return new Promise((resolve, reject) => {
-      if (document.getElementById('2gis-script')) {
-        // Скрипт уже загружен
-        resolve();
-        return;
+      console.log("Фильтруем по ", this.selectedOrganizationType);
+      if (this.selectedOrganizationType) {
+        this.filteredMapOrgs = this.mapOrgs.filter(
+          org => org.type === this.selectedOrganizationType
+        );
+      } else {
+        this.filteredMapOrgs = this.mapOrgs;
       }
-
-      const script = document.createElement('script');
-      script.id = '2gis-script';
-      script.src = 'https://maps.api.2gis.ru/2.0/loader.js?pkg=full';
-      script.onload = () => {
-        resolve();
-      };
-      script.onerror = () => {
-        reject(new Error('Ошибка при загрузке скрипта карты.'));
-      };
-      document.body.appendChild(script);
-    });
-  },
-    initializeMap() { //TODO сделать сохранение координат центра и зума в query
-        
-        if (this.map) {
-            this.map.remove();
-            this.map = null;
+    },
+    loadMapScript() {
+      return new Promise((resolve, reject) => {
+        if (document.getElementById('2gis-script')) {
+          // Скрипт уже загружен
+          resolve();
+          return;
         }
-  this.mapInitialized = true;
 
-  this.markers = [];
+        const script = document.createElement('script');
+        script.id = '2gis-script';
+        script.src = 'https://maps.api.2gis.ru/2.0/loader.js?pkg=full';
+        script.onload = () => {
+          resolve();
+        };
+        script.onerror = () => {
+          reject(new Error('Ошибка при загрузке скрипта карты.'));
+        };
+        document.body.appendChild(script);
+      });
+    },
+    initializeMap() {
 
-  this.createMap();
+      if (this.map) {
+        this.map.remove();
+        this.map = null;
+      }
+      this.mapInitialized = true;
 
-},
-throttle(func, limit) {
-  let inThrottle;
-  return function() {
-    const args = arguments;
-    const context = this;
-    if (!inThrottle) {
-      func.apply(context, args);
-      inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
-    }
-  }
-},
-createMap(){
-    console.log(this.localLat, this.localLong, this.localZoom)
-    DG.then(() => {
+      this.markers = [];
+
+      this.createMap();
+
+    },
+    throttle(func, limit) {
+      let inThrottle;
+      return function () {
+        const args = arguments;
+        const context = this;
+        if (!inThrottle) {
+          func.apply(context, args);
+          inThrottle = true;
+          setTimeout(() => inThrottle = false, limit);
+        }
+      }
+    },
+    createMap() {
+      console.log(this.localLat, this.localLong, this.localZoom)
+      DG.then(() => {
         this.map = DG.map('map', {
-        center: [this.localLat, this.localLong],
-        zoom: this.localZoom,
+          center: [this.localLat, this.localLong],
+          zoom: this.localZoom,
         });
-        
 
-    // Добавление слушателя для обновления карты при окончании движения
-    this.map.on('moveend', this.throttle(() => {
-        const center = this.map.getCenter();
-        const zoom = this.map.getZoom();
 
-        this.$router.replace({
+        // Добавление слушателя для обновления карты при окончании движения
+        this.map.on('moveend', this.throttle(() => {
+          const center = this.map.getCenter();
+          const zoom = this.map.getZoom();
+
+          this.$router.replace({
             name: 'OrgsMap',
             query: {
-            lat: center.lat,
-            lng: center.lng,
-            zoom: zoom
+              lat: center.lat,
+              lng: center.lng,
+              zoom: zoom
             }
-        });
+          });
+          this.getMapBounds();
+        }, 1000));
+
+        // Начальная загрузка данных и добавление маркеров
         this.getMapBounds();
-    }, 1000));
+      });
+    },
+    getMapBounds() {
+      if (this.map) {
+        const bounds = this.map.getBounds();
+        const southWest = bounds.getSouthWest(); // Левый нижний угол (юго-западный)
+        const northEast = bounds.getNorthEast(); // Правый верхний угол (северо-восточный)
 
-    // Начальная загрузка данных и добавление маркеров
-    this.getMapBounds();
-  });
-},
-getMapBounds() {
-  if (this.map) {
-    const bounds = this.map.getBounds();
-    const southWest = bounds.getSouthWest(); // Левый нижний угол (юго-западный)
-    const northEast = bounds.getNorthEast(); // Правый верхний угол (северо-восточный)
+        console.log('Левый нижний угол (Юго-западный):', southWest.lat, southWest.lng);
+        console.log('Правый верхний угол (Северо-восточный):', northEast.lat, northEast.lng);
 
-    console.log('Левый нижний угол (Юго-западный):', southWest.lat, southWest.lng);
-    console.log('Правый верхний угол (Северо-восточный):', northEast.lat, northEast.lng);
+        showMap(southWest, northEast)
+          .then(orgs => {
+            if (Array.isArray(orgs)) {
+              this.mapOrgs = orgs;
 
-    showMap(southWest, northEast)
-      .then(orgs => {
-        if (Array.isArray(orgs)) {
-          this.mapOrgs = orgs;
+              this.clearMarkers();
 
-          this.clearMarkers();
+              this.filterMapOrgs();
 
-          this.filterMapOrgs();
-        
-            this.filteredMapOrgs.forEach(org => {
+              this.filteredMapOrgs.forEach(org => {
 
                 let scheduleText = 'Закрыто';
                 if (org.schedule) {
-                    scheduleText = `Открыто: ${org.schedule.open} - ${org.schedule.close}`;
-                if (org.schedule.break_start && org.schedule.break_end) {
+                  scheduleText = `Открыто: ${org.schedule.open} - ${org.schedule.close}`;
+                  if (org.schedule.break_start && org.schedule.break_end) {
                     scheduleText += ` (Перерыв: ${org.schedule.break_start} - ${org.schedule.break_end})`;
+                  }
                 }
-                }
-            const popupContent = `
+                const popupContent = `
             <div style="font-family: Arial, sans-serif; color: #a2b7d6; text-align: center;">
                 <h3 style="margin: 0; font-size: 16px;">${org.name}</h3>
                 <p style="margin: 5px 0;">${scheduleText}</p> 
@@ -209,51 +209,51 @@ getMapBounds() {
             </div>
             `;
 
-            const marker = DG.marker(org.coords, {
-              icon: DG.icon({
-                iconUrl: require(`@/assets/${org.type}-icon.png`),
-                iconSize: [32, 32],
-                iconAnchor: [16, 32],
-                popupAnchor: [0, -32]
-              })
-            }).addTo(this.map)
-              .bindPopup(popupContent)
+                const marker = DG.marker(org.coords, {
+                  icon: DG.icon({
+                    iconUrl: require(`@/assets/${org.type}-icon.png`),
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 32],
+                    popupAnchor: [0, -32]
+                  })
+                }).addTo(this.map)
+                  .bindPopup(popupContent)
 
-                        // Добавление обработчика для кнопки "Подробнее" после открытия попапа
-            marker.on('popupopen', () => {
-                const button = document.getElementById(`go-to-company-${org.id}`);
-                if (button) {
-                button.addEventListener('click', () => {
-                    this.goToCompanyInfo(org); // Вызов метода для перехода
+                // Добавление обработчика для кнопки "Подробнее" после открытия попапа
+                marker.on('popupopen', () => {
+                  const button = document.getElementById(`go-to-company-${org.id}`);
+                  if (button) {
+                    button.addEventListener('click', () => {
+                      this.goToCompanyInfo(org); // Вызов метода для перехода
+                    });
+                  }
                 });
-                }
-            });
 
-              this.markers.push(marker);
+                this.markers.push(marker);
 
+              });
+            } else {
+              console.error('Полученные данные не являются массивом:', orgs);
+            }
+          })
+          .catch(error => {
+            console.error('Ошибка при получении организаций:', error);
           });
-        } else {
-          console.error('Полученные данные не являются массивом:', orgs);
-        }
-      })
-      .catch(error => {
-        console.error('Ошибка при получении организаций:', error);
-      });
+      }
+
+    },
+    clearMarkers() {
+      if (this.markers && this.markers.length > 0) {
+        this.markers.forEach(marker => {
+          this.map.removeLayer(marker); // Удаляем каждый маркер с карты
+        });
+        this.markers = []; // Очищаем массив маркеров
+      }
+    },
+    goToCompanyInfo(org) {
+      this.$router.push({ name: 'OrgInfo', params: { id: org.org_id } });
+    },
   }
-  
-},
-clearMarkers() {
-  if (this.markers && this.markers.length > 0) {
-    this.markers.forEach(marker => {
-      this.map.removeLayer(marker); // Удаляем каждый маркер с карты
-    });
-    this.markers = []; // Очищаем массив маркеров
-  }
-},
-goToCompanyInfo(org) {
-    this.$router.push({ name: 'OrgInfo', params: { id: org.org_id } });
-  },
-}
 };
 </script>
 

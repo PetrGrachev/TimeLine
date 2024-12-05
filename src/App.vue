@@ -3,9 +3,9 @@
     <!-- Отображение соответствующей навигации -->
     <TheNavigation v-show="showUserNavigation" />
     <TheOrgNavigation v-show="showOrgNavigation" />
-    
+
     <router-view />
-    
+
     <!-- Отображение футера только если навигация видима -->
     <TheFooter v-show="showNavigation" />
   </div>
@@ -32,7 +32,7 @@ export default {
 
     const excludedRoutes = ['Login', 'RegistrationUser', 'RegistrationOrg', 'NotFound'];
     const userRoutes = ['MainPage', 'UserProfile', 'TheSettings', 'UserRecords', 'OrgInfo', 'Info', 'Services', 'Employees', 'Images', 'Reviews', 'MainList', 'OrgsMap']; // Добавьте свои маршруты
-    const orgRoutes = ['OrgMainPage', 'OrgProfile', 'TheOrgSettings', 'OrgShedule', 'OrgStatistics'];
+    const orgRoutes = ['OrgMainPage', 'OrgProfile', 'TheOrgSettings', 'OrgManaging', 'OrgStatistics', 'EmployeeManaging', 'ServicesManaging', 'ScheduleManaging'];
 
     const showNavigation = computed(() => !excludedRoutes.includes(route.name));
     const showUserNavigation = computed(() => showNavigation.value && userRoutes.includes(route.name));
