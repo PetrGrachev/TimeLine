@@ -13,7 +13,7 @@
 import { createWorker, getWorkers } from '../../../api/workersApi';
 import EmployeeDialog from '../../../components/dialog/EmployeeDialog.vue';
 import EditableEmployeeCard from '../../../components/EditableEmployeeCard.vue';
-
+//TODO сделать редактирование
 export default {
     components: {
         EmployeeDialog,
@@ -32,7 +32,7 @@ export default {
     methods: {
         loadEmployees() {
             const id = localStorage.getItem('id');
-            getWorkers(Number(id))
+            getWorkers(id)
                 .then(workers => {
                     this.employees = workers;
                     console.log(this.employees)

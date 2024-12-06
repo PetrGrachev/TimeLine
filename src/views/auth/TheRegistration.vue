@@ -56,7 +56,6 @@ import OrganizationSelect from '@/components/OrganizationSelect.vue';
 import ConfirmationCodeDialog from '@/components/dialog/ConfirmationCodeDialog.vue';
 import { registerOrg, registerUser } from '../../api/authApi';
 import CitySelect from '../../components/CitySelect.vue';
-//TODO добавить динамическую загрузку скрипта карты
 /* global DG */
 export default {
   components: {
