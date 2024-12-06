@@ -1,19 +1,21 @@
 <template>
     <div class="employees-list">
-        <EditableEmployeeCard v-for="employee in employees" :key="employee.worker_id" :employee="employee" />
+        <EditableEmployeeCard v-for="employee in employees" :key="employee.worker_id" :employee="employee"
+            @delete="deleteEmployee" @edit="editDialog" />
     </div>
     <div class="plus-card">
-        <button @click="openDialog">+</button>
+        <button @click="createDialog">+</button>
     </div>
-    <EmployeeDialog :isVisible="isVisible" :employee="newEmployee" @update:isVisible="isVisible = $event"
-        @create-employee="createEmployee" />
+    <EmployeeDialog :isVisible="isVisible" :employee="editableEmployee" :isEditing="isEditing"
+        @update:isVisible="isVisible = $event" @create-employee="createEmployee" @update-employee="updateEmployee" />
 </template>
 
 <script>
-import { createWorker, getWorkers } from '../../../api/workersApi';
+import { createWorker, deleteWorker, getWorkers, updateWorker } from '../../../api/workersApi';
 import EmployeeDialog from '../../../components/dialog/EmployeeDialog.vue';
 import EditableEmployeeCard from '../../../components/EditableEmployeeCard.vue';
-//TODO сделать редактирование
+//TODO сделать Toast
+//TODO сделать окно с подтверждением
 export default {
     components: {
         EmployeeDialog,
@@ -23,7 +25,9 @@ export default {
         return {
             isVisible: false,
             employees: [],
-            newEmployee: null
+            editableEmployee: null,
+            isEditing: false,
+            editableId: 0,
         }
     },
     mounted() {
@@ -41,6 +45,11 @@ export default {
                     console.error('Ошибка при получении работников:', error);
                 });
         },
+        createDialog() {
+            this.editableEmployee = null;
+            this.isEditing = false;
+            this.openDialog();
+        },
         openDialog() {
             this.isVisible = true;
         },
@@ -48,11 +57,27 @@ export default {
             const id = localStorage.getItem('id');
             createWorker(id, employee)
                 .then(() => {
+                    this.loadEmployees();
                     console.log("Сотрудник успешно создан");
                 })
                 .catch(error => {
                     console.error("Ошибка:", error.message);
                 });
+        },
+        deleteEmployee(employee) {
+            deleteWorker(employee.org_id, employee.worker_id);
+            this.loadEmployees();
+        },
+        editDialog(employee) {
+            this.editableId = employee.worker_id;
+            this.editableEmployee = employee;
+            this.isEditing = true;
+            this.openDialog();
+        },
+        updateEmployee(employee) {
+            const id = localStorage.getItem('id');
+            updateWorker(id, this.editableId, employee);
+            this.loadEmployees();
         }
     },
 }

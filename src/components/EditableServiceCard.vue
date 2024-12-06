@@ -1,7 +1,7 @@
 <template>
     <ServiceCard :service="service">
         <template #actions>
-            <Button @click="AssignEmployee">Приписать работника</Button>
+            <Button @click="assignEmployee">Приписать работника</Button>
             <Button @click="editService">Редактировать</Button>
             <Button @click="deleteService">Удалить</Button>
         </template>
@@ -29,6 +29,9 @@ export default {
         },
         deleteService() {
             this.$emit('delete', this.service);
+        },
+        assignEmployee() {
+            this.$emit('assign', this.service);
         }
     },
 };

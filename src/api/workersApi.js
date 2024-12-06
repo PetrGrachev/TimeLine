@@ -91,3 +91,35 @@ export function createWorker(org_id, employee) {
       }
     });
 }
+
+export function updateWorker(org_id, worker_id, employee) {
+
+  const data = {
+    org_id: Number(org_id),
+    worker_id: Number(worker_id),
+    worker_info: {
+      degree: employee.degree,
+      first_name: employee.first_name,
+      last_name: employee.last_name,
+      position: employee.position
+    }
+  };
+  // Формирование URL с использованием id
+  const url = `/orgs/workers`;
+
+  return axiosInstance.put(url, data)
+    .then(response => {
+      if (response.status === 200) {
+        console.log("Успешный ответ:", response.data);
+      }
+    })
+    .catch(error => {
+      if (error.response && error.response.status === 400) {
+        console.log("Ошибка 400:", error.response.data);
+        throw new Error(error.response.data);
+      } else {
+        console.log("Ошибка:", error.message);
+        throw new Error("Произошла ошибка запроса");
+      }
+    });
+}

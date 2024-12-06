@@ -2,11 +2,11 @@
     <div class="services-grid">
         <!-- Карточки услуг -->
         <div v-for="(service, index) in services" :key="index" class="service-card">
-            <EditableServiceCard :service="service" @edit="editDialog" @delete="deleteFunc" />
+            <EditableServiceCard :service="service" @edit="editDialog" @delete="deleteFunc" @assign="assignDialog" />
         </div>
 
         <!-- Карточка добавления новой услуги -->
-        <div class="service-card add-service-card" @click="openDialog">
+        <div class="service-card add-service-card" @click="createDialog">
             <div class="add-service-content">
                 <span>+</span>
                 <p>Добавить услугу</p>
@@ -14,12 +14,16 @@
         </div>
         <ServiceDialog :isVisible="isVisible" :service="editableService" :isEditing="isEditing"
             @update:isVisible="isVisible = $event" @create-service="addService" @update-service="update" />
+        <AssignDialog :isVisible="isVisibleAssign" :service="editableService"
+            @update:isVisible="isVisibleAssign = $event" @assign="assignEmployee" />
     </div>
 </template>
 
 
 <script>
-import { createService, deleteService, getServices, updateService } from '../../../api/servicesApi';
+
+import { assignWorker, createService, deleteService, getServices, updateService } from '../../../api/servicesApi';
+import AssignDialog from '../../../components/dialog/AssignDialog.vue';
 import ServiceDialog from '../../../components/dialog/ServiceDialog.vue';
 import EditableServiceCard from '../../../components/EditableServiceCard.vue';
 //TODO сделать нормальный стиль для кнопки +
@@ -28,6 +32,7 @@ export default {
     components: {
         EditableServiceCard,
         ServiceDialog,
+        AssignDialog,
     },
     data() {
         return {
@@ -36,6 +41,7 @@ export default {
             editableService: null,
             isEditing: false,
             editableId: 0,
+            isVisibleAssign: false,
         }
     },
     mounted() {
@@ -52,6 +58,11 @@ export default {
                 .catch(error => {
                     console.error('Ошибка при получении услуг:', error);
                 });
+        },
+        createDialog() {
+            this.editableService = null;
+            this.isEditing = false;
+            this.openDialog();
         },
         openDialog() {
             this.isVisible = true;
@@ -82,6 +93,14 @@ export default {
             deleteService(service.org_id, service.service_id);
             this.loadServices();
         },
+        assignDialog(service) {
+            console.log("Service:", service);
+            this.editableService = service;
+            this.isVisibleAssign = true;
+        },
+        assignEmployee(employee) {
+            assignWorker(employee.org_id, employee.worker_id, this.editableService.service_id);
+        }
     },
 };
 </script>

@@ -26,7 +26,7 @@
 
 
         <div class="submit-button-container">
-          <Button label="Создать" @click="handleCreateEmployee" class="action-button" />
+          <Button :label="buttonLabel" @click="handleCreateEmployee" class="action-button" />
         </div>
       </div>
     </div>
@@ -62,11 +62,20 @@ export default {
         photo: null,
       }),
     },
+    isEditing: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
       localEmployee: { ...this.employee },
     };
+  },
+  computed: {
+    buttonLabel() {
+      return this.isEditing ? "Сохранить" : "Создать"; // Возвращает текст кнопки
+    },
   },
   watch: {
     employee: {
@@ -88,7 +97,11 @@ export default {
       }
     },
     handleCreateEmployee() {
-      this.$emit('create-employee', this.localEmployee);
+      if (this.isEditing) {
+        this.$emit('update-employee', this.localEmployee);
+      } else {
+        this.$emit('create-employee', this.localEmployee);
+      }
       this.resetDialog();
     },
     resetDialog() {

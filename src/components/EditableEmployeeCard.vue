@@ -10,7 +10,7 @@
 <script>
 import Button from 'primevue/button';
 import EmployeeCard from './EmployeeCard.vue';
-import { deleteWorker } from '../api/workersApi';
+
 
 export default {
     components: {
@@ -25,13 +25,12 @@ export default {
     },
     methods: {
         editEmployee() {
-            console.log('Редактировать сотрудника:', this.employee);
+            this.$emit('edit', this.employee)
 
         },
-        deleteEmployee() {//TODO сделать emit, эту функцию перенести в orgshedule
-            //TODO сделать подтверждение на удаление
-            console.log('Удалить сотрудника:', this.employee);
-            deleteWorker(this.employee.org_id, this.employee.worker_id);
+        deleteEmployee() {
+            this.$emit('delete', this.employee)
+
         },
     },
 };
