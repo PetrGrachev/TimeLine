@@ -1,7 +1,8 @@
 <template>
     <ServiceCard :service="service">
         <template #actions>
-            <Button @click="assignEmployee">Приписать работника</Button>
+            <Button @click="assignEmployee">Назначить работника</Button>
+            <Button @click="unsignEmployee">Убрать работника</Button>
             <Button @click="editService">Редактировать</Button>
             <Button @click="deleteService">Удалить</Button>
         </template>
@@ -11,7 +12,6 @@
 <script>
 import Button from 'primevue/button';
 import ServiceCard from './ServiceCard.vue';
-//TODO сделать приписывание сотрудников
 export default {
     components: {
         ServiceCard,
@@ -32,6 +32,9 @@ export default {
         },
         assignEmployee() {
             this.$emit('assign', this.service);
+        },
+        unsignEmployee() {
+            this.$emit('unsign', this.service);
         }
     },
 };

@@ -1,11 +1,11 @@
 <template>
-    <Dialog :visible="isVisible" @update:visible="$emit('update:isVisible', $event)" modal header="Создать новую услугу"
+    <Dialog :visible="isVisible" @update:visible="$emit('update:isVisible', $event)" modal header="Назначить услугу"
         :style="{ width: '50rem' }">
         <div class="service-dialog-container">
             <div class="service-form-container">
 
                 <div class="form-group">
-                    <label for="name" class="form-label">Приписать к услуге "{{ service.name }}"</label>
+                    <label for="name" class="form-label">Назначить услугу "{{ service.name }}": </label>
                     <Dropdown v-model="selectedEmployee" :options="employees" optionLabel="name"
                         placeholder="Выберите работника" class="mb-4"></Dropdown>
                 </div>
@@ -26,6 +26,7 @@ import Dropdown from 'primevue/dropdown';
 import { getWorkers } from '../../api/workersApi';
 import { getServiceWorkers } from '../../api/servicesApi';
 //TODO Сделать нормально по визуалу
+//TODO выводить список уже приписанных?
 export default {
     name: 'EmployeeDialog',
     components: {
@@ -42,6 +43,10 @@ export default {
             type: Object,
             required: true,
         },
+        isUnsigning: {
+            type: Boolean,
+            required: true,
+        }
     },
     data() {
         return {
@@ -52,7 +57,12 @@ export default {
     watch: {
         isVisible(newValue) {
             if (newValue) {
-                this.loadEmployees();
+                if (this.isUnsigning) {
+                    this.loadSignedEmployees();
+                }
+                else {
+                    this.loadEmployees();
+                }
             }
         },
     },
@@ -61,7 +71,12 @@ export default {
         handleAssign() {
             console.log(this.selectedEmployee);
             if (this.selectedEmployee) {
-                this.$emit('assign', this.selectedEmployee);
+                if (this.isUnsigning) {
+                    this.$emit('unsign', this.selectedEmployee);
+                }
+                else {
+                    this.$emit('assign', this.selectedEmployee);
+                }
             }
             this.resetDialog();
         },
@@ -70,12 +85,12 @@ export default {
         },
         loadEmployees() {
             const id = localStorage.getItem('id');
-            getWorkers(id)
-                .then(workers => {
+            getWorkers(id, 100, 1)
+                .then(data => {
                     getServiceWorkers(id, this.service.service_id)
                         .then(serviceWorkers => {
                             // Фильтрация работников
-                            const filteredWorkers = workers.filter(worker => {
+                            const filteredWorkers = data.workers.filter(worker => {
                                 return !serviceWorkers.some(serviceWorker => serviceWorker.worker_id === worker.worker_id);
                             });
 
@@ -91,6 +106,20 @@ export default {
                 })
                 .catch(error => {
                     console.error('Ошибка при получении workers:', error);
+                });
+        },
+        loadSignedEmployees() {
+            const id = localStorage.getItem('id');
+            getServiceWorkers(id, this.service.service_id)
+                .then(serviceWorkers => {
+                    // Преобразование работников для Dropdown
+                    this.employees = serviceWorkers.map(worker => ({
+                        ...worker,
+                        name: `${worker.first_name} ${worker.last_name}`, // Добавляем свойство name
+                    }));
+                })
+                .catch(error => {
+                    console.error('Ошибка при получении serviceWorkers:', error);
                 });
         }
     },

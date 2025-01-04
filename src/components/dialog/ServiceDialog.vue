@@ -19,8 +19,8 @@
                 <!-- Цена услуги -->
                 <div class="form-group">
                     <label for="price" class="form-label">Цена:</label>
-                    <InputNumber v-model="localService.cost" mode="currency" currency="USD" locale="en-US"
-                        placeholder="Введите цену" class="mb-4" />
+                    <InputNumber v-model="localService.cost" mode="currency" currency="RUB" placeholder="Введите цену"
+                        class="mb-4" />
                 </div>
 
                 <!-- Кнопка для создания услуги -->

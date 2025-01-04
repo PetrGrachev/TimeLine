@@ -1,11 +1,15 @@
 import axiosInstance from './axiosInstance';
 
-export function getWorkers(org_id) {
+export function getWorkers(org_id, limit, page) {
 
+  const params = {
+    limit: limit,
+    page: page
+  };
   // Формирование URL с использованием id
   const url = `/orgs/${org_id}/workers`;
 
-  return axiosInstance.get(url)
+  return axiosInstance.get(url, { params })
     .then(response => {
       if (response.status === 200) {
         console.log("Успешный ответ:", response.data);
@@ -13,11 +17,15 @@ export function getWorkers(org_id) {
         // Проверка на наличие ключа "orgs" и его длину
         if (!response.data || response.data.length === 0) {
           console.log("Ответ содержит пустой массив. Нет доступных работников.");
-          return [];
+          return {
+            workers: [],
+            found: 0,  // Количество страниц
+          };
         }
 
         // Преобразуем ответ в нужную структуру
-        const workers = response.data.map(worker => ({
+        const workers = response.data.worker_list.map(worker => ({
+
           org_id: worker.org_id,
           worker_id: worker.worker_id,
           degree: worker.worker_info.degree,
@@ -25,7 +33,10 @@ export function getWorkers(org_id) {
           last_name: worker.worker_info.last_name,
           position: worker.worker_info.position,
         }));
-        return workers;
+        return {
+          workers: workers,
+          found: response.data.found,
+        };
       }
     })
     .catch(error => {

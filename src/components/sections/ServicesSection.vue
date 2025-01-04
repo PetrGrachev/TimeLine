@@ -19,8 +19,6 @@
 <script>
 import BookingDialog from '@/components/dialog/BookingDialog.vue';
 import { getServices } from '../../api/servicesApi';
-import { useOrganizationStore } from '../../stores/useOrganizationStore';
-import { mapState } from 'pinia';
 import ServiceCard from '../ServiceCard.vue';
 
 export default {
@@ -37,28 +35,21 @@ export default {
     },
     data() {
         return {
-
+            services: [],
+            totalServices: 0,
             isBookingDialogVisible: false,
             selectedService: null,
         };
     },
-    computed: {
-
-        ...mapState(useOrganizationStore, ['services']),
-    },
     mounted() {
-        // Правильный вызов useOrganizationStore
-        const organizationStore = useOrganizationStore();
-
-        // Загружаем данные организации
-        organizationStore.loadServices(this.id);
-
+        this.loadServices()
     },
     methods: {
         loadServices() {
-            getServices(this.id)
-                .then(services => {
-                    this.services = services;
+            getServices(this.id, 10, 1)
+                .then(data => {
+                    this.services = data.services;
+                    this.totalServices = data.found;
                     console.log(this.services)
                 })
                 .catch(error => {

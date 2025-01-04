@@ -1,4 +1,6 @@
 <template>
+    <Toast ref="toast" />
+    <h2>Сотрудники</h2>
     <div class="employees-list">
         <EditableEmployeeCard v-for="employee in employees" :key="employee.worker_id" :employee="employee"
             @delete="deleteEmployee" @edit="editDialog" />
@@ -11,15 +13,16 @@
 </template>
 
 <script>
+import Toast from 'primevue/toast';
 import { createWorker, deleteWorker, getWorkers, updateWorker } from '../../../api/workersApi';
 import EmployeeDialog from '../../../components/dialog/EmployeeDialog.vue';
 import EditableEmployeeCard from '../../../components/EditableEmployeeCard.vue';
-//TODO сделать Toast
 //TODO сделать окно с подтверждением
 export default {
     components: {
         EmployeeDialog,
         EditableEmployeeCard,
+        Toast,
     },
     data() {
         return {
@@ -36,12 +39,13 @@ export default {
     methods: {
         loadEmployees() {
             const id = localStorage.getItem('id');
-            getWorkers(id)
-                .then(workers => {
-                    this.employees = workers;
+            getWorkers(id, 100, 1)
+                .then(data => {
+                    this.employees = data.workers;
                     console.log(this.employees)
                 })
                 .catch(error => {
+                    this.$toast.add({ severity: 'danger', summary: 'Ошибка', detail: 'Ошибка при получении работников', life: 3000 });
                     console.error('Ошибка при получении работников:', error);
                 });
         },
@@ -58,15 +62,25 @@ export default {
             createWorker(id, employee)
                 .then(() => {
                     this.loadEmployees();
+                    this.$toast.add({ severity: 'success', summary: 'Успех', detail: 'Сотрудник успешно создан', life: 3000 });
                     console.log("Сотрудник успешно создан");
                 })
                 .catch(error => {
+                    this.$toast.add({ severity: 'danger', summary: 'Ошибка', detail: 'Ошибка при создании работника', life: 3000 });
                     console.error("Ошибка:", error.message);
                 });
         },
         deleteEmployee(employee) {
-            deleteWorker(employee.org_id, employee.worker_id);
-            this.loadEmployees();
+            deleteWorker(employee.org_id, employee.worker_id)
+                .then(() => {
+                    this.loadEmployees();
+                    this.$toast.add({ severity: 'info', summary: 'Успех', detail: 'Сотрудник успешно удален', life: 3000 });
+                    console.log("Сотрудник успешно удален");
+                })
+                .catch(error => {
+                    this.$toast.add({ severity: 'danger', summary: 'Ошибка', detail: 'Ошибка при удалении работника', life: 3000 });
+                    console.error("Ошибка:", error.message);
+                });
         },
         editDialog(employee) {
             this.editableId = employee.worker_id;
@@ -76,8 +90,16 @@ export default {
         },
         updateEmployee(employee) {
             const id = localStorage.getItem('id');
-            updateWorker(id, this.editableId, employee);
-            this.loadEmployees();
+            updateWorker(id, this.editableId, employee)
+                .then(() => {
+                    this.loadEmployees();
+                    this.$toast.add({ severity: 'success', summary: 'Успех', detail: 'Сотрудник успешно обновлен', life: 3000 });
+                    console.log("Сотрудник успешно обновлен");
+                })
+                .catch(error => {
+                    this.$toast.add({ severity: 'danger', summary: 'Ошибка', detail: 'Ошибка при обновлении работника', life: 3000 });
+                    console.error("Ошибка:", error.message);
+                });
         }
     },
 }

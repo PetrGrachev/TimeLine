@@ -1,8 +1,11 @@
 <template>
+    <Toast ref="toast" />
+    <h2>Услуги</h2>
     <div class="services-grid">
         <!-- Карточки услуг -->
         <div v-for="(service, index) in services" :key="index" class="service-card">
-            <EditableServiceCard :service="service" @edit="editDialog" @delete="deleteFunc" @assign="assignDialog" />
+            <EditableServiceCard :service="service" @edit="editDialog" @delete="deleteFunc" @assign="assignDialog"
+                @unsign="unsignDialog" />
         </div>
 
         <!-- Карточка добавления новой услуги -->
@@ -14,15 +17,16 @@
         </div>
         <ServiceDialog :isVisible="isVisible" :service="editableService" :isEditing="isEditing"
             @update:isVisible="isVisible = $event" @create-service="addService" @update-service="update" />
-        <AssignDialog :isVisible="isVisibleAssign" :service="editableService"
-            @update:isVisible="isVisibleAssign = $event" @assign="assignEmployee" />
+        <AssignDialog :isVisible="isVisibleAssign" :service="editableService" :isUnsigning="isUnsigning"
+            @update:isVisible="isVisibleAssign = $event" @assign="assignEmployee" @unsign="unsignEmployee" />
     </div>
 </template>
 
 
 <script>
 
-import { assignWorker, createService, deleteService, getServices, updateService } from '../../../api/servicesApi';
+import Toast from 'primevue/toast';
+import { assignWorker, createService, deleteService, getServices, unsignWorker, updateService } from '../../../api/servicesApi';
 import AssignDialog from '../../../components/dialog/AssignDialog.vue';
 import ServiceDialog from '../../../components/dialog/ServiceDialog.vue';
 import EditableServiceCard from '../../../components/EditableServiceCard.vue';
@@ -33,6 +37,7 @@ export default {
         EditableServiceCard,
         ServiceDialog,
         AssignDialog,
+        Toast,
     },
     data() {
         return {
@@ -42,6 +47,7 @@ export default {
             isEditing: false,
             editableId: 0,
             isVisibleAssign: false,
+            isUnsigning: false,
         }
     },
     mounted() {
@@ -50,13 +56,14 @@ export default {
     methods: {
         loadServices() {
             const id = localStorage.getItem('id');
-            getServices(id)
-                .then(services => {
-                    this.services = services;
+            getServices(id, 100, 1)
+                .then(data => {
+                    this.services = data.services;
                     console.log(this.services)
                 })
                 .catch(error => {
                     console.error('Ошибка при получении услуг:', error);
+                    this.$toast.add({ severity: 'danger', summary: 'Ошибка', detail: 'Ошибка при получении услуг', life: 3000 });
                 });
         },
         createDialog() {
@@ -72,6 +79,7 @@ export default {
             createService(id, service)
                 .then(() => {
                     this.loadServices();
+                    this.$toast.add({ severity: 'success', summary: 'Успех', detail: 'Услуга успешно похуй', life: 3000 });
                     console.log("Успешно создано");
                 })
                 .catch(error => {
@@ -86,20 +94,58 @@ export default {
         },
         update(service) {
             const id = localStorage.getItem('id');
-            updateService(id, this.editableId, service);
-            this.loadServices();
+            updateService(id, this.editableId, service)
+                .then(() => {
+                    this.loadServices();
+                    this.$toast.add({ severity: 'success', summary: 'Успех', detail: 'Услуга успешно обновленна', life: 3000 });
+                    console.log("Успешно создано");
+                })
+                .catch(error => {
+                    console.error('Ошибка при обновлении услуг:', error);
+                    this.$toast.add({ severity: 'danger', summary: 'Ошибка', detail: 'Ошибка при обновлении услуги', life: 3000 });
+                });
         },
         deleteFunc(service) {
-            deleteService(service.org_id, service.service_id);
-            this.loadServices();
+            deleteService(service.org_id, service.service_id)
+                .then(() => {
+                    this.loadServices();
+                    this.$toast.add({ severity: 'info', summary: 'Успех', detail: 'Услуга удалена', life: 3000 });
+                })
+                .catch(error => {
+                    console.error('Ошибка при удалении услуги:', error);
+                    this.$toast.add({ severity: 'danger', summary: 'Ошибка', detail: 'Ошибка при удалении услуги', life: 3000 });
+                });
         },
         assignDialog(service) {
             console.log("Service:", service);
             this.editableService = service;
             this.isVisibleAssign = true;
+            this.isUnsigning = false;
         },
         assignEmployee(employee) {
-            assignWorker(employee.org_id, employee.worker_id, this.editableService.service_id);
+            assignWorker(employee.org_id, employee.worker_id, this.editableService.service_id)
+                .then(() => {
+                    this.$toast.add({ severity: 'success', summary: 'Успех', detail: 'Работник назначен', life: 3000 });
+                })
+                .catch(error => {
+                    console.error('Ошибка при назначении услуги:', error);
+                    this.$toast.add({ severity: 'danger', summary: 'Ошибка', detail: 'Ошибка при назначении услуги', life: 3000 });
+                });
+        },
+        unsignDialog(service) {
+            this.editableService = service;
+            this.isUnsigning = true;
+            this.isVisibleAssign = true;
+        },
+        unsignEmployee(employee) {
+            unsignWorker(employee.org_id, employee.worker_id, this.editableService.service_id)
+                .then(() => {
+                    this.$toast.add({ severity: 'info', summary: 'Успех', detail: 'Работник откреплен', life: 3000 });
+                })
+                .catch(error => {
+                    console.error('Ошибка при откреплении работника:', error);
+                    this.$toast.add({ severity: 'danger', summary: 'Ошибка', detail: 'Ошибка при откреплении работника', life: 3000 });
+                });
         }
     },
 };
