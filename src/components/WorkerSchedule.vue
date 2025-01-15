@@ -1,7 +1,7 @@
 <template>
     <p>{{ worker.first_name }} {{ worker.last_name }}</p>
 
-    <div v-if="schedule && schedule.schedule > 0">
+    <div v-if="schedule && Object.keys(schedule.schedule || {}).length">
         <div class="schedule">
 
             <p>Продолжительность сеанса: {{ schedule.session_duration }} минут</p>

@@ -4,8 +4,7 @@
         <h2>Услуги</h2>
         <!-- Перебираем каждую услугу из списка services и выводим информацию -->
         <div class="services-grid">
-            <div v-for="(service, index) in services" :key="index" class="service-card" @click="openBooking(service)"
-                @mouseover="hoverService" @mouseleave="leaveService">
+            <div v-for="(service, index) in services" :key="index" class="service-card" @click="openBooking(service)">
                 <ServiceCard :service="service" />
             </div>
         </div>
@@ -60,12 +59,7 @@ export default {
             this.selectedService = service;
             this.isBookingDialogVisible = true;
         },
-        hoverService(event) {
-            event.currentTarget.style.backgroundColor = 'var(--input-background-color)';
-        },
-        leaveService(event) {
-            event.currentTarget.style.backgroundColor = 'var(--card-background-color)';
-        },
+
     },
 };
 </script>

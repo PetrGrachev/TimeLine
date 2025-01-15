@@ -4,6 +4,7 @@
             <button @click="changeSection('EmployeeManaging')">Cотрудники</button>
             <button @click="changeSection('ServicesManaging')">Услуги</button>
             <button @click="changeSection('ScheduleManaging')">Расписание</button>
+            <button @click="changeSection('ImagesManaging')">Изображения</button>
         </nav>
         <router-view />
     </div>

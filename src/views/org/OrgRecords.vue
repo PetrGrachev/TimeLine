@@ -1,57 +1,69 @@
 <template>
-    <div class="order-history">
-      
-      <nav class="top-nav">
-        <button @click="getUsers">Мои записи</button>
-        <button @click="getHistory">История</button>
-        
-      </nav>
-      <UsersList :orders="orders"/>
+  <div class="order-history">
 
-    </div>
-  </template>
+    <nav class="top-nav">
+      <button @click="getFutureRecords" :class="{ active: currentTab === 'records' }">Предстоящие записи</button>
+      <button @click="getHistory" :class="{ active: currentTab === 'history' }">История</button>
 
-  <script>
-  import UsersList from '../../components/UsersList.vue';
+    </nav>
+    <UsersList :orders="records" />
+
+  </div>
+</template>
+
+<script>
+import { getRecords } from '../../api/recordsApi';
+import UsersList from '../../components/UsersList.vue';
 export default {
-    components:{
-        UsersList,
-    },
+  components: {
+    UsersList,
+  },
   data() {
     return {
-        orders: [
-  { id: 1, first_name: 'Иван', last_name: 'Иванов', service: 'Стрижка', employee: 'Иван Иванов', dateTime: '2024-11-18 14:00' },
-  { id: 2, first_name: 'Олег', last_name: 'Смирнов', service: 'Персональная тренировка', employee: 'Олег Смирнов', dateTime: '2024-11-17 18:00' },
-  { id: 3, first_name: 'Петр', last_name: 'Петров', service: 'Бритье', employee: 'Петр Петров', dateTime: '2024-11-16 12:00' },
-  { id: 4, first_name: 'Сергей', last_name: 'Сергеев', service: 'Замена масла', employee: 'Сергей Сергеев', dateTime: '2024-11-15 10:00' },
-  { id: 5, first_name: 'Анна', last_name: 'Сидорова', service: 'Бронирование стола', employee: 'Администратор', dateTime: '2024-11-14 19:00' },
-  { id: 6, first_name: 'Мария', last_name: 'Кузнецова', service: 'Бронирование VIP-зала', employee: 'Администратор', dateTime: '2024-11-13 20:00' },
-  { id: 7, first_name: 'Дмитрий', last_name: 'Медведев', service: 'Консультация врача', employee: 'Дмитрий Медведев', dateTime: '2024-11-12 09:00' },
-    ],
+      records: null,
       currentTab: 'records', // Текущая вкладка - 'records' или 'history'
     };
   },
   mounted() {
     // Начальное отображение записей
-    this.getRecords();
+    this.getFutureRecords();
   },
   methods: {
     getHistory() {
       this.currentTab = 'history';
+      const id = localStorage.getItem('id');
+      getRecords(id, true, false)
+        .then((records) => {
+          this.records = records;
+
+        })
+        .catch(error => {
+          console.error("Ошибка загрузки records:", error);
+        });
     },
-    getRecords() {
+    getFutureRecords() {
       this.currentTab = 'records';
+      const id = localStorage.getItem('id');
+      getRecords(id, true, true)
+        .then((records) => {
+          this.records = records;
+
+        })
+        .catch(error => {
+          console.error("Ошибка загрузки records:", error);
+        });
     },
   },
 };
-  </script>
+</script>
 
-  <style scoped>
-  .order-history {
-    margin-top: 20px;
-    width: 100%;
-  }
-  .top-nav {
+<style scoped>
+.order-history {
+  margin-top: 20px;
+  width: 100%;
+}
+
+.top-nav {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;

@@ -1,9 +1,11 @@
 <template>
   <section class="section-container">
+    <Toast ref="toast" />
     <h2>Информация</h2>
     <div class="info-item">
       <i class="fas fa-phone"></i>
-      <p>{{ org.telephone }}</p>
+      <p>{{ formatPhoneNumber(org.telephone) }}</p>
+      <i class="fas fa-copy copy-icon" @click="copyToClipboard(org.telephone)" title="Скопировать номер"></i>
     </div>
     <div class="info-item">
       <i class="fas fa-map-marker-alt"></i>
@@ -19,11 +21,13 @@
 </template>
 
 <script>
+import Toast from 'primevue/toast';
 import OrgTimetable from '../OrgTimetable.vue';
 
 export default {
   components: {
     OrgTimetable,
+    Toast,
   },
   name: 'InfoSection',
   props: {
@@ -31,6 +35,20 @@ export default {
       type: Object,
       required: true,
     }
+  },
+  methods: {
+    formatPhoneNumber(phone) {
+      if (!phone) return '';
+      // Преобразуем номер в формат +7 (999) 999-99-99
+      return phone.replace(/^(\+7|7|8)?(\d{3})(\d{3})(\d{2})(\d{2})$/, '+7 ($2) $3-$4-$5');
+    },
+    copyToClipboard(phone) {
+      navigator.clipboard.writeText(phone).then(() => {
+        this.$toast.add({ severity: 'success', summary: 'Скопировано!', detail: 'Номер телефона скопирован в буфер обмена.', life: 3000 });
+      }).catch(() => {
+        this.$toast.add({ severity: 'error', summary: 'Ошибка!', detail: 'Не удалось скопировать номер телефона.', life: 3000 });
+      });
+    },
   },
 };
 </script>

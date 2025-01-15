@@ -1,19 +1,21 @@
 import axiosInstance from './axiosInstance';
 
-export function getRecords(id, isOrg) {
+export function getRecords(id, isOrg, fresh) {
     let params;
     if (isOrg) {
         params = {
             org_id: id,
+            limit: 100,
+            page: 1,
+            fresh: fresh,
         };
     }
     else {
         params = {
-            org_id: 1,
             user_id: id,
             limit: 100,
             page: 1,
-            fresh: true,
+            fresh: fresh,
         };
     }
     const url = `/records/list`;
@@ -30,13 +32,19 @@ export function getRecords(id, isOrg) {
                 }
 
                 // Преобразуем ответ в нужную структуру
-                const records = response.data.map(record => ({
-                    id: record.record_id,
+                const records = response.data.record_list.map(record => ({
+                    record_id: record.record_id,
                     name: record.org.name,
+                    reviewed: record.reviewed,
                     type: record.org.type,
                     service: record.service.name,
+                    cost: record.service.cost,
                     employee_first_name: record.worker.first_name,
                     employee_last_name: record.worker.last_name,
+                    employee_uuid: record.worker.uuid,
+                    user_first_name: record.user.first_name,
+                    user_last_name: record.user.last_name,
+                    user_uuid: record.worker.uuid,
                     date: record.slot.date,
                     time: record.slot.begin,
                 }));

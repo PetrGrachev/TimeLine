@@ -34,7 +34,10 @@ export function getSchedules(org_id, limit, page) {
                     session_duration: schedule.session_duration,
                     worker_id: schedule.worker_id,
                 }));
-                return schedules;
+                return {
+                    schedules: schedules,
+                    found: response.data.found,  // Количество страниц
+                };
             }
         })
         .catch(error => {

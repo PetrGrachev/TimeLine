@@ -3,11 +3,11 @@
     <Toast ref="toast" />
 
     <nav class="top-nav">
-      <button @click="getRecords">Мои записи</button>
-      <button @click="getHistory">История</button>
+      <button @click="getFutureRecords" :class="{ active: currentTab === 'records' }">Мои записи</button>
+      <button @click="getHistory" :class="{ active: currentTab === 'history' }">История</button>
     </nav>
 
-    <RecordsList :orders="records" @leave-review="leaveReview" @repeat-order="repeatOrder"
+    <RecordsList :orders="records" @leave-review="leaveReview" @repeat-order="repeatOrder" @cancel-order="cancelOrder"
       @organization-click="goToCompanyInfo" />
 
     <ReviewingDialog v-model:visible="isReviewDialogVisible" :reviewRating="reviewRating" :reviewText="reviewText"
@@ -49,7 +49,11 @@ export default {
     },
     repeatOrder(order) {
       // Логика для повторения заказа
-      alert("Повторить запись: " + order.organization.name);
+      alert("Повторить запись: " + order.name);
+    },
+    cancelOrder(order) {
+      // Логика для отмены заказа
+      alert("Отменить запись: " + order.name);
     },
     submitReview() {
       // Логика для отправки отзыва для конкретного заказа
@@ -63,22 +67,29 @@ export default {
     },
     getHistory() {
       this.currentTab = 'history';
-
-    },
-    getFutureRecords() {
-      this.currentTab = 'records';
       const id = localStorage.getItem('id');
-      getRecords(id, false)
+      getRecords(id, false, false)
         .then((records) => {
           this.records = records;
-
         })
         .catch(error => {
           console.error("Ошибка загрузки records:", error);
         });
     },
-    goToCompanyInfo(order) {
-      this.$router.push({ name: 'OrgInfo', params: { orgName: order.organization.name } });
+    getFutureRecords() {
+      this.currentTab = 'records';
+      const id = localStorage.getItem('id');
+      getRecords(id, false, true)
+        .then((records) => {
+          this.records = records;
+        })
+        .catch(error => {
+          console.error("Ошибка загрузки records:", error);
+        });
+    },
+    goToCompanyInfo(record) {
+      //TODO сделать переход на страницу организации
+      console.log(record)
     },
   },
 };

@@ -41,6 +41,7 @@ import Toast from 'primevue/toast';
 import { getServiceWorkers } from '../../api/servicesApi';
 import { getSlots } from '../../api/slotsApi';
 import { addRecord } from '../../api/recordsApi';
+import { convertTimeToTimeZone } from '../../utils/utilsDate';
 
 
 export default {
@@ -117,6 +118,11 @@ export default {
       getSlots(id, newVal.worker_id)
         .then((slots) => {
           this.slots = slots
+            .sort((a, b) => a.begin.localeCompare(b.begin))
+            .map(slot => ({
+              ...slot,
+              begin: convertTimeToTimeZone(slot.begin)
+            }));
         })
         .catch(error => {
           console.error('Ошибка при получении слотов:', error);
@@ -150,6 +156,7 @@ export default {
       } else {
         const id = localStorage.getItem('id');
         console.log(this.selectedEmployee);
+
         addRecord(this.selectedEmployee.org_id, this.service.service_id, this.selectedSlot.slot_id, id, this.selectedEmployee.worker_id)
           .then(() => {
             this.$toast.add({ severity: 'success', summary: 'Успех', detail: 'Запись создана', life: 3000 });

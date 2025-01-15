@@ -29,6 +29,7 @@ import OrgManaging from '../views/org/OrgManaging.vue';
 import EmployeeManaging from '../views/org/managing/EmployeeManaging.vue';
 import ServicesManaging from '../views/org/managing/ServicesManaging.vue';
 import ScheduleManaging from '../views/org/managing/ScheduleManaging.vue';
+import ImagesManaging from '../views/org/managing/ImagesManaging.vue';
 const routes = [
   {
     path: "/auth",
@@ -169,6 +170,12 @@ const routes = [
         path: 'schedule',
         name: 'ScheduleManaging',
         component: ScheduleManaging,
+
+      },
+      {
+        path: 'images',
+        name: 'ImagesManaging',
+        component: ImagesManaging,
 
       },
     ],

@@ -1,4 +1,5 @@
 <template>
+    <Toast ref="toast" />
     <div>
         <h2>Расписание организации</h2>
         <OrgTimetableEditable :timetable="timetable" @updateTimetable="updateTimetableDialog"
@@ -19,6 +20,7 @@
 </template>
 
 <script>
+import Toast from 'primevue/toast';
 import { AddSchedule, deleteSchedule, getSchedules, updateSchedule } from '../../../api/scheduleApi';
 import { addTimetable, deleteTimetable, getTimetable, updateTimetable } from '../../../api/timetableApi';
 import { getWorkers } from '../../../api/workersApi';
@@ -33,6 +35,7 @@ export default {
         WorkerSchedule,
         TimetableDialog,
         ScheduleDialog,
+        Toast,
     },
     data() {
         return {
@@ -58,7 +61,6 @@ export default {
                 breakStart: null,
                 breakEnd: null,
             };
-
             // Создаём массив пар { worker, schedule }
             return this.workers.map(worker => {
                 const schedule = this.schedules.find(s => s.worker_id === worker.worker_id) || { ...defaultSchedule, worker_id: worker.id };
@@ -69,32 +71,39 @@ export default {
     mounted() {
         const id = localStorage.getItem('id');
         this.id = id;
-        getTimetable(id)
-            .then((timetable) => {
-                this.timetable = timetable;
-                console.log(timetable)
-            })
-            .catch(error => {
-                console.error("Ошибка загрузки timetable:", error);
-            });
+        this.loadTimetable()
+        this.loadSchedules()
 
-        getWorkers(id, 100, 1)
-            .then((data) => {
-                this.workers = data.workers;
-            })
-            .catch(error => {
-                console.error("Ошибка загрузки workers:", error);
-            });
-
-        getSchedules(id, 100, 1)
-            .then((schedules) => {
-                this.schedules = schedules;
-            })
-            .catch(error => {
-                console.error("Ошибка загрузки schedules:", error);
-            });
     },
     methods: {
+        loadTimetable() {
+            setTimeout(() => {
+                getTimetable(this.id)
+                    .then(timetable => {
+                        this.timetable = timetable;
+                    })
+                    .catch(error => {
+                        console.error("Ошибка загрузки timetable:", error);
+                    });
+            }, 100);
+        },
+        loadSchedules() {
+            getWorkers(this.id, 100, 1)
+                .then((data) => {
+                    this.workers = data.workers;
+                })
+                .catch(error => {
+                    console.error("Ошибка загрузки workers:", error);
+                });
+
+            getSchedules(this.id, 100, 1)
+                .then((data) => {
+                    this.schedules = data.schedules;
+                })
+                .catch(error => {
+                    console.error("Ошибка загрузки schedules:", error);
+                });
+        },
         createTimetableDialog() {
             this.isVisible = true;
             this.isEditing = false;
@@ -117,63 +126,57 @@ export default {
         removeTimetable() {
             deleteTimetable(this.id)
                 .then(() => {
+                    this.$toast.add({ severity: 'info', summary: 'Успех', detail: 'Расписание успешно удалено', life: 3000 });
+                    this.loadTimetable()
                 })
                 .catch(error => {
+                    this.$toast.add({ severity: 'danger', summary: 'Ошибка', detail: 'Ошибка при удалении расписания', life: 3000 });
                     console.error("Ошибка удаления timetable:", error);
                 });
         },
         removeSchedule(worker) {
             deleteSchedule(this.id, worker.worker_id)
                 .then(() => {
+                    this.$toast.add({ severity: 'info', summary: 'Успех', detail: 'Расписание успешно удален', life: 3000 });
+                    this.loadSchedules()
                 })
                 .catch(error => {
+                    this.$toast.add({ severity: 'danger', summary: 'Ошибка', detail: 'Ошибка при удалении расписания', life: 3000 });
                     console.error("Ошибка удаления schedule:", error);
                 });
         },
         createTimetable(newTimetable) {
             addTimetable(this.id, newTimetable)
                 .then(() => {
+                    this.loadTimetable()
+                    this.$toast.add({ severity: 'success', summary: 'Успех', detail: 'Расписание успешно создано', life: 3000 });
                 })
                 .catch(error => {
+                    this.$toast.add({ severity: 'danger', summary: 'Ошибка', detail: 'Ошибка при создании расписания', life: 3000 });
                     console.error("Ошибка создания timetable:", error);
                 });
         },
         changeTimetable(newTimetable) {
             this.syncTimetable(this.timetable, newTimetable)
-            getTimetable(this.id)
-                .then((timetable) => {
-                    this.timetable = timetable;
-                })
-                .catch(error => {
-                    console.error("Ошибка загрузки timetable:", error);
-                });
+            this.$toast.add({ severity: 'success', summary: 'Успех', detail: 'Расписание успешно обновленно', life: 3000 });
+            this.loadTimetable()
         },
         createSchedule(schedule, session_duration) {
             AddSchedule(this.id, this.selectedWorkerId, schedule, session_duration)
                 .then(() => {
+                    this.$toast.add({ severity: 'success', summary: 'Успех', detail: 'Расписание успешно создано', life: 3000 });
+                    this.loadSchedules()
                     console.log('Расписание:', schedule)
                 })
                 .catch(error => {
+                    this.$toast.add({ severity: 'danger', summary: 'Ошибка', detail: 'Ошибка при изменении расписания', life: 3000 });
                     console.error("Ошибка изменения schedule:", error);
                 });
         },
         changeSchedule(schedule, session_duration) {
             this.syncSchedule(this.selectedSchedule.schedule, schedule, session_duration)
-            getWorkers(this.id, 100, 1)
-                .then((data) => {
-                    this.workers = data.workers;
-                })
-                .catch(error => {
-                    console.error("Ошибка загрузки workers:", error);
-                });
-
-            getSchedules(this.id, 100, 1)
-                .then((schedules) => {
-                    this.schedules = schedules;
-                })
-                .catch(error => {
-                    console.error("Ошибка загрузки schedules:", error);
-                });
+            this.$toast.add({ severity: 'success', summary: 'Успех', detail: 'Расписание успешно обновленно', life: 3000 });
+            this.loadSchedules()
         },
         syncTimetable(oldTimetable, newTimetable) {
             console.log("Старое расписание:", oldTimetable)
