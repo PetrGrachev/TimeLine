@@ -13,7 +13,7 @@
 
 <script>
 import { getRecords } from '../../api/recordsApi';
-import UsersList from '../../components/UsersList.vue';
+import UsersList from '../../components/lists/UsersList.vue';
 export default {
   components: {
     UsersList,

@@ -26,8 +26,8 @@ import { addTimetable, deleteTimetable, getTimetable, updateTimetable } from '..
 import { getWorkers } from '../../../api/workersApi';
 import ScheduleDialog from '../../../components/dialog/ScheduleDialog.vue';
 import TimetableDialog from '../../../components/dialog/TimetableDialog.vue';
-import OrgTimetableEditable from '../../../components/OrgTimetableEditable.vue';
-import WorkerSchedule from '../../../components/WorkerSchedule.vue';
+import OrgTimetableEditable from '../../../components/timetable/OrgTimetableEditable.vue';
+import WorkerSchedule from '../../../components/timetable/WorkerSchedule.vue';
 
 export default {
     components: {

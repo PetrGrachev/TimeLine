@@ -3,18 +3,18 @@ import { createRouter, createWebHistory } from 'vue-router';
 import MainPage from '@/views/user/MainPage.vue';
 import UserProfile from '@/views/user/UserProfile.vue';
 import UserRecords from '@/views//user/UserRecords.vue';
-import MainList from '../components/MainList.vue';
-import OrgsMap from '../components/OrgsMap.vue';
+import MainList from '@/components/lists/MainList.vue';
+import OrgsMap from '@/components/maps/OrgsMap.vue'
+import OrgInfo from '@/views/org/OrgInfo.vue'
 
-import OrgInfo from '@/views/OrgInfo.vue';
 import TheSettings from '@/views/user/TheSettings.vue';
 import ErrorPage from '@/views/ErrorPage.vue';
 //sections
-import InfoSection from '@/components/sections/InfoSection.vue';
-import EmployeesSection from '@/components/sections/EmployeesSection.vue';
-import ImagesSection from '@/components/sections/ImagesSection.vue';
-import ReviewsSection from '@/components/sections/ReviewsSection.vue';
-import ServicesSection from '@/components/sections/ServicesSection.vue';
+import InfoSection from '@/views/org/sections/InfoSection.vue';
+import EmployeesSection from '@/views/org/sections/EmployeesSection.vue';
+import ImagesSection from '@/views/org/sections/ImagesSection.vue';
+import ReviewsSection from '@/views/org/sections/ReviewsSection.vue';
+import ServicesSection from '@/views/org/sections/ServicesSection.vue';
 //auth
 import TheLogin from '@/views/auth/TheLogin.vue';
 import TheRegistration from '@/views/auth/TheRegistration.vue';

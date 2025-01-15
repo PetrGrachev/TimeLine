@@ -46,11 +46,11 @@
 <script>
 import Textarea from 'primevue/textarea';
 import { getOrg, updateOrg } from '../../api/orgApi';
-import CitySelect from '../../components/CitySelect.vue';
+import CitySelect from '../../components/selects/CitySelect.vue';
 import InputText from 'primevue/inputtext';
 import InputMask from 'primevue/inputmask';
 import Button from 'primevue/button';
-import OrganizationSelect from '../../components/OrganizationSelect.vue'
+import OrganizationSelect from '@/components/selects/OrganizationSelect.vue';
 /* global DG */
 export default {
   name: "OrgProfile",

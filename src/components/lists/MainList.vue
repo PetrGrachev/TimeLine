@@ -24,9 +24,9 @@
 <script>
 //TODO сделать нормальный стиль для сортировки
 import InputGroup from 'primevue/inputgroup';
-import OrganizationList from '@/components/OrganizationList.vue';
-import OrganizationSelect from './OrganizationSelect.vue';
-import { findOrgs } from '../api/userApi';
+import OrganizationList from '@/components/lists/OrganizationList.vue';
+import OrganizationSelect from '@/components/selects/OrganizationSelect.vue';
+import { findOrgs } from '../../api/userApi';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Paginator from 'primevue/paginator';

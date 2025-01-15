@@ -29,7 +29,7 @@ import Toast from 'primevue/toast';
 import { assignWorker, createService, deleteService, getServices, unsignWorker, updateService } from '../../../api/servicesApi';
 import AssignDialog from '../../../components/dialog/AssignDialog.vue';
 import ServiceDialog from '../../../components/dialog/ServiceDialog.vue';
-import EditableServiceCard from '../../../components/EditableServiceCard.vue';
+import EditableServiceCard from '../../../components/cards/EditableServiceCard.vue';
 //TODO сделать нормальный стиль для кнопки +
 export default {
 

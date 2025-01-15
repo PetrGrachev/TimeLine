@@ -9,7 +9,7 @@
 
 <script>
 import Button from 'primevue/button';
-import EmployeeCard from './EmployeeCard.vue';
+import EmployeeCard from '@/components/cards/EmployeeCard.vue';
 
 
 export default {

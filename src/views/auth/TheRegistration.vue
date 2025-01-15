@@ -52,10 +52,10 @@ import InputMask from 'primevue/inputmask';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
 import RadioUserOrg from '@/components/RadioUserOrg.vue';
-import OrganizationSelect from '@/components/OrganizationSelect.vue';
+import OrganizationSelect from '@/components/selects/OrganizationSelect.vue';
 import ConfirmationCodeDialog from '@/components/dialog/ConfirmationCodeDialog.vue';
 import { registerOrg, registerUser } from '../../api/authApi';
-import CitySelect from '../../components/CitySelect.vue';
+import CitySelect from '../../components/selects/CitySelect.vue';
 /* global DG */
 export default {
   components: {

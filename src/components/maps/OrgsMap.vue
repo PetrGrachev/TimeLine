@@ -8,9 +8,9 @@
 </template>
 
 <script>
-import { showMap } from '../api/userApi';
-import { getUserLocation } from '../api/axiosInstance';
-import OrganizationSelect from './OrganizationSelect.vue';
+import { showMap } from '../../api/userApi';
+import { getUserLocation } from '../../api/axiosInstance';
+import OrganizationSelect from '@/components/selects/OrganizationSelect.vue';
 
 
 /* global DG */

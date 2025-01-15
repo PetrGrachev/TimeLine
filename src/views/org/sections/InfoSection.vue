@@ -22,7 +22,7 @@
 
 <script>
 import Toast from 'primevue/toast';
-import OrgTimetable from '../OrgTimetable.vue';
+import OrgTimetable from '@/components/timetable/OrgTimetable.vue';
 
 export default {
   components: {

@@ -17,7 +17,7 @@
 
 <script>
 import Button from 'primevue/button';
-import OrgTimetable from './OrgTimetable.vue';
+import OrgTimetable from '@/components/timetable/OrgTimetable.vue';
 
 export default {
     components: {

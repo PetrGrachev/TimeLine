@@ -16,7 +16,7 @@
 import Toast from 'primevue/toast';
 import { createWorker, deleteWorker, getWorkers, updateWorker } from '../../../api/workersApi';
 import EmployeeDialog from '../../../components/dialog/EmployeeDialog.vue';
-import EditableEmployeeCard from '../../../components/EditableEmployeeCard.vue';
+import EditableEmployeeCard from '../../../components/cards/EditableEmployeeCard.vue';
 //TODO сделать окно с подтверждением
 export default {
     components: {

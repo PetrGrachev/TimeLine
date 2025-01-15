@@ -18,7 +18,7 @@
 
 <script>
 import Toast from 'primevue/toast';
-import RecordsList from '../../components/RecordsList.vue';
+import RecordsList from '../../components/lists/RecordsList.vue';
 import ReviewingDialog from '../../components/dialog/ReviewingDialog.vue';
 import { getRecords } from '../../api/recordsApi';
 export default {

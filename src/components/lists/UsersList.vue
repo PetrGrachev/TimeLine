@@ -49,7 +49,7 @@
 
 <script>
 import Avatar from 'primevue/avatar';
-import { convertTimeToTimeZone, formatDate } from '../utils/utilsDate';
+import { convertTimeToTimeZone, formatDate } from '../../utils/utilsDate';
 
 export default {
   name: 'UsersList',

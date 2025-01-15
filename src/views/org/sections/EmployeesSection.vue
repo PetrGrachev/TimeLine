@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import EmployeeCard from '../EmployeeCard.vue';
-import { getWorkers } from '../../api/workersApi';
+import { getWorkers } from '../../../api/workersApi';
+import EmployeeCard from '@/components/cards/EmployeeCard.vue';
 
 
 export default {

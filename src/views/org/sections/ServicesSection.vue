@@ -17,9 +17,9 @@
 
 <script>
 import BookingDialog from '@/components/dialog/BookingDialog.vue';
-import { getServices } from '../../api/servicesApi';
-import ServiceCard from '../ServiceCard.vue';
 
+import ServiceCard from '@/components/cards/ServiceCard.vue';
+import { getServices } from '../../../api/servicesApi';
 export default {
     props: {
         id: {

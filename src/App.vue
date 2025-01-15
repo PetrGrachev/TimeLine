@@ -14,9 +14,9 @@
 <script>
 import { useRoute } from 'vue-router';
 import { computed } from 'vue';
-import TheNavigation from '@/views/user/TheNavigation.vue';
-import TheOrgNavigation from '@/views/org/TheOrgNavigation.vue';
-import TheFooter from './views/TheFooter.vue';
+import TheNavigation from '@/components/common/TheNavigation.vue';
+import TheOrgNavigation from '@/components/common/TheOrgNavigation.vue';
+import TheFooter from '@/components/common/TheFooter.vue';
 import '@/styles/global.css';
 import '@/styles/themes-override.css';
 import '@/styles/themes.css';
