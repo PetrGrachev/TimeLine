@@ -11,12 +11,7 @@
         <!-- Клиент с аватаркой -->
         <!-- TODO указывать clientAvatar и employeeAvatar в передоваемом массиве -->
         <span class="order-detail">
-          <!-- Если есть аватарка, показываем изображение -->
-          <Avatar v-if="order.user_avatarUrl" :image="order.user_avatarUrl" class="mr-2" size="normal" shape="circle" />
-
-          <!-- Если аватарки нет, показываем первую букву имени -->
-          <Avatar v-else :label="getInitial(order.user_first_name)" :style="getAvatarStyle(order.user_first_name)"
-            class="mr-2" size="normal" shape="circle" />
+          <UserAvatar :avatarUrl="order.user_avatarUrl" :name="order.user_first_name" />
 
           {{ order.user_first_name }} {{ order.user_last_name }}
         </span>
@@ -26,14 +21,7 @@
 
         <!-- Сотрудник с аватаркой -->
         <span class="order-detail">
-          <!-- Если есть аватарка, показываем изображение -->
-          <Avatar v-if="order.employee_avatarUrl" :image="order.employee_avatarUrl" class="mr-2" size="normal"
-            shape="circle" />
-
-          <!-- Если аватарки нет, показываем первую букву имени -->
-          <Avatar v-else :label="getInitial(order.employee_first_name)"
-            :style="getAvatarStyle(order.employee_first_name)" class="mr-2" size="normal" shape="circle" />
-
+          <UserAvatar :avatarUrl="order.employee_avatarUrl" :name="order.employee_first_name" />
           {{ order.employee_first_name }} {{ order.employee_last_name }}
         </span>
 
@@ -48,13 +36,13 @@
 </template>
 
 <script>
-import Avatar from 'primevue/avatar';
 import { convertTimeToTimeZone, formatDate } from '../../utils/utilsDate';
+import UserAvatar from '../UserAvatar.vue';
 
 export default {
   name: 'UsersList',
   components: {
-    Avatar,
+    UserAvatar,
   },
   props: {
     orders: {
@@ -63,31 +51,11 @@ export default {
     },
   },
   methods: {
-    getInitial(name) {
-      if (!name) return 'N';
-      return name.charAt(0).toUpperCase(); // Берем первую букву и делаем её заглавной
-    },
     formatDateForDisplay(date) {
       return formatDate(date);
     },
     convertToTimeZone(time) {
       return convertTimeToTimeZone(time)
-    },
-    getAvatarStyle(name) {
-      const colors = [
-        { backgroundColor: '#A1C4FD', color: '#2A2A2A' }, // Светло-голубой
-        { backgroundColor: '#C3F0CA', color: '#2A2A2A' }, // Мятный
-        { backgroundColor: '#FDE2E4', color: '#2A2A2A' }, // Светло-розовый
-        { backgroundColor: '#FFF1B8', color: '#2A2A2A' }, // Светло-жёлтый
-        { backgroundColor: '#D7D3F5', color: '#2A2A2A' }, // Сиреневый
-        { backgroundColor: '#FFE4C0', color: '#2A2A2A' }, // Персиковый
-      ];
-
-      // Генерируем индекс на основе имени пользователя
-      const index = Math.abs([...name].reduce((acc, char) => acc + char.charCodeAt(0), 0)) % colors.length;
-
-      // Возвращаем соответствующий стиль
-      return colors[index];
     },
   }
 };

@@ -24,10 +24,16 @@ export function downloadMedia(url) {
         url: url
     }
 
-    return axiosInstance.get('/media', { params })
+    return axiosInstance.get('/media', {
+        params: params,
+        responseType: 'blob', // Устанавливаем бинарный тип ответа
+    })
         .then(response => {
             console.log('Файл успешно получен:', response.data);
-            return response.data;
+            return {
+                blob: response.data,
+                type: response.headers['content-type'], // Сохраняем MIME-тип
+            };
         })
         .catch(error => {
             console.error('Ошибка получении файла:', error);

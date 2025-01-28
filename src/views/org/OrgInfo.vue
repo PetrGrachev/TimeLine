@@ -1,7 +1,7 @@
 <template>
   <div class="page-container" v-if="organization">
     <!-- Organization Header -->
-    <header class="header-container">
+    <header class="header-container" :style="headerStyle">
       <div class="header-left">
         <h1>{{ organization.name }}</h1>
       </div>
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { downloadMedia } from '../../api/mediaApi';
 import { useOrganizationStore } from '../../stores/useOrganizationStore';
 import { mapState } from 'pinia';
 //TODO серификация телефона и копирование кнопкой
@@ -37,12 +38,16 @@ export default {
   },
   data() {
     return {
-
+      bannerUrl: '',
     };
   },
   computed: {
 
     ...mapState(useOrganizationStore, ['organization']),
+
+    headerStyle() {
+      return this.bannerUrl ? { backgroundImage: `url(${this.bannerUrl})` } : {};
+    },
   },
   methods: {
     changeSection(section) {
@@ -59,6 +64,28 @@ export default {
 
     // Сохраняем ссылку на данные для локального использования
     this.organization = organizationStore.organization;
+
+    this.$watch(
+      () => organizationStore.organization,
+      (newOrg) => {
+        if (newOrg) {
+          this.organization = newOrg;
+
+          // Загружаем баннер, когда organization обновился
+          if (this.organization.banner) {
+            downloadMedia(this.organization.banner)
+              .then(({ blob, type }) => {
+                const blobUrl = URL.createObjectURL(new Blob([blob], { type })); // Учитываем тип
+                this.bannerUrl = blobUrl; // Устанавливаем Blob URL
+              })
+              .catch(() => {
+                console.error('Ошибка загрузки баннера');
+              });
+          }
+        }
+      },
+      { immediate: true } // Немедленный запуск, если данные уже есть
+    );
   },
   beforeUnmount() {
     const organizationStore = useOrganizationStore();
@@ -109,11 +136,22 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background-image: url('@/assets/facade.webp');
   background-size: cover;
-  background-position: center;
-  color: var(--card-background-color);
+  /* Фон масштабируется, сохраняя пропорции */
+  background-position: center center;
+  /* Центрируем фон */
+  background-repeat: no-repeat;
+  /* Убираем повторение изображения */
   border-bottom: 1px solid var(--border-color);
+  color: var(--card-background-color);
+  min-height: 180px;
+  /* Увеличиваем минимальную высоту для лучшей видимости фона */
+  border-radius: 8px;
+  /* Добавляем закругленные углы */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Легкая тень для выделения */
+  overflow: hidden;
+  /* Избегаем выхода контента за границы */
 }
 
 .header-left h1 {
