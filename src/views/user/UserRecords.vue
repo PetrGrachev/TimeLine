@@ -10,8 +10,8 @@
     <RecordsList :orders="records" @leave-review="leaveReview" @repeat-order="repeatOrder" @cancel-order="cancelOrder"
       @organization-click="goToCompanyInfo" />
 
-    <ReviewingDialog v-model:visible="isReviewDialogVisible" :reviewRating="reviewRating" :reviewText="reviewText"
-      @submit-review="submitReview" />
+    <ReviewingDialog v-model:visible="isReviewDialogVisible" :order="currentOrder" :reviewRating="reviewRating"
+      :reviewText="reviewText" @submit-review="submitReview" />
 
   </div>
 </template>
@@ -21,6 +21,7 @@ import Toast from 'primevue/toast';
 import RecordsList from '../../components/lists/RecordsList.vue';
 import ReviewingDialog from '../../components/dialog/ReviewingDialog.vue';
 import { getRecords } from '../../api/recordsApi';
+import { addFeedback } from '../../api/feedbacksApi';
 export default {
   components: {
     Toast,
@@ -55,15 +56,12 @@ export default {
       // Логика для отмены заказа
       alert("Отменить запись: " + order.name);
     },
-    submitReview() {
-      // Логика для отправки отзыва для конкретного заказа
-      console.log("Отправить отзыв для заказа", this.currentOrder.organization.name, this.reviewRating, this.reviewText);
-      this.isReviewDialogVisible = false;
-      this.reviewRating = null;
-      this.reviewText = '';
-      this.currentOrder = null;
-
-      this.$refs.toast.add({ severity: 'success', summary: 'Успех', detail: 'Отзыв успешно отправлен', life: 3000 });
+    submitReview(text, rating) {
+      addFeedback(text, this.currentOrder.record_id, rating)
+        .then(() => {
+          this.isReviewDialogVisible = false;
+          this.$refs.toast.add({ severity: 'success', summary: 'Успех', detail: 'Отзыв успешно отправлен', life: 3000 });
+        })
     },
     getHistory() {
       this.currentTab = 'history';

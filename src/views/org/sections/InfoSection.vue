@@ -9,7 +9,9 @@
     </div>
     <div class="info-item">
       <i class="fas fa-map-marker-alt"></i>
-      <p>{{ org.address }}, {{ org.city }}</p>
+      <p class="map-link" @click="openMap">
+        {{ org.address }}, {{ org.city }}
+      </p>
     </div>
     <div class="info-item">
       <i class="fas fa-clock"></i>
@@ -49,6 +51,14 @@ export default {
         this.$toast.add({ severity: 'error', summary: 'Ошибка!', detail: 'Не удалось скопировать номер телефона.', life: 3000 });
       });
     },
+    openMap() {
+      if (this.org.lat && this.org.long) {
+        const url = `https://www.google.com/maps?q=${this.org.lat},${this.org.long}`;
+        window.open(url, '_blank'); // Открывает карту в новой вкладке
+      } else {
+        console.error('Координаты не заданы');
+      }
+    },
   },
 };
 </script>
@@ -72,5 +82,15 @@ export default {
 
 .info-item i {
   margin-right: 10px;
+}
+
+.map-link {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.map-link:hover {
+  color: #0056b3;
 }
 </style>

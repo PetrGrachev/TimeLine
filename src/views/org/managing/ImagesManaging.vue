@@ -22,9 +22,9 @@
             <h2>Изображения</h2>
             <p>Добавьте до 5 изображений</p>
             <FileUpload mode="basic" name="photos" accept="image/*" @select="uploadPhoto" :multiple="true" customUpload
-                auto :chooseLabel="'Добавить изображение'" :disabled="photos.length >= 5" />
+                auto :chooseLabel="'Добавить изображение'" :disabled="galleryUrls.length >= 5" />
             <div class="photos-grid">
-                <div v-for="(photo, index) in photos" :key="index" class="photo-card">
+                <div v-for="(photo, index) in galleryUrls" :key="index" class="photo-card">
                     <img :src="photo" alt="Фото организации" class="photo-preview" />
                     <Button label="Удалить" icon="pi pi-trash" class="p-button-danger" @click="deletePhoto(index)" />
                 </div>
@@ -37,7 +37,8 @@
 import Toast from 'primevue/toast';
 import FileUpload from 'primevue/fileupload';
 import Button from 'primevue/button';
-import { uploadMedia } from '../../../api/mediaApi';
+import { deleteMedia, downloadMedia, uploadMedia } from '../../../api/mediaApi';
+import { getOrg } from '../../../api/orgApi';
 
 export default {
     components: {
@@ -47,12 +48,59 @@ export default {
     },
     data() {
         return {
+            org: null,
+            id: 0,
             bannerUrl: null, // URL для баннера
-            photos: [], // Массив для фотографий
+            galleryUrls: [], // Массив для фотографий
         };
     },
-    methods: {
+    mounted() {
+        this.id = localStorage.getItem('id');
+        getOrg(this.id)
+            .then((org) => {
+                this.org = org
+            })
+            .catch(error => {
+                console.error('Ошибка при загрузке организации:', error);
+            });
+        this.$watch(
+            () => this.org,
+            (newOrg) => {
+                if (newOrg) {
+                    this.org = newOrg;
+                    if (this.org.banner) {
+                        downloadMedia(this.org.banner)
+                            .then(({ blob, type }) => {
+                                const blobUrl = URL.createObjectURL(new Blob([blob], { type })); // Учитываем тип
+                                this.bannerUrl = blobUrl; // Устанавливаем Blob URL
+                            })
+                            .catch(() => {
+                                console.error('Ошибка загрузки баннера');
+                            });
+                    }
 
+                    // Загружаем изображения галереи
+                    if (this.org.gallery && this.org.gallery.length) {
+                        Promise.all(
+                            this.org.gallery.map((image) =>
+                                downloadMedia(image).then(({ blob, type }) => {
+                                    return URL.createObjectURL(new Blob([blob], { type }));
+                                })
+                            )
+                        )
+                            .then((urls) => {
+                                this.galleryUrls = urls; // Сохраняем все Blob URL
+                            })
+                            .catch((error) => {
+                                console.error('Ошибка загрузки галереи:', error);
+                            });
+                    }
+                }
+            },
+            { immediate: true } // Немедленный запуск, если данные уже есть
+        );
+    },
+    methods: {
         uploadBanner(event) {
             const id = localStorage.getItem('id');
             const file = event.files[0];
@@ -68,16 +116,25 @@ export default {
 
         },
         deleteBanner() {
-            this.bannerUrl = null;
-            this.$refs.toast.add({ severity: 'info', summary: 'Баннер удалён', life: 3000 });
+            deleteMedia(this.org.banner, "banner")
+                .then(() => {
+                    this.$refs.toast.add({ severity: 'info', summary: 'Баннер удалён', life: 3000 });
+                    this.bannerUrl = null;
+                })
+                .catch(error => {
+                    console.error('Ошибка при удалении изображения:', error);
+                });
+
+
         },
         uploadPhoto(event) {
 
             const files = event.files;
             files.forEach(file => {
-                console.log(this.photos)
-                if (this.photos.length < 5) {
-                    this.photos.push(URL.createObjectURL(file));
+                console.log(this.galleryUrls)
+                if (this.galleryUrls.length < 5) {
+                    uploadMedia("gallery", this.id, file)
+                    this.galleryUrls.push(URL.createObjectURL(file));
                     this.$refs.toast.add({ severity: 'success', summary: 'Изображение  загружено', life: 3000 });
                 } else {
                     this.$refs.toast.add({ severity: 'warn', summary: 'Можно добавить не более 5 изображений', life: 3000 });
@@ -86,8 +143,15 @@ export default {
 
         },
         deletePhoto(index) {
-            this.photos.splice(index, 1);
-            this.$refs.toast.add({ severity: 'info', summary: 'Изображение удалено', life: 3000 });
+            deleteMedia(this.org.gallery[index], "gallery")
+                .then(() => {
+                    this.$refs.toast.add({ severity: 'info', summary: 'Изображение удалено', life: 3000 });
+                    this.galleryUrls.splice(index, 1);
+                })
+                .catch(error => {
+                    console.error('Ошибка при удалении изображения:', error);
+                });
+
         },
     },
 };
