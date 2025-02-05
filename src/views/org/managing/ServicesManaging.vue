@@ -19,6 +19,7 @@
             @update:isVisible="isVisible = $event" @create-service="addService" @update-service="update" />
         <AssignDialog :isVisible="isVisibleAssign" :service="editableService" :isUnsigning="isUnsigning"
             @update:isVisible="isVisibleAssign = $event" @assign="assignEmployee" @unsign="unsignEmployee" />
+
     </div>
 </template>
 
@@ -30,7 +31,6 @@ import { assignWorker, createService, deleteService, getServices, unsignWorker, 
 import AssignDialog from '../../../components/dialog/AssignDialog.vue';
 import ServiceDialog from '../../../components/dialog/ServiceDialog.vue';
 import EditableServiceCard from '../../../components/cards/EditableServiceCard.vue';
-//TODO сделать нормальный стиль для кнопки +
 export default {
 
     components: {

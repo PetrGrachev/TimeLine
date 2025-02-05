@@ -15,16 +15,21 @@
 
         <UserAvatar :avatarUrl="order.employee_avatarUrl" :name="order.employee_first_name" />
 
-        <span class="order-detail">{{ order.employee_first_name }} {{ order.employee_last_name }}</span>
-        <span class="order-detail">{{ formatDateForDisplay(order.date) }} {{ convertToTimezone(order.time) }}</span>
+        <span class="order-detail">
+          {{ order.employee_first_name }} {{ order.employee_last_name }}
+        </span>
+        <span class="order-detail">
+          {{ formatDateForDisplay(order.date) }} {{ convertToTimezone(order.time) }}
+        </span>
         <div class="order-actions">
-          <button @click="handleLeaveReview(order)" class="action-button">
+          <!-- Используем .stop для остановки всплытия события -->
+          <button @click.stop="handleLeaveReview(order)" class="action-button">
             <i class="fas fa-comment"></i> Отзыв
           </button>
-          <button @click="handleRepeatOrder(order)" class="action-button">
+          <button @click.stop="handleRepeatOrder(order)" class="action-button">
             <i class="fas fa-redo-alt"></i> Повторить
           </button>
-          <button @click="handleCancelOrder(order)" class="action-button">
+          <button @click.stop="handleCancelOrder(order)" class="action-button">
             <i class="fas fa-times"></i> Отменить
           </button>
         </div>
