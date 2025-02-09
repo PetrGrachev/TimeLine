@@ -2,6 +2,18 @@
   <Toast ref="toast" />
   <div class="user-profile-container">
     <h2>Редактирование профиля</h2>
+    <div class="avatar-container">
+      <!-- Аватарка пользователя -->
+      <UserAvatar :avatarUrl="user.uuid" :name="user.first_name" class="avatar" />
+
+      <!-- Скрытый input[type="file"], стилизованный как кнопка -->
+      <label class="edit-button">
+        <input type="file" accept="image/*" @change="handlePhotoUpload" class="hidden-upload" />
+        <i class="fas fa-pencil-alt"></i>
+      </label>
+    </div>
+
+
     <form @submit.prevent="handleSave">
       <!-- Имя пользователя -->
       <div class="form-group">
@@ -44,6 +56,8 @@ import InputText from 'primevue/inputtext';
 import InputMask from 'primevue/inputmask';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
+import { uploadMedia } from '../../api/mediaApi';
+import UserAvatar from '../../components/UserAvatar.vue';
 //TODO сделать кнопку Редактировать
 export default {
   name: "UserProfile",
@@ -54,6 +68,7 @@ export default {
     Textarea,
     Button,
     Toast,
+    UserAvatar,
   },
   data() {
     return {
@@ -66,6 +81,7 @@ export default {
         user_id: 0,
       },
       registrationNameError: false,
+      avatarUrl: null,
     };
   },
   mounted() {
@@ -77,6 +93,7 @@ export default {
       const id = localStorage.getItem('id');
       getUser(id).then(user => {
         this.user = user;
+
       })
         .catch(error => {
           console.error("Ошибка ", error.message);
@@ -92,6 +109,23 @@ export default {
     validateRegistrationName() {
       this.registrationNameError = this.user.first_name.length < 3;
     },
+    handlePhotoUpload(event) {
+      const id = localStorage.getItem('id');
+      const file = event.target.files[0];
+      this.avatarUrl = URL.createObjectURL(file);
+      uploadMedia("user", id, file)
+        .then(() => {
+          this.$refs.toast.add({ severity: 'success', summary: 'Аватар загружен', life: 3000 });
+
+        })
+        .catch(error => {
+          console.error('Ошибка при загрузки изображения:', error);
+        });
+    },
+    triggerFileUpload() {
+      // Программное нажатие на скрытый FileUpload
+      this.$refs.fileUploadRef.$el.querySelector('input[type="file"]').click();
+    }
     //isSubmitDisabled(){
     //  return (!this.user.first_name || //TODO добавить валидацию на остальные поля
     //  this.user.first_name.length < 3)
@@ -162,5 +196,54 @@ textarea:focus {
 
 .save-button:hover {
   background-color: #1A6CDB;
+}
+
+.avatar-container {
+  position: relative;
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Чтобы изображение не растягивалось */
+}
+
+/* Полностью скрытый FileUpload */
+.hidden-upload {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+/* Кнопка редактирования (значок карандаша) */
+.edit-button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  background-color: #0F4EB3;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* При наведении кнопка увеличивается */
+.edit-button:hover {
+  background-color: #1A6CDB;
+  transform: scale(1.1);
 }
 </style>

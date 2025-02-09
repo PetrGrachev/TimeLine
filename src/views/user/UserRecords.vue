@@ -62,6 +62,7 @@ export default {
           this.isReviewDialogVisible = false;
           this.$refs.toast.add({ severity: 'success', summary: 'Успех', detail: 'Отзыв успешно отправлен', life: 3000 });
         })
+      this.currentOrder.reviewed = true
     },
     getHistory() {
       this.currentTab = 'history';

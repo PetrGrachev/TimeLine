@@ -23,8 +23,10 @@
         </span>
         <div class="order-actions">
           <!-- Используем .stop для остановки всплытия события -->
-          <button @click.stop="handleLeaveReview(order)" class="action-button">
-            <i class="fas fa-comment"></i> Отзыв
+          <button @click.stop="handleLeaveReview(order)" class="action-button" :class="{ 'reviewed': order.reviewed }"
+            :disabled="order.reviewed">
+            <i :class="order.reviewed ? 'fas fa-check' : 'fas fa-comment'"></i>
+            {{ order.reviewed ? 'Отзыв оставлен' : 'Оставить отзыв' }}
           </button>
           <button @click.stop="handleRepeatOrder(order)" class="action-button">
             <i class="fas fa-redo-alt"></i> Повторить
@@ -153,5 +155,16 @@ export default {
 
 .action-button:hover {
   background-color: #1A6CDB;
+}
+
+.action-button.reviewed {
+  background-color: #28a745;
+  /* Зеленый цвет */
+  cursor: default;
+}
+
+.action-button.reviewed:hover {
+  transform: none;
+  /* Убираем анимацию наведения */
 }
 </style>

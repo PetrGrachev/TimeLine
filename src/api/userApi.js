@@ -129,7 +129,8 @@ export function getUser(id) {
           first_name: response.data.first_name,
           last_name: response.data.last_name,
           telephone: response.data.telephone,
-          user_id: response.data.user_id
+          user_id: response.data.user_id,
+          uuid: response.data.uuid,
         };
 
         return user;

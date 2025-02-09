@@ -3,8 +3,9 @@
     header="Создать нового сотрудника" :style="{ width: '50rem' }">
     <div class="employee-dialog-container">
       <div class="employee-photo-container">
-        <!--<FileUpload mode="basic" chooseLabel="Загрузить фото" customUpload auto @upload="handlePhotoUpload"/>
-          <img v-if="localEmployee.photo" :src="localEmployee.photo" alt="Фото сотрудника" class="employee-photo-preview" />  -->
+        <FileUpload mode="basic" chooseLabel="Загрузить фото" customUpload auto @upload="handlePhotoUpload" />
+        <img v-if="localEmployee.photo" :src="localEmployee.photo" alt="Фото сотрудника"
+          class="employee-photo-preview" />
       </div>
       <div class="employee-form-container">
         <div class="form-group">
@@ -37,7 +38,7 @@
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
-//import FileUpload from 'primevue/fileupload';
+import FileUpload from 'primevue/fileupload';
 //TODO Сделать нормально по визуалу
 export default {
   name: 'EmployeeDialog',
@@ -45,7 +46,7 @@ export default {
     Dialog,
     InputText,
     Button,
-    //FileUpload,
+    FileUpload,
   },
   props: {
     isVisible: {

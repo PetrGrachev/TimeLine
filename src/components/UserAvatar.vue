@@ -1,13 +1,15 @@
 <template>
     <!-- Если есть аватарка, показываем изображение -->
-    <Avatar v-if="avatarUrl" :image="avatarUrl" class="mr-2" size="normal" shape="circle" />
+    <Avatar v-if="avatarUrl" :image="photo" class="avatar" size="normal" shape="circle" />
 
     <!-- Если аватарки нет, показываем первую букву имени -->
-    <Avatar v-else :label="getInitial(name)" :style="getAvatarStyle(name)" class="mr-2" size="normal" shape="circle" />
+    <Avatar v-else :label="getInitial(name)" :style="getAvatarStyle(name)" class="avatar" size="normal"
+        shape="circle" />
 </template>
 
 <script>
 import Avatar from 'primevue/avatar';
+import { downloadMedia } from '../api/mediaApi';
 
 export default {
     components: {
@@ -15,7 +17,7 @@ export default {
     },
     props: {
         avatarUrl: {
-            type: Object,
+            type: String,
             required: true,
         },
         name: {
@@ -23,7 +25,34 @@ export default {
             required: true,
         }
     },
+    data() {
+        return {
+            photo: null,
+        }
+    },
+    mounted() {
+        this.getPhoto()
+    },
+    watch: {
+        avatarUrl(newValue) {
+            if (newValue) {
+                this.getPhoto()
+            }
+        },
+    },
     methods: {
+        getPhoto() {
+            if (this.avatarUrl && this.avatarUrl !== '') {
+                downloadMedia(this.avatarUrl)
+                    .then(({ blob, type }) => {
+                        const blobUrl = URL.createObjectURL(new Blob([blob], { type })); // Учитываем тип
+                        this.photo = blobUrl; // Устанавливаем Blob URL
+                    })
+                    .catch(() => {
+                        console.error('Ошибка загрузки аватара');
+                    });
+            }
+        },
         getInitial(name) {
             if (!name) return 'N';
             return name.charAt(0).toUpperCase(); // Берем первую букву и делаем её заглавной
@@ -48,4 +77,12 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.avatar {
+    overflow: hidden;
+    border: 1px solid #0F4EB3;
+    /* Добавляем окантовку */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Легкая тень */
+}
+</style>
