@@ -2,16 +2,9 @@
   <Toast ref="toast" />
   <div class="user-profile-container">
     <h2>Редактирование профиля</h2>
-    <div class="avatar-container">
-      <!-- Аватарка пользователя -->
-      <UserAvatar :avatarUrl="user.uuid" :name="user.first_name" class="avatar" />
 
-      <!-- Скрытый input[type="file"], стилизованный как кнопка -->
-      <label class="edit-button">
-        <input type="file" accept="image/*" @change="handlePhotoUpload" class="hidden-upload" />
-        <i class="fas fa-pencil-alt"></i>
-      </label>
-    </div>
+    <EditableUserAvatar :uuid="user.uuid" :name="user.first_name" @upload="handlePhotoUpload"
+      @delete="handlePhotoDelete" class="form-avatar" />
 
 
     <form @submit.prevent="handleSave">
@@ -56,8 +49,8 @@ import InputText from 'primevue/inputtext';
 import InputMask from 'primevue/inputmask';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
-import { uploadMedia } from '../../api/mediaApi';
-import UserAvatar from '../../components/UserAvatar.vue';
+import { deleteMedia, uploadMedia } from '../../api/mediaApi';
+import EditableUserAvatar from '../../components/EditableUserAvatar.vue';
 //TODO сделать кнопку Редактировать
 export default {
   name: "UserProfile",
@@ -68,7 +61,7 @@ export default {
     Textarea,
     Button,
     Toast,
-    UserAvatar,
+    EditableUserAvatar,
   },
   data() {
     return {
@@ -109,22 +102,27 @@ export default {
     validateRegistrationName() {
       this.registrationNameError = this.user.first_name.length < 3;
     },
-    handlePhotoUpload(event) {
+    handlePhotoUpload(file) {
       const id = localStorage.getItem('id');
-      const file = event.target.files[0];
       this.avatarUrl = URL.createObjectURL(file);
       uploadMedia("user", id, file)
         .then(() => {
           this.$refs.toast.add({ severity: 'success', summary: 'Аватар загружен', life: 3000 });
-
+          this.loadUserData();
         })
         .catch(error => {
           console.error('Ошибка при загрузки изображения:', error);
         });
     },
-    triggerFileUpload() {
-      // Программное нажатие на скрытый FileUpload
-      this.$refs.fileUploadRef.$el.querySelector('input[type="file"]').click();
+    handlePhotoDelete(uuid) {
+      deleteMedia(uuid, "user")
+        .then(() => {
+          this.$refs.toast.add({ severity: 'info', summary: 'Аватар удален', life: 3000 });
+          this.loadUserData();
+        })
+        .catch(error => {
+          console.error('Ошибка при удалении изображения:', error);
+        });
     }
     //isSubmitDisabled(){
     //  return (!this.user.first_name || //TODO добавить валидацию на остальные поля
@@ -198,52 +196,7 @@ textarea:focus {
   background-color: #1A6CDB;
 }
 
-.avatar-container {
-  position: relative;
-  display: inline-block;
-  width: 100px;
-  height: 100px;
-}
-
-.avatar {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  /* Чтобы изображение не растягивалось */
-}
-
-/* Полностью скрытый FileUpload */
-.hidden-upload {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-  visibility: hidden;
-}
-
-/* Кнопка редактирования (значок карандаша) */
-.edit-button {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 30px;
-  height: 30px;
-  background-color: #0F4EB3;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  font-size: 14px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-/* При наведении кнопка увеличивается */
-.edit-button:hover {
-  background-color: #1A6CDB;
-  transform: scale(1.1);
+.form-avatar {
+  margin-bottom: 15px;
 }
 </style>

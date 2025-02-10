@@ -2,11 +2,6 @@
   <Dialog :visible="isVisible" @update:visible="$emit('update:isVisible', $event)" modal
     header="Создать нового сотрудника" :style="{ width: '50rem' }">
     <div class="employee-dialog-container">
-      <div class="employee-photo-container">
-        <FileUpload mode="basic" chooseLabel="Загрузить фото" customUpload auto @upload="handlePhotoUpload" />
-        <img v-if="localEmployee.photo" :src="localEmployee.photo" alt="Фото сотрудника"
-          class="employee-photo-preview" />
-      </div>
       <div class="employee-form-container">
         <div class="form-group">
           <label for="position" class="form-label">Должность:</label>
@@ -38,7 +33,6 @@
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
-import FileUpload from 'primevue/fileupload';
 //TODO Сделать нормально по визуалу
 export default {
   name: 'EmployeeDialog',
@@ -46,7 +40,6 @@ export default {
     Dialog,
     InputText,
     Button,
-    FileUpload,
   },
   props: {
     isVisible: {
@@ -87,16 +80,6 @@ export default {
     },
   },
   methods: {
-    handlePhotoUpload(event) {
-      const file = event.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.localEmployee.photo = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    },
     handleCreateEmployee() {
       if (this.isEditing) {
         this.$emit('update-employee', this.localEmployee);

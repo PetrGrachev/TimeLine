@@ -32,6 +32,7 @@ export function getWorkers(org_id, limit, page) {
           first_name: worker.worker_info.first_name,
           last_name: worker.worker_info.last_name,
           position: worker.worker_info.position,
+          uuid: worker.worker_info.uuid,
         }));
         return {
           workers: workers,

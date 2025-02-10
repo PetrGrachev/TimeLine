@@ -1,6 +1,8 @@
 <template>
   <div class="employee-card">
-    <!-- TODO сделать обработку фото <img :src="employee.photo" alt="Фото сотрудника" class="employee-photo">-->
+    <slot name="avatar">
+      <UserAvatar :avatarUrl="employee.uuid" :name="employee.first_name" class="avatar" />
+    </slot>
     <div class="employee-info">
       <div class="employee-info-item">
         <p><strong>Должность:</strong>{{ employee.position }}</p>
@@ -22,7 +24,11 @@
 </template>
 
 <script>
+import UserAvatar from "../UserAvatar.vue"
 export default {
+  components: {
+    UserAvatar,
+  },
   props: {
     employee: {
       type: Object,
@@ -40,38 +46,54 @@ export default {
 /* Employee card */
 .employee-card {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  /* Выравнивание по верхнему краю */
   border: 1px solid var(--border-color);
-  padding: 10px;
+  padding: 16px;
   margin-top: 10px;
   border-radius: 8px;
   background-color: var(--transparent-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  /* Карточка теперь во всю ширину */
 }
 
-.employee-photo {
-  width: 80px;
-  height: 80px;
+/* Увеличенная аватарка */
+.avatar {
+  width: 100px;
+  /* Сделали еще больше */
+  height: 100px;
   border-radius: 50%;
-  margin-right: 15px;
+  border: 3px solid var(--primary-color);
   object-fit: cover;
+  margin-right: 20px;
+  /* Отступ между аватаркой и информацией */
 }
 
+/* Информация о сотруднике */
+.employee-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  width: 100%;
+  /* Информация занимает всю ширину */
+}
+
+/* Элементы информации */
 .employee-info-item {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   align-items: flex-start;
 }
 
+/* Кнопки действий */
 .employee-actions {
   margin-top: 16px;
-  /* Расстояние между карточкой и кнопками */
   display: flex;
-  /* Выравнивание кнопок по горизонтали */
   gap: 8px;
-  /* Расстояние между кнопками */
-  justify-content: center;
-  /* Центрирование кнопок */
+  justify-content: flex-start;
+  /* Выравнивание кнопок по левому краю */
 }
 </style>
