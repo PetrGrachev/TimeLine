@@ -87,22 +87,23 @@ export default {
       city: '',
     };
   },
-  mounted() {
-    this.loadMapScript();
-    this.$nextTick(() => {
-      this.initializeMap();
-    });
-  },
   watch: {
-    isOrganization(newVal) {
-      if (newVal) {
+    isOrganization(newValue) {
+      if (newValue) {
+        // Ждем, когда элемент с id="map" появится в DOM
         this.$nextTick(() => {
-          this.initializeMap();
+          this.loadMapScript()
+            .then(() => {
+              this.initializeMap();
+            })
+            .catch(error => {
+              console.error('Ошибка загрузки скрипта карты:', error);
+            });
         });
       }
-
     }
   },
+
   computed: {
     isSubmitDisabled() {
       return (
@@ -198,7 +199,7 @@ export default {
         this.map.remove();
         this.map = null;
       }
-      this.mapInitialized = true;
+
       DG.then(() => {
         this.map = DG.map('map', {
           center: [42.98306, 47.50462], // Центр карты (Махачкала)

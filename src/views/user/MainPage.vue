@@ -87,7 +87,8 @@ export default {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s;
-  background-color: var(--input-background-color);
+  background-color: var(--background-color);
+  color: var(--text-color);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -98,6 +99,7 @@ export default {
 
 .top-nav button:hover {
   background-color: var(--button-hover);
+  color: var(--text-color);
 }
 
 .organization-map {

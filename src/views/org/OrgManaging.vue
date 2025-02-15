@@ -1,10 +1,14 @@
 <template>
     <div class="order-history">
         <nav class="top-nav">
-            <button @click="changeSection('EmployeeManaging')">Cотрудники</button>
-            <button @click="changeSection('ServicesManaging')">Услуги</button>
-            <button @click="changeSection('ScheduleManaging')">Расписание</button>
-            <button @click="changeSection('ImagesManaging')">Изображения</button>
+            <button @click="changeSection('EmployeeManaging')"
+                :class="{ active: currentTab === 'EmployeeManaging' }">Cотрудники</button>
+            <button @click="changeSection('ServicesManaging')"
+                :class="{ active: currentTab === 'ServicesManaging' }">Услуги</button>
+            <button @click="changeSection('ScheduleManaging')"
+                :class="{ active: currentTab === 'ScheduleManaging' }">Расписание</button>
+            <button @click="changeSection('ImagesManaging')"
+                :class="{ active: currentTab === 'ImagesManaging' }">Изображения</button>
         </nav>
         <router-view />
     </div>
@@ -15,11 +19,14 @@
 <script>
 
 export default {
-    components: {
-
+    data() {
+        return {
+            currentTab: 'EmployeeManaging',
+        }
     },
     methods: {
         changeSection(section) {
+            this.currentTab = section;
             const routeName = section.charAt(0).toUpperCase() + section.slice(1);
             this.$router.push({ name: routeName }); // Навигация через this.$router
         },

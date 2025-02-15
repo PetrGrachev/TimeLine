@@ -264,4 +264,18 @@ export default {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
+.top-nav {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  /* Зазор между select и картой */
+}
+
+.custom-select {
+  margin-right: 16px;
+  /* Отступ справа от select */
+  width: 200px;
+  /* Опционально: задает фиксированную ширину */
+}
 </style>
