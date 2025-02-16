@@ -31,8 +31,8 @@ export default {
     const route = useRoute();
 
     const excludedRoutes = ['Login', 'RegistrationUser', 'RegistrationOrg', 'NotFound'];
-    const userRoutes = ['MainPage', 'UserProfile', 'TheSettings', 'UserRecords', 'OrgInfo', 'Info', 'Services', 'Employees', 'Images', 'Reviews', 'MainList', 'OrgsMap']; // Добавьте свои маршруты
-    const orgRoutes = ['OrgMainPage', 'OrgProfile', 'TheOrgSettings', 'OrgManaging', 'OrgStatistics', 'EmployeeManaging', 'ServicesManaging', 'ScheduleManaging', 'ImagesManaging'];
+    const userRoutes = ['MainPage', 'UserProfile', 'TheSettings', 'UserRecords', 'OrgInfo', 'Info', 'Services', 'Employees', 'Images', 'Reviews', 'MainList', 'OrgsMap', 'UserReviews']; // Добавьте свои маршруты
+    const orgRoutes = ['OrgMainPage', 'OrgProfile', 'TheOrgSettings', 'OrgManaging', 'OrgStatistics', 'EmployeeManaging', 'ServicesManaging', 'ScheduleManaging', 'ImagesManaging', 'OrgReviews'];
 
     const showNavigation = computed(() => !excludedRoutes.includes(route.name));
     const showUserNavigation = computed(() => showNavigation.value && userRoutes.includes(route.name));

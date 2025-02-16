@@ -30,6 +30,8 @@ import EmployeeManaging from '../views/org/managing/EmployeeManaging.vue';
 import ServicesManaging from '../views/org/managing/ServicesManaging.vue';
 import ScheduleManaging from '../views/org/managing/ScheduleManaging.vue';
 import ImagesManaging from '../views/org/managing/ImagesManaging.vue';
+import OrgReviews from '../views/org/OrgReviews.vue';
+import UserReviews from '../views/user/UserReviews.vue';
 const routes = [
   {
     path: "/auth",
@@ -84,6 +86,11 @@ const routes = [
     path: '/user/profile',
     name: 'UserProfile',
     component: UserProfile,
+  },
+  {
+    path: '/user/reviews',
+    name: 'UserReviews',
+    component: UserReviews,
   },
   {
     path: '/user/settings',
@@ -184,6 +191,11 @@ const routes = [
     path: '/org/statistics',
     name: 'OrgStatistics',
     component: OrgStatistics,
+  },
+  {
+    path: '/org/reviews',
+    name: 'OrgReviews',
+    component: OrgReviews,
   },
   {
     path: '/:catchAll(.*)',

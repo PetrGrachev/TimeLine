@@ -2,12 +2,27 @@
   <!-- Sidebar Navigation at the Top -->
   <aside class="sidebar top-sidebar">
     <ul class="sidebar-menu">
-      <li class="menu-item" @click="goToMyRecords">Записи</li>
-      <li class="menu-item" @click="goToOrgProfile">Профиль организации</li>
-      <li class="menu-item" @click="goToSchedule">Управление</li>
-      <li class="menu-item" @click="goToStatistics">Статистика</li>
-      <li class="menu-item" @click="goToSettings">Настройки</li>
-      <li class="menu-item" @click="goToLogin">Выйти</li>
+      <li class="menu-item" @click="goToMyRecords">
+        <i class="fas fa-calendar-alt"></i> Записи
+      </li>
+      <li class="menu-item" @click="goToOrgProfile">
+        <i class="fas fa-user"></i> Профиль
+      </li>
+      <li class="menu-item" @click="goToSchedule">
+        <i class="fas fa-cogs"></i> Управление
+      </li>
+      <li class="menu-item" @click="goToStatistics">
+        <i class="fas fa-chart-bar"></i> Статистика
+      </li>
+      <li class="menu-item" @click="goToReviews">
+        <i class="fas fa-comments"></i> Отзывы
+      </li>
+      <li class="menu-item" @click="goToSettings">
+        <i class="fas fa-cog"></i> Настройки
+      </li>
+      <li class="menu-item" @click="goToLogin">
+        <i class="fas fa-sign-out-alt"></i> Выйти
+      </li>
     </ul>
   </aside>
 </template>
@@ -34,7 +49,10 @@ export default {
     },
     goToLogin() {
       this.$router.push({ name: 'LoginForm' });
-    }
+    },
+    goToReviews() {
+      this.$router.push({ name: 'OrgReviews' });
+    },
 
   }
 };

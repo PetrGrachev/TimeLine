@@ -1,12 +1,25 @@
 <template>
-  <!-- Sidebar Navigation at the Top -->
+  <!-- Навигационная панель -->
   <aside class="sidebar top-sidebar">
     <ul class="sidebar-menu">
-      <li class="menu-item" @click="goToMain">Записаться</li>
-      <li class="menu-item" @click="goToMyRecords">Мои записи</li>
-      <li class="menu-item" @click="goToProfile">Мой профиль</li>
-      <li class="menu-item" @click="goToSettings">Настройки</li>
-      <li class="menu-item" @click="goToLogin">Выйти</li>
+      <li class="menu-item" @click="goToMain">
+        <i class="fas fa-calendar-plus"></i> Записаться
+      </li>
+      <li class="menu-item" @click="goToMyRecords">
+        <i class="fas fa-calendar-check"></i> Мои записи
+      </li>
+      <li class="menu-item" @click="goToProfile">
+        <i class="fas fa-user"></i> Мой профиль
+      </li>
+      <li class="menu-item" @click="goToReviews">
+        <i class="fas fa-comments"></i> Отзывы
+      </li>
+      <li class="menu-item" @click="goToSettings">
+        <i class="fas fa-cog"></i> Настройки
+      </li>
+      <li class="menu-item" @click="goToLogin">
+        <i class="fas fa-sign-out-alt"></i> Выйти
+      </li>
     </ul>
   </aside>
 </template>
@@ -30,8 +43,10 @@ export default {
     },
     goToLogin() {
       this.$router.push({ name: 'Login' });
-    }
-
+    },
+    goToReviews() {
+      this.$router.push({ name: 'UserReviews' });
+    },
   }
 };
 </script>

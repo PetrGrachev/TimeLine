@@ -8,6 +8,9 @@
 
         <!-- Текст отзыва -->
         <p class="review-feedback">{{ review.feedback }}</p>
+        <div class="review-actions">
+            <slot name="actions"></slot>
+        </div>
     </div>
 </template>
 
@@ -72,5 +75,24 @@ export default {
     margin-top: 10px;
     text-align: justify;
     /* Выравнивание текста */
+}
+
+.review-actions {
+    margin-top: 10px;
+    /* Отступ сверху, чтобы кнопки были ниже текста */
+    margin-left: 10px;
+    /* Небольшой зазор слева */
+}
+
+.review-actions {
+    margin-top: 10px;
+    /* Отступ сверху, чтобы кнопки были ниже текста */
+    text-align: left;
+    /* Выравниваем содержимое (кнопки) по левому краю */
+}
+
+.review-actions>* {
+    margin-right: 10px;
+    /* Отступ между кнопками */
 }
 </style>
