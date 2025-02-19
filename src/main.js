@@ -33,11 +33,15 @@ const themeMixin = {
     const savedTheme = localStorage.getItem('theme');
     const theme = savedTheme || 'light'; // Устанавливаем светлую тему по умолчанию
     document.body.setAttribute('data-theme', theme);
+    if (theme === 'dark') {
+      document.documentElement.classList.toggle('my-app-dark');
+    }
   },
   methods: {
     setTheme(theme) {
       document.body.setAttribute('data-theme', theme);
       localStorage.setItem('theme', theme);
+
     }
   }
 };

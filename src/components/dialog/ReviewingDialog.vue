@@ -34,10 +34,6 @@ export default {
       type: String,
       default: '',
     },
-    order: {
-      type: Object,
-      required: true,
-    },
   },
   data() {
     return {

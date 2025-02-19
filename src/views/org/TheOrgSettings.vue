@@ -27,6 +27,7 @@ export default {
       const theme = this.isDarkTheme ? 'dark' : 'light';
       document.body.setAttribute('data-theme', theme);
       localStorage.setItem('theme', theme);
+      document.documentElement.classList.toggle('my-app-dark');
     }
   }
 };

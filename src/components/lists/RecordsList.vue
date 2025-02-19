@@ -22,18 +22,9 @@
           {{ formatDateForDisplay(order.date) }} {{ convertToTimezone(order.time) }}
         </span>
         <div class="order-actions">
-          <!-- Используем .stop для остановки всплытия события -->
-          <button @click.stop="handleLeaveReview(order)" class="action-button" :class="{ 'reviewed': order.reviewed }"
-            :disabled="order.reviewed">
-            <i :class="order.reviewed ? 'fas fa-check' : 'fas fa-comment'"></i>
-            {{ order.reviewed ? 'Отзыв оставлен' : 'Оставить отзыв' }}
-          </button>
-          <button @click.stop="handleRepeatOrder(order)" class="action-button">
-            <i class="fas fa-redo-alt"></i> Повторить
-          </button>
-          <button @click.stop="handleCancelOrder(order)" class="action-button">
-            <i class="fas fa-times"></i> Отменить
-          </button>
+          <slot name="actions" :order="order"></slot>
+
+
         </div>
       </li>
     </ul>
@@ -59,15 +50,8 @@ export default {
     },
   },
   methods: {
-    handleLeaveReview(order) {
-      this.$emit('leave-review', order);
-    },
-    handleRepeatOrder(order) {
-      this.$emit('repeat-order', order);
-    },
-    handleCancelOrder(order) {
-      this.$emit('cancel-order', order);
-    },
+
+
     formatDateForDisplay(date) {
       return formatDate(date);
     },

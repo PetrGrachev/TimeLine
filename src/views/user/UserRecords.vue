@@ -7,8 +7,16 @@
       <button @click="getHistory" :class="{ active: currentTab === 'history' }">История</button>
     </nav>
 
-    <RecordsList :orders="records" @leave-review="leaveReview" @repeat-order="repeatOrder" @cancel-order="cancelOrder"
-      @organization-click="goToCompanyInfo" />
+    <div v-if="currentTab === 'records'">
+      <FreshRecordsList :orders="records" @leave-review="leaveReview" @repeat-order="repeatOrder"
+        @cancel-order="cancelOrder" @organization-click="goToCompanyInfo" />
+    </div>
+
+    <div v-if="currentTab === 'history'">
+      <HistoryRecordsList :orders="records" @leave-review="leaveReview" @repeat-order="repeatOrder"
+        @cancel-order="cancelOrder" @organization-click="goToCompanyInfo" />
+    </div>
+
 
     <ReviewingDialog v-model:visible="isReviewDialogVisible" :reviewRating="reviewRating" :reviewText="reviewText"
       @submit-review="submitReview" />
@@ -18,15 +26,17 @@
 
 <script>
 import Toast from 'primevue/toast';
-import RecordsList from '../../components/lists/RecordsList.vue';
 import ReviewingDialog from '../../components/dialog/ReviewingDialog.vue';
 import { getRecords } from '../../api/recordsApi';
 import { addFeedback } from '../../api/feedbacksApi';
+import HistoryRecordsList from '../../components/lists/HistoryRecordsList.vue';
+import FreshRecordsList from '../../components/lists/FreshRecordsList.vue';
 export default {
   components: {
     Toast,
-    RecordsList,
-    ReviewingDialog
+    ReviewingDialog,
+    HistoryRecordsList,
+    FreshRecordsList,
   },
 
   data() {
@@ -66,6 +76,7 @@ export default {
     },
     getHistory() {
       this.currentTab = 'history';
+      this.records = null;
       const id = localStorage.getItem('id');
       getRecords(id, false, false)
         .then((records) => {
@@ -76,6 +87,7 @@ export default {
         });
     },
     getFutureRecords() {
+      this.records = null;
       this.currentTab = 'records';
       const id = localStorage.getItem('id');
       getRecords(id, false, true)
