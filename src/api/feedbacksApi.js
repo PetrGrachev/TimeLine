@@ -51,3 +51,43 @@ export function addFeedback(feedback, record_id, stars) {
             }
         });
 }
+
+export function deleteFeedback(record_id) {
+    const url = `/records/feedbacks/info`
+    const params = { record_id: record_id }
+    return axiosInstance.delete(url, { params })
+        .then(response => {
+            console.log("Успешный ответ:", response.data);
+
+        })
+        .catch(error => {
+            console.error('Ошибка получения данных', error);
+        });
+}
+
+export function updateFeedback(feedback, record_id, stars) {
+
+    const data = {
+        feedback: feedback,
+        record_id: Number(record_id),
+        stars: Number(stars)
+    };
+
+    const url = `/records/feedbacks`;
+
+    return axiosInstance.put(url, data)
+        .then(response => {
+            if (response.status === 200) {
+                console.log("Успешный ответ:", response.data);
+            }
+        })
+        .catch(error => {
+            if (error.response && error.response.status === 400) {
+                console.log("Ошибка 400:", error.response.data);
+                throw new Error(error.response.data);
+            } else {
+                console.log("Ошибка:", error.message);
+                throw new Error("Произошла ошибка запроса");
+            }
+        });
+}

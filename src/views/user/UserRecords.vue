@@ -10,8 +10,8 @@
     <RecordsList :orders="records" @leave-review="leaveReview" @repeat-order="repeatOrder" @cancel-order="cancelOrder"
       @organization-click="goToCompanyInfo" />
 
-    <ReviewingDialog v-model:visible="isReviewDialogVisible" :order="currentOrder" :reviewRating="reviewRating"
-      :reviewText="reviewText" @submit-review="submitReview" />
+    <ReviewingDialog v-model:visible="isReviewDialogVisible" :reviewRating="reviewRating" :reviewText="reviewText"
+      @submit-review="submitReview" />
 
   </div>
 </template>
