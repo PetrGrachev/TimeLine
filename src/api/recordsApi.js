@@ -34,17 +34,24 @@ export function getRecords(id, isOrg, fresh) {
                 // Преобразуем ответ в нужную структуру
                 const records = response.data.record_list.map(record => ({
                     record_id: record.record_id,
-                    name: record.org.name,
                     reviewed: record.reviewed,
-                    type: record.org.type,
+
+                    name: record.org.info.name,
+                    type: record.org.info.type,
+                    org_id: record.org.id,
+
                     service: record.service.name,
                     cost: record.service.cost,
+
                     employee_first_name: record.worker.first_name,
                     employee_last_name: record.worker.last_name,
                     employee_uuid: record.worker.uuid,
+
                     user_first_name: record.user.first_name,
                     user_last_name: record.user.last_name,
-                    user_uuid: record.worker.uuid,
+                    user_id: record.user.id,
+                    user_uuid: record.user.uuid,
+
                     date: record.slot.date,
                     time: record.slot.begin,
                 }));

@@ -9,9 +9,8 @@
     <ul class="order-history-list">
       <li v-for="order in orders" :key="order.record_id" class="order-item">
         <!-- Клиент с аватаркой -->
-        <!-- TODO указывать clientAvatar и employeeAvatar в передоваемом массиве -->
         <span class="order-detail">
-          <UserAvatar :avatarUrl="order.user_avatarUrl" :name="order.user_first_name" />
+          <UserAvatar :avatarUrl="order.user_uuid" :name="order.user_first_name" />
 
           {{ order.user_first_name }} {{ order.user_last_name }}
         </span>
@@ -21,7 +20,7 @@
 
         <!-- Сотрудник с аватаркой -->
         <span class="order-detail">
-          <UserAvatar :avatarUrl="order.employee_avatarUrl" :name="order.employee_first_name" />
+          <UserAvatar :avatarUrl="order.employee_uuid" :name="order.employee_first_name" />
           {{ order.employee_first_name }} {{ order.employee_last_name }}
         </span>
 

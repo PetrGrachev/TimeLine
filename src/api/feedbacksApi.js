@@ -17,6 +17,12 @@ export function getFeedback(limit, page, record_id, org_id, user_id) {
                 feedback_id: feedback.feedback_id,
                 record_id: feedback.record_id,
                 stars: feedback.stars,
+                service_name: feedback.service_name,
+                worker_first_name: feedback.worker_first_name,
+                worker_last_name: feedback.worker_last_name,
+                user_first_name: feedback.user_first_name,
+                user_last_name: feedback.user_last_name,
+                record_date: feedback.record_date,
             }));
             return feedbacks;
         })

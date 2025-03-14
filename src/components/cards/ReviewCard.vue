@@ -3,11 +3,14 @@
         <!-- Рейтинг -->
         <div class="review-header">
             <Rating v-model="localStars" :stars="5" cancel="false" readonly class="review-rating" />
-            <p class="review-author">Имя Фамилия</p>
+            <p class="review-author">{{ review.user_first_name }} {{ review.user_last_name }}</p>
         </div>
-
+        <p class="review-service">{{ review.service_name }}, {{ review.worker_first_name }} {{ review.worker_last_name
+            }}
+        </p>
         <!-- Текст отзыва -->
         <p class="review-feedback">{{ review.feedback }}</p>
+        <p class="review-date">{{ review.record_date }}</p>
         <div class="review-actions">
             <slot name="actions"></slot>
         </div>
@@ -69,10 +72,30 @@ export default {
 
 .review-feedback {
     font-size: 1rem;
+    color: var(--text-color);
+    line-height: 1.6;
+    /* Для удобного чтения */
+    margin-top: 10px;
+    text-align: justify;
+    /* Выравнивание текста */
+}
+
+.review-date {
+    font-size: 0.9rem;
     color: var(--text-color-secondary);
     line-height: 1.6;
     /* Для удобного чтения */
     margin-top: 10px;
+    text-align: justify;
+    /* Выравнивание текста */
+}
+
+.review-service {
+    font-size: 0.9rem;
+    color: var(--text-color-secondary);
+    line-height: 1.6;
+    /* Для удобного чтения */
+    margin-top: -20px;
     text-align: justify;
     /* Выравнивание текста */
 }

@@ -13,7 +13,7 @@
         <span class="order-detail">{{ order.name }}</span>
         <span class="order-detail">{{ order.service }}</span>
 
-        <UserAvatar :avatarUrl="order.employee_avatarUrl" :name="order.employee_first_name" />
+        <UserAvatar :avatarUrl="order.employee_uuid" :name="order.employee_first_name" />
 
         <span class="order-detail">
           {{ order.employee_first_name }} {{ order.employee_last_name }}
