@@ -8,7 +8,7 @@
       <span class="column-title">Действия</span>
     </div>
     <ul class="order-history-list">
-      <li v-for="order in orders" :key="order.id" class="order-item" @click="$emit('organization-click', order)">
+      <li v-for="order in orders" :key="order.id" class="order-item" @click="$emit('org-click', Number(order.org_id))">
         <img :src="require(`@/assets/${order.type}-icon.png`)" alt="icon" class="organization-icon" />
         <span class="order-detail">{{ order.name }}</span>
         <span class="order-detail">{{ order.service }}</span>

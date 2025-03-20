@@ -9,10 +9,13 @@
     <ul class="order-history-list">
       <li v-for="order in orders" :key="order.record_id" class="order-item">
         <!-- Клиент с аватаркой -->
+
         <span class="order-detail">
           <UserAvatar :avatarUrl="order.user_uuid" :name="order.user_first_name" />
+          <UserDetails :userId="order.user_id">
+            {{ order.user_first_name }} {{ order.user_last_name }}
+          </UserDetails>
 
-          {{ order.user_first_name }} {{ order.user_last_name }}
         </span>
 
         <!-- Услуга -->
@@ -36,12 +39,14 @@
 
 <script>
 import { convertTimeToTimeZone, formatDate } from '../../utils/utilsDate';
+import UserDetails from '../dialog/UserDetails.vue';
 import UserAvatar from '../UserAvatar.vue';
 
 export default {
   name: 'UsersList',
   components: {
     UserAvatar,
+    UserDetails,
   },
   props: {
     orders: {

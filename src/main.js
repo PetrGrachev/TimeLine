@@ -7,6 +7,7 @@ import PrimeVue from 'primevue/config';
 import { MyPreset } from './styles/mytheme'
 import ToastService from 'primevue/toastservice';
 import { setRouter } from '@/api/errorHandler';
+import Tooltip from 'primevue/tooltip';
 setRouter(router);
 
 const app = createApp(App);
@@ -16,6 +17,7 @@ app.use(pinia);
 
 app.use(router); // Подключите роутер к приложению
 app.use(ToastService);
+app.directive('tooltip', Tooltip);
 app.use(PrimeVue, {
   // Default theme configuration
   theme: {

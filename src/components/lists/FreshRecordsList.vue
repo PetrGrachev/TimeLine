@@ -1,5 +1,5 @@
 <template>
-    <RecordsList :orders="orders">
+    <RecordsList :orders="orders" @org-click="orgClick">
         <template #actions="{ order }">
             <button @click.stop="handleCancelOrder(order)" class="action-button">
                 <i class="fas fa-times"></i> Отменить
@@ -25,6 +25,9 @@ export default {
         handleCancelOrder(order) {
             this.$emit('cancel-order', order);
         },
+        orgClick(org_id) {
+            this.$emit('org-click', org_id);
+        }
     }
 }
 </script>

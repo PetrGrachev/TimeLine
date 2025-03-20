@@ -9,12 +9,12 @@
 
     <div v-if="currentTab === 'records'">
       <FreshRecordsList :orders="records" @leave-review="leaveReview" @repeat-order="repeatOrder"
-        @cancel-order="cancelOrder" @organization-click="goToCompanyInfo" />
+        @cancel-order="cancelOrder" @org-click="goToCompanyInfo" />
     </div>
 
     <div v-if="currentTab === 'history'">
       <HistoryRecordsList :orders="records" @leave-review="leaveReview" @repeat-order="repeatOrder"
-        @cancel-order="cancelOrder" @organization-click="goToCompanyInfo" />
+        @cancel-order="cancelOrder" @org-click="goToCompanyInfo" />
     </div>
 
 
@@ -98,9 +98,8 @@ export default {
           console.error("Ошибка загрузки records:", error);
         });
     },
-    goToCompanyInfo(record) {
-      //TODO сделать переход на страницу организации
-      console.log(record)
+    goToCompanyInfo(org_id) {
+      this.$router.push({ name: 'OrgInfo', params: { id: org_id } });
     },
   },
 };

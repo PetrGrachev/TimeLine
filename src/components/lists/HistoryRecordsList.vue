@@ -1,5 +1,5 @@
 <template>
-    <RecordsList :orders="orders">
+    <RecordsList :orders="orders" @org-click="orgClick">
         <template #actions="{ order }">
             <button @click.stop="handleLeaveReview(order)" class="action-button" :class="{ 'reviewed': order.reviewed }"
                 :disabled="order.reviewed">
@@ -33,6 +33,9 @@ export default {
         handleRepeatOrder(order) {
             this.$emit('repeat-order', order);
         },
+        orgClick(org_id) {
+            this.$emit('org-click', org_id);
+        }
     }
 }
 </script>
