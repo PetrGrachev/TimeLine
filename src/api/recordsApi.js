@@ -97,3 +97,29 @@ export function addRecord(org_id, service_id, slot_id, user_id, worker_id) {
             }
         });
 }
+
+export function cancelRecord(record_id, reason) {
+
+    const data = {
+        record_id: Number(record_id),
+        reason: reason,
+    };
+    // Формирование URL с использованием id
+    const url = `/records/info/${record_id}`;
+
+    return axiosInstance.put(url, data)
+        .then(response => {
+            if (response.status === 200) {
+                console.log("Успешный ответ:", response.data);
+            }
+        })
+        .catch(error => {
+            if (error.response && error.response.status === 400) {
+                console.log("Ошибка 400:", error.response.data);
+                throw new Error(error.response.data);
+            } else {
+                console.log("Ошибка:", error.message);
+                throw new Error("Произошла ошибка запроса");
+            }
+        });
+}

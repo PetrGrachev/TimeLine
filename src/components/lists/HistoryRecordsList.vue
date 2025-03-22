@@ -6,9 +6,6 @@
                 <i :class="order.reviewed ? 'fas fa-check' : 'fas fa-comment'"></i>
                 {{ order.reviewed ? 'Отзыв оставлен' : 'Оставить отзыв' }}
             </button>
-            <button @click.stop="handleRepeatOrder(order)" class="action-button">
-                <i class="fas fa-redo-alt"></i> Повторить
-            </button>
         </template>
     </RecordsList>
 </template>
@@ -29,9 +26,6 @@ export default {
     methods: {
         handleLeaveReview(order) {
             this.$emit('leave-review', order);
-        },
-        handleRepeatOrder(order) {
-            this.$emit('repeat-order', order);
         },
         orgClick(org_id) {
             this.$emit('org-click', org_id);

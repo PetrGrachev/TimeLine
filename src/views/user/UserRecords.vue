@@ -21,22 +21,25 @@
     <ReviewingDialog v-model:visible="isReviewDialogVisible" :reviewRating="reviewRating" :reviewText="reviewText"
       @submit-review="submitReview" />
 
+    <CancellationDialog v-model:visible="isCancellationDialogVisible" @submit="submitCancellation" />
   </div>
 </template>
 
 <script>
 import Toast from 'primevue/toast';
 import ReviewingDialog from '../../components/dialog/ReviewingDialog.vue';
-import { getRecords } from '../../api/recordsApi';
+import { cancelRecord, getRecords } from '../../api/recordsApi';
 import { addFeedback } from '../../api/feedbacksApi';
 import HistoryRecordsList from '../../components/lists/HistoryRecordsList.vue';
 import FreshRecordsList from '../../components/lists/FreshRecordsList.vue';
+import CancellationDialog from '../../components/dialog/CancellationDialog.vue';
 export default {
   components: {
     Toast,
     ReviewingDialog,
     HistoryRecordsList,
     FreshRecordsList,
+    CancellationDialog,
   },
 
   data() {
@@ -47,6 +50,7 @@ export default {
       reviewRating: null,
       reviewText: '',
       currentOrder: null,
+      isCancellationDialogVisible: false,
     };
   },
   mounted() {
@@ -58,13 +62,20 @@ export default {
       this.currentOrder = order;
       this.isReviewDialogVisible = true;
     },
-    repeatOrder(order) {
-      // Логика для повторения заказа
-      alert("Повторить запись: " + order.name);
-    },
+
     cancelOrder(order) {
-      // Логика для отмены заказа
-      alert("Отменить запись: " + order.name);
+      this.currentOrder = order;
+      this.isCancellationDialogVisible = true;
+    },
+    submitCancellation(reason) {
+      cancelRecord(this.currentOrder.record_id, reason)
+        .then(() => {
+          this.isCancellationDialogVisible = false;
+          this.$refs.toast.add({ severity: 'info', summary: 'Успех', detail: 'Запись отменена', life: 3000 });
+        })
+        .catch(error => {
+          console.error("Ошибка отмены", error);
+        });
     },
     submitReview(text, rating) {
       addFeedback(text, this.currentOrder.record_id, rating)
