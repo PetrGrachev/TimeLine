@@ -5,22 +5,22 @@
             <div class="service-form-container">
                 <!-- Название услуги -->
                 <div class="form-group">
-                    <label for="name" class="form-label">Название:</label>
-                    <InputText v-model="localService.name" placeholder="Введите название услуги" class="mb-4" />
+                    <label for="name" class="form-label"><i class="fas fa-tag"></i> Название:</label>
+                    <InputText v-model="localService.name" placeholder="Введите название услуги" class="input-field" />
                 </div>
 
                 <!-- Описание услуги -->
                 <div class="form-group">
-                    <label for="description" class="form-label">Описание:</label>
+                    <label for="description" class="form-label"><i class="fas fa-align-left"></i> Описание:</label>
                     <Textarea v-model="localService.description" placeholder="Введите описание услуги" rows="4"
-                        class="mb-4" />
+                        class="input-field" />
                 </div>
 
                 <!-- Цена услуги -->
                 <div class="form-group">
-                    <label for="price" class="form-label">Цена:</label>
+                    <label for="price" class="form-label"><i class="fas fa-ruble-sign"></i> Цена:</label>
                     <InputNumber v-model="localService.cost" mode="currency" currency="RUB" placeholder="Введите цену"
-                        class="mb-4" />
+                        class="input-field" />
                 </div>
 
                 <!-- Кнопка для создания услуги -->
@@ -33,13 +33,13 @@
 </template>
 
 
+
 <script>
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import Textarea from 'primevue/textarea';
 import InputNumber from 'primevue/inputnumber';
-//TODO Сделать нормально по визуалу
 export default {
     name: 'EmployeeDialog',
     components: {
@@ -115,20 +115,24 @@ export default {
 .service-form-container {
     display: flex;
     flex-direction: column;
+    gap: 16px;
 }
 
 .form-group {
-    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-label {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     margin-bottom: 8px;
     font-weight: bold;
 }
 
-.mb-4 {
-    margin-bottom: 16px;
+.input-field {
+    width: 100%;
 }
 
 .submit-button-container {

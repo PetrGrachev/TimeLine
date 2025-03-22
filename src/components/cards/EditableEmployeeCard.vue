@@ -47,6 +47,7 @@ export default {
             uploadMedia("worker", this.employee.worker_id, file)
                 .then(() => {
                     this.$refs.toast.add({ severity: 'success', summary: 'Аватар загружен', life: 3000 });
+                    this.$emit('update-photo')
                 })
                 .catch(error => {
                     console.error('Ошибка при загрузки изображения:', error);
@@ -56,7 +57,7 @@ export default {
             deleteMedia(uuid, "worker")
                 .then(() => {
                     this.$refs.toast.add({ severity: 'info', summary: 'Аватар удален', life: 3000 });
-                    this.loadUserData();
+                    this.$emit('update-photo')
                 })
                 .catch(error => {
                     console.error('Ошибка при удалении изображения:', error);

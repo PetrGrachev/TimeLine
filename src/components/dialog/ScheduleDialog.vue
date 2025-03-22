@@ -3,17 +3,20 @@
         :style="{ width: '50rem' }">
         <div class="timetable-dialog-container">
             <div class="timetable-form-container">
-                <label>Продолжительность сеанса:</label>
-                <InputNumber v-model="session_duration" suffix="  минут" />
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-hourglass-half"></i> Продолжительность сеанса:</label>
+                    <InputNumber v-model="session_duration" suffix=" минут" class="input-field" />
+                </div>
+
                 <!-- Формируем расписание по дням недели -->
                 <div v-for="(day, index) in days" :key="index" class="form-group day-row">
                     <div class="day-checkbox">
                         <Checkbox v-model="localTimetable[day].enabled" binary />
-                        <label>{{ day }}</label>
+                        <label><i class="fas fa-calendar-day"></i> {{ day }}</label>
                     </div>
 
                     <div class="time-inputs">
-                        <label>С:</label>
+                        <label><i class="fas fa-clock"></i> С:</label>
                         <InputMask v-model="localTimetable[day].start" mask="99:99" placeholder="Часы открытия"
                             :disabled="!localTimetable[day].enabled" />
                         <label>До:</label>
@@ -24,7 +27,7 @@
 
                 <!-- Кнопка для сохранения расписания -->
                 <div class="submit-button-container">
-                    <Button :label=buttonLabel @click="handleSaveTimetable" class="action-button" />
+                    <Button :label="buttonLabel" @click="handleSaveTimetable" class="action-button" />
                 </div>
             </div>
         </div>
@@ -38,7 +41,6 @@ import Button from 'primevue/button';
 import Checkbox from 'primevue/checkbox';
 import InputMask from 'primevue/inputmask';
 import InputNumber from 'primevue/inputnumber';
-//TODO Сделать нормально по визуалу
 export default {
     name: 'EmployeeDialog',
     components: {
@@ -176,27 +178,32 @@ export default {
 </script>
 
 <style scoped>
-.service-dialog-container {
+.timetable-dialog-container {
     padding: 16px;
 }
 
-.service-form-container {
+.timetable-form-container {
     display: flex;
     flex-direction: column;
+    gap: 16px;
 }
 
 .form-group {
-    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.form-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
+.day-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.mb-4 {
-    margin-bottom: 16px;
+.time-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .submit-button-container {
@@ -206,5 +213,16 @@ export default {
 
 .action-button {
     width: 120px;
+}
+
+.input-field {
+    width: 100%;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
 }
 </style>

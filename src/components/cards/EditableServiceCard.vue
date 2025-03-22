@@ -2,22 +2,20 @@
     <ServiceCard :service="service">
         <template #actions>
             <div class="button-group">
-                <Button @click="assignEmployee" class="action-button">Назначить работника</Button>
-                <Button @click="unsignEmployee" class="action-button">Убрать работника</Button>
-                <Button @click="editService" class="action-button">Редактировать</Button>
-                <Button @click="deleteService" class="action-button">Удалить</Button>
+                <button @click="assignEmployee" class="action-button">Назначить работника</button>
+                <button @click="unsignEmployee" class="action-button">Убрать работника</button>
+                <button @click="editService" class="action-button">Редактировать</button>
+                <button @click="deleteService" class="action-button">Удалить</button>
             </div>
         </template>
     </ServiceCard>
 </template>
 
 <script>
-import Button from 'primevue/button';
 import ServiceCard from './ServiceCard.vue';
 export default {
     components: {
         ServiceCard,
-        Button,
     },
     props: {
         service: {
@@ -62,7 +60,7 @@ export default {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.3s ease;
     background-color: #0F4EB3;
     color: white;
     text-align: center;
@@ -71,6 +69,5 @@ export default {
 /* Эффект при наведении */
 .action-button:hover {
     background-color: #1A6CDB;
-    transform: scale(1.05);
 }
 </style>

@@ -5,16 +5,16 @@
     </slot>
     <div class="employee-info">
       <div class="employee-info-item">
-        <p><strong>Должность:</strong>{{ employee.position }}</p>
+        <p><i class="fas fa-briefcase"></i> <strong>Должность:</strong> {{ employee.position }}</p>
       </div>
       <div class="employee-info-item">
-        <p><strong>Имя:</strong>{{ employee.first_name }}</p>
+        <p><i class="fas fa-user"></i> <strong>Имя:</strong> {{ employee.first_name }}</p>
       </div>
       <div class="employee-info-item">
-        <p><strong>Фамилия:</strong>{{ employee.last_name }}</p>
+        <p><i class="fas fa-user-tag"></i> <strong>Фамилия:</strong> {{ employee.last_name }}</p>
       </div>
       <div class="employee-info-item">
-        <p><strong>Образование:</strong>{{ employee.degree }}</p>
+        <p><i class="fas fa-graduation-cap"></i> <strong>Образование:</strong> {{ employee.degree }}</p>
       </div>
       <div class="employee-actions">
         <slot name="actions"></slot>
@@ -43,11 +43,9 @@ export default {
 </script>
 
 <style scoped>
-/* Employee card */
 .employee-card {
   display: flex;
   align-items: flex-start;
-  /* Выравнивание по верхнему краю */
   border: 1px solid var(--border-color);
   padding: 16px;
   margin-top: 10px;
@@ -55,45 +53,41 @@ export default {
   background-color: var(--transparent-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 100%;
-  /* Карточка теперь во всю ширину */
 }
 
-/* Увеличенная аватарка */
 .avatar {
   width: 100px;
-  /* Сделали еще больше */
   height: 100px;
   border-radius: 50%;
   border: 3px solid var(--primary-color);
   object-fit: cover;
   margin-right: 20px;
-  /* Отступ между аватаркой и информацией */
 }
 
-/* Информация о сотруднике */
 .employee-info {
   display: flex;
   flex-direction: column;
   justify-content: center;
   flex-grow: 1;
   width: 100%;
-  /* Информация занимает всю ширину */
 }
 
-/* Элементы информации */
 .employee-info-item {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: flex-start;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 0px;
 }
 
-/* Кнопки действий */
+.employee-info-item i {
+  color: var(--primary-color);
+}
+
 .employee-actions {
   margin-top: 16px;
   display: flex;
   gap: 8px;
   justify-content: flex-start;
-  /* Выравнивание кнопок по левому краю */
 }
 </style>

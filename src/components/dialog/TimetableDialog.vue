@@ -7,11 +7,11 @@
                 <div v-for="(day, index) in days" :key="index" class="form-group day-row">
                     <div class="day-checkbox">
                         <Checkbox v-model="localTimetable[day].enabled" binary />
-                        <label>{{ day }}</label>
+                        <label><i class="fas fa-calendar-day"></i> {{ day }}</label>
                     </div>
 
                     <div class="time-inputs">
-                        <label>С:</label>
+                        <label><i class="fas fa-clock"></i> С:</label>
                         <InputMask v-model="localTimetable[day].open" mask="99:99" placeholder="Часы открытия"
                             :disabled="!localTimetable[day].enabled" />
                         <label>До:</label>
@@ -20,8 +20,7 @@
                     </div>
 
                     <div class="break-time-inputs">
-                        <p>Перерыв</p>
-                        <label>С:</label>
+                        <label><i class="fas fa-coffee"></i> Перерыв С:</label>
                         <InputMask v-model="localTimetable[day].break_start" mask="99:99" placeholder="Начало перерыва"
                             :disabled="!localTimetable[day].enabled" />
                         <label>До:</label>
@@ -32,7 +31,7 @@
 
                 <!-- Кнопка для сохранения расписания -->
                 <div class="submit-button-container">
-                    <Button :label=buttonLabel @click="handleSaveTimetable" class="action-button" />
+                    <Button :label="buttonLabel" @click="handleSaveTimetable" class="action-button" />
                 </div>
             </div>
         </div>
@@ -189,27 +188,33 @@ export default {
 </script>
 
 <style scoped>
-.service-dialog-container {
+.timetable-dialog-container {
     padding: 16px;
 }
 
-.service-form-container {
+.timetable-form-container {
     display: flex;
     flex-direction: column;
+    gap: 16px;
 }
 
 .form-group {
-    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.form-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
+.day-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.mb-4 {
-    margin-bottom: 16px;
+.time-inputs,
+.break-time-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .submit-button-container {

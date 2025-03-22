@@ -3,7 +3,7 @@
     <h2>Сотрудники</h2>
     <div class="employees-list">
         <EditableEmployeeCard v-for="employee in employees" :key="employee.worker_id" :employee="employee"
-            @delete="confirmDelete(employee)" @edit="editDialog" />
+            @delete="confirmDelete(employee)" @edit="editDialog" @update-photo="loadEmployees" />
     </div>
 
     <!-- Карточка добавления нового работника -->

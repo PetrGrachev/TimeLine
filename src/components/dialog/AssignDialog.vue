@@ -5,9 +5,12 @@
             <div class="service-form-container">
 
                 <div class="form-group">
-                    <label for="name" class="form-label">Назначить услугу "{{ service.name }}": </label>
+                    <label for="employee" class="form-label">
+                        <i :class="isUnsigning ? 'fas fa-user-minus' : 'fas fa-user-plus'"></i>
+                        {{ isUnsigning ? 'Убрать работника с услуги' : 'Назначить услугу' }} "{{ service.name }}":
+                    </label>
                     <Dropdown v-model="selectedEmployee" :options="employees" optionLabel="name"
-                        placeholder="Выберите работника" class="mb-4"></Dropdown>
+                        placeholder="Выберите работника" class="input-field"></Dropdown>
                 </div>
 
                 <div class="submit-button-container">
@@ -25,8 +28,6 @@ import Button from 'primevue/button';
 import Dropdown from 'primevue/dropdown';
 import { getWorkers } from '../../api/workersApi';
 import { getServiceWorkers } from '../../api/servicesApi';
-//TODO Сделать нормально по визуалу
-//TODO выводить список уже приписанных?
 export default {
     name: 'EmployeeDialog',
     components: {
@@ -125,3 +126,41 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+.service-dialog-container {
+    padding: 16px;
+}
+
+.service-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.input-field {
+    width: 100%;
+}
+
+.submit-button-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.action-button {
+    width: 120px;
+}
+</style>

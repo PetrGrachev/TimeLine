@@ -4,22 +4,21 @@
     <div class="employee-dialog-container">
       <div class="employee-form-container">
         <div class="form-group">
-          <label for="position" class="form-label">Должность:</label>
-          <InputText v-model="localEmployee.position" placeholder="Введите должность" class="mb-4" />
+          <label for="position" class="form-label"><i class="fas fa-briefcase"></i> Должность:</label>
+          <InputText v-model="localEmployee.position" placeholder="Введите должность" class="input-field" />
         </div>
         <div class="form-group">
-          <label for="name" class="form-label">Имя:</label>
-          <InputText v-model="localEmployee.first_name" placeholder="Введите имя" class="mb-4" />
+          <label for="name" class="form-label"><i class="fas fa-user"></i> Имя:</label>
+          <InputText v-model="localEmployee.first_name" placeholder="Введите имя" class="input-field" />
         </div>
         <div class="form-group">
-          <label for="name" class="form-label">Фамилия:</label>
-          <InputText v-model="localEmployee.last_name" placeholder="Введите фамилию" class="mb-4" />
+          <label for="surname" class="form-label"><i class="fas fa-user-tag"></i> Фамилия:</label>
+          <InputText v-model="localEmployee.last_name" placeholder="Введите фамилию" class="input-field" />
         </div>
         <div class="form-group">
-          <label for="degree" class="form-label">Образование:</label>
-          <InputText v-model="localEmployee.degree" placeholder="Введите образование" class="mb-4" />
+          <label for="degree" class="form-label"><i class="fas fa-graduation-cap"></i> Образование:</label>
+          <InputText v-model="localEmployee.degree" placeholder="Введите образование" class="input-field" />
         </div>
-
 
         <div class="submit-button-container">
           <Button :label="buttonLabel" @click="handleCreateEmployee" class="action-button" />
@@ -106,36 +105,28 @@ export default {
 .employee-dialog-container {
   display: flex;
   gap: 20px;
-}
-
-.employee-photo-container {
-  display: flex;
   flex-direction: column;
-  align-items: center;
-}
-
-.employee-photo-preview {
-  margin-top: 10px;
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 8px;
+  padding: 20px;
 }
 
 .employee-form-container {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  gap: 15px;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-label {
   font-weight: bold;
   margin-bottom: 5px;
-  margin-right: 10px;
+}
+
+.input-field {
+  width: 100%;
 }
 
 .action-button {
@@ -146,6 +137,7 @@ export default {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  align-self: flex-end;
 }
 
 .action-button:hover {

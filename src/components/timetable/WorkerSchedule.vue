@@ -1,4 +1,5 @@
 <template>
+    <UserAvatar :avatarUrl="worker.uuid" :name="worker.first_name" class="avatar" />
     <p>{{ worker.first_name }} {{ worker.last_name }}</p>
 
     <div v-if="schedule && Object.keys(schedule.schedule || {}).length">
@@ -12,8 +13,10 @@
                 </span>
                 <span v-else>Выходной</span>
             </div>
-            <Button label="Изменить" @click="updateSchedule" class="action-button" />
-            <Button label="Удалить" @click="deleteSchedule" class="action-button" />
+            <div class="actions">
+                <Button label="Изменить" @click="updateSchedule" class="action-button" />
+                <Button label="Удалить" @click="deleteSchedule" class="action-button" />
+            </div>
         </div>
     </div>
     <div v-else>
@@ -24,10 +27,12 @@
 
 <script>
 import Button from 'primevue/button';
+import UserAvatar from '../UserAvatar.vue';
 
 export default {
     components: {
         Button,
+        UserAvatar,
     },
     props: {
         worker: {
@@ -64,3 +69,24 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+.avatar {
+    width: 100px;
+    /* Сделали еще больше */
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid var(--primary-color);
+    object-fit: cover;
+    margin-right: 20px;
+    /* Отступ между аватаркой и информацией */
+}
+
+.actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+    /* Выравнивание кнопок по левому краю */
+}
+</style>

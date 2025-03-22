@@ -11,7 +11,7 @@
             <span v-else>Выходной</span>
         </div>
     </div>
-    <div>
+    <div class="actions">
         <slot name="actions"></slot>
     </div>
 </template>
@@ -56,5 +56,13 @@ export default {
     align-items: center;
     gap: 5px;
     /* Отступ между днем недели и временем */
+}
+
+.actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+    /* Выравнивание кнопок по левому краю */
 }
 </style>
