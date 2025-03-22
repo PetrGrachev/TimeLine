@@ -51,13 +51,15 @@ export function showMap(southWest, northEast) {
     });
 }
 
-export function findOrgs(limit, page, name, type) {
-  const params = {
-    limit: limit,
-    page: page,
-    name: name,
-    type: type
-  }
+export function findOrgs(limit, page, name, type, is_rate_sort, is_name_sort) {
+  const params = {};
+
+  if (limit) params.limit = limit;
+  if (page) params.page = page;
+  if (name) params.name = name;
+  if (type) params.type = type;
+  if (is_rate_sort) params.is_rate_sort = is_rate_sort;
+  if (is_name_sort) params.is_name_sort = is_name_sort;
 
   return axiosInstance.get('/users/search/orgs', { params })
     .then(response => {

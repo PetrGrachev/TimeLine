@@ -1,12 +1,12 @@
 <template>
   <nav class="top-nav">
-    <OrganizationSelect v-model="selectedOrganizationType" @change="filterOrgs" class="custom-select" />
+    <OrganizationSelect v-model="selectedOrganizationType" @change="onChange" class="custom-select" />
     <InputGroup v-if="viewMode === 'list'" class="search">
-      <Button label="Поиск" @click="filterOrgs" class="search-button" />
-      <InputText v-model="query" @keyup.enter="filterOrgs" placeholder="Введите ключевое слово" />
+      <Button label="Поиск" @click="onChange" class="search-button" />
+      <InputText v-model="query" @keyup.enter="onChange" placeholder="Введите ключевое слово" />
     </InputGroup>
     <Dropdown v-model="selectedSortOrder" :options="sortOptions" optionLabel="label" placeholder="Сортировка"
-      class="sort-dropdown" @change="sortOrganizations" />
+      class="sort-dropdown" @change="onChange" />
   </nav>
   <div class="organization-list">
     <div v-if="noOrgs" class="no-organizations-message">
@@ -18,11 +18,9 @@
     <Paginator :rows="rowsPerPage" :totalRecords="totalRecords" :page="currentPage" @page="onPageChange"
       class="pagination" />
   </div>
-  <!--TODO Сделать сброс пагинации при обновлении фильтра типа или поиска-->
 </template>
 
 <script>
-//TODO сделать нормальный стиль для сортировки
 import InputGroup from 'primevue/inputgroup';
 import OrganizationList from '@/components/lists/OrganizationList.vue';
 import OrganizationSelect from '@/components/selects/OrganizationSelect.vue';
@@ -60,7 +58,7 @@ export default {
     };
   },
   mounted() {
-    this.updateList(5, 1, "", "");
+    this.updateList(5, 1, "", "", true, false);
   },
 
   methods: {
@@ -69,11 +67,16 @@ export default {
       this.updateList(this.rowsPerPage, this.currentPage + 1, this.query, this.selectedOrganizationType); // Загружаем данные для выбранной страницы
     },
     updateList(limit, page, name, type) {
-
-      findOrgs(limit, page, name, type)
+      let sort = false
+      console.log(this.selectedSortOrder)
+      if (this.selectedSortOrder && this.selectedSortOrder.value == 'rating') {
+        sort = true
+      }
+      findOrgs(limit, page, name, type, sort, sort)
         .then(data => {
           if (Array.isArray(data.orgs) && data.orgs.length > 0) {
             this.orgsList = data.orgs;
+            console.log(this.orgsList)
             this.totalRecords = data.found;
             this.noOrgs = false;
           }
@@ -86,14 +89,8 @@ export default {
         });
 
     },
-    sortOrganizations() {
-      if (this.selectedSortOrder.value === 'rating') {
-        this.orgsList.sort((a, b) => b.rating - a.rating);
-      } else if (this.selectedSortOrder.value === 'name') {
-        this.orgsList.sort((a, b) => a.name.localeCompare(b.name));
-      }
-    },
-    filterOrgs() {
+    onChange() {
+      this.currentPage = 0
       this.updateList(this.rowsPerPage, this.currentPage + 1, this.query, this.selectedOrganizationType);
     },
     goToCompanyInfo(org) {
