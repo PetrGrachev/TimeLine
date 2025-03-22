@@ -56,61 +56,69 @@ export default {
     },
     mounted() {
         this.id = localStorage.getItem('id');
-        getOrg(this.id)
-            .then((org) => {
-                this.org = org
-            })
-            .catch(error => {
-                console.error('Ошибка при загрузке организации:', error);
-            });
-        this.$watch(
-            () => this.org,
-            (newOrg) => {
-                if (newOrg) {
-                    this.org = newOrg;
-                    if (this.org.banner) {
-                        downloadMedia(this.org.banner)
-                            .then(({ blob, type }) => {
-                                const blobUrl = URL.createObjectURL(new Blob([blob], { type })); // Учитываем тип
-                                this.bannerUrl = blobUrl; // Устанавливаем Blob URL
-                            })
-                            .catch(() => {
-                                console.error('Ошибка загрузки баннера');
-                            });
-                    }
-
-                    // Загружаем изображения галереи
-                    if (this.org.gallery && this.org.gallery.length) {
-                        Promise.all(
-                            this.org.gallery.map((image) =>
-                                downloadMedia(image).then(({ blob, type }) => {
-                                    return URL.createObjectURL(new Blob([blob], { type }));
-                                })
-                            )
-                        )
-                            .then((urls) => {
-                                this.galleryUrls = urls; // Сохраняем все Blob URL
-                            })
-                            .catch((error) => {
-                                console.error('Ошибка загрузки галереи:', error);
-                            });
-                    }
-                }
-            },
-            { immediate: true } // Немедленный запуск, если данные уже есть
-        );
+        this.updateImages()
     },
     methods: {
+        updateImages() {
+            getOrg(this.id)
+                .then((org) => {
+                    this.org = org
+                })
+                .catch(error => {
+                    console.error('Ошибка при загрузке организации:', error);
+                });
+            this.$watch(
+                () => this.org,
+                (newOrg) => {
+                    if (newOrg) {
+                        this.org = newOrg;
+                        if (this.org.banner) {
+                            downloadMedia(this.org.banner)
+                                .then(({ blob, type }) => {
+                                    const blobUrl = URL.createObjectURL(new Blob([blob], { type })); // Учитываем тип
+                                    this.bannerUrl = blobUrl; // Устанавливаем Blob URL
+                                })
+                                .catch(() => {
+                                    console.error('Ошибка загрузки баннера');
+                                });
+                        }
+
+                        // Загружаем изображения галереи
+                        if (this.org.gallery && this.org.gallery.length) {
+                            Promise.all(
+                                this.org.gallery.map((image) =>
+                                    downloadMedia(image).then(({ blob, type }) => {
+                                        return URL.createObjectURL(new Blob([blob], { type }));
+                                    })
+                                )
+                            )
+                                .then((urls) => {
+                                    this.galleryUrls = urls; // Сохраняем все Blob URL
+                                })
+                                .catch((error) => {
+                                    console.error('Ошибка загрузки галереи:', error);
+                                });
+                        }
+                    }
+                },
+                { immediate: true } // Немедленный запуск, если данные уже есть
+            );
+        },
         uploadBanner(event) {
             const id = localStorage.getItem('id');
             const file = event.files[0];
-            this.bannerUrl = URL.createObjectURL(file);
+
             uploadMedia("banner", id, file)
                 .then(() => {
+                    this.updateImages()
+                    this.bannerUrl = URL.createObjectURL(file);
                     this.$refs.toast.add({ severity: 'success', summary: 'Баннер загружен', life: 3000 });
 
                 })
                 .catch(error => {
+                    if (error.response.data == "file is too big\n") {
+                        this.$refs.toast.add({ severity: 'warn', summary: 'Изображение слишком много весит', life: 3000 });
+                    }
                     console.error('Ошибка при загрузки изображения:', error);
                 });
 
@@ -140,7 +148,7 @@ export default {
                     this.$refs.toast.add({ severity: 'warn', summary: 'Можно добавить не более 5 изображений', life: 3000 });
                 }
             });
-
+            this.updateImages()
         },
         deletePhoto(index) {
             deleteMedia(this.org.gallery[index], "gallery")

@@ -1,6 +1,6 @@
 // src/api/axiosInstance.js
 import axios from 'axios';
-import { handleServerError } from '@/api/errorHandler';
+
 
 export function getUserLocation() {
   return axios
@@ -33,10 +33,3 @@ const axiosInstance = axios.create({
 
 export default axiosInstance;
 // Используем интерсептор для обработки ошибок и вызова функции handleServerError
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    handleServerError(error); // Передаем ошибку в обработчик ошибок
-    return Promise.reject(error);
-  }
-);

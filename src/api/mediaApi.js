@@ -14,9 +14,6 @@ export function uploadMedia(entity, entity_id, file) {
         .then(response => {
             console.log('Файл успешно загружен:', response.data);
         })
-        .catch(error => {
-            console.error('Ошибка загрузки файла:', error);
-        });
 }
 
 export function downloadMedia(url) {

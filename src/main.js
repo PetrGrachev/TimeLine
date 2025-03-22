@@ -6,9 +6,7 @@ import PrimeVue from 'primevue/config';
 //import Aura from '@primevue/themes/aura';
 import { MyPreset } from './styles/mytheme'
 import ToastService from 'primevue/toastservice';
-import { setRouter } from '@/api/errorHandler';
 import Tooltip from 'primevue/tooltip';
-setRouter(router);
 
 const app = createApp(App);
 
