@@ -1,8 +1,8 @@
 <template>
   <div class="chart-container">
     <Bar :data="chartData" />
+    <KeywordsCloud />
 
-    <OrganizationLoadChart />
 
   </div>
 </template>
@@ -10,7 +10,7 @@
 <script>
 import { Bar } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
-import OrganizationLoadChart from '../../components/charts/OrganizationLoadChart.vue'
+import KeywordsCloud from '@/components/charts/KeywordsCloud.vue'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
@@ -18,7 +18,7 @@ export default {
   name: 'BarChart',
   components: {
     Bar,
-    OrganizationLoadChart,
+    KeywordsCloud,
   },
   data() {
     return {

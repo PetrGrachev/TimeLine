@@ -2,6 +2,9 @@
     <!-- Section: Reviews -->
     <section id="reviews" class="section-container">
         <h2>Отзывы</h2>
+        <div class="keywords-container">
+            <KeywordsCloud />
+        </div>
         <div v-if="reviews && Object.keys(reviews || {}).length">
             <div v-for="(review, index) in reviews" :key="index" class="review-item">
                 <ReviewCard :review="review" />
@@ -14,16 +17,15 @@
 </template>
 
 <script>
+import KeywordsCloud from '@/components/charts/KeywordsCloud.vue';
 import { getFeedback } from '../../api/feedbacksApi';
 import ReviewCard from '../../components/cards/ReviewCard.vue';
-
-
-
 
 export default {
     name: 'ReviewsSection',
     components: {
         ReviewCard,
+        KeywordsCloud,
     },
     data() {
         return {
@@ -52,5 +54,12 @@ export default {
     background-color: var(--transparent-color);
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.keywords-container {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    margin-top: -10px;
 }
 </style>
