@@ -1,0 +1,122 @@
+<template>
+    <div class="income-bookings-chart">
+        <h2>Доходы и бронирования по дням</h2>
+        <Chart type="line" :data="chartData" :options="chartOptions" class="chart" />
+    </div>
+</template>
+
+<script>
+import Chart from 'primevue/chart';
+import { getIncomeDistribution } from '../../api/analytics/distributionApi';
+
+export default {
+    name: 'IncomeBookingsChart',
+    components: { Chart },
+    data() {
+        return {
+            distribution: [],
+        }
+    },
+    mounted() {
+        const id = localStorage.getItem('id');
+        getIncomeDistribution(id)
+            .then((distribution) => {
+                this.distribution = distribution
+            })
+    },
+    computed: {
+        chartData() {
+            const weekdays = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'];
+            const sortedData = [...this.distribution].sort((a, b) => a.day_of_week - b.day_of_week);
+
+            return {
+                labels: sortedData.map(d => weekdays[d.day_of_week - 1]),
+                datasets: [
+                    {
+                        label: 'Доход (₽)',
+                        data: sortedData.map(d => d.info[0].income),
+                        borderColor: '#0F4EB3',
+                        backgroundColor: '#0F4EB3',
+                        yAxisID: 'y-income',
+                        tension: 0.3,
+                        fill: false
+                    },
+                    {
+                        type: 'bar',
+                        label: 'Бронирования',
+                        data: sortedData.map(d => d.info[0].bookings),
+                        backgroundColor: 'rgba(0, 184, 217, 0.2)',
+                        yAxisID: 'y-bookings',
+                        tension: 0.3,
+                        fill: false
+                    }
+                ]
+            };
+        },
+        chartOptions() {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                stacked: false,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'День недели'
+                        }
+                    },
+                    'y-income': {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Доход (₽)'
+                        }
+                    },
+                    'y-bookings': {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Бронирования'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            };
+        }
+    }
+};
+</script>
+
+<style scoped>
+.income-bookings-chart {
+    background-color: var(--card-background-color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 1200px;
+}
+
+.chart {
+    height: 350px;
+
+}
+</style>
