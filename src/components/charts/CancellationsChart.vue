@@ -1,16 +1,19 @@
 <template>
-    <div class="cancellations-container">
-        <div class="stat-card">
-            <p class="label">Отменено записей</p>
-            <p class="value">{{ info.canceled_records }}</p>
-        </div>
-        <div class="stat-card">
-            <p class="label">Процент отмен</p>
-            <p class="value">{{ info.cancellation_percentage }}%</p>
-        </div>
-        <div class="stat-card">
-            <p class="label">Основная причина</p>
-            <p class="value">{{ info.most_common_cancel_reason }}</p>
+    <div>
+        <h2 class="section-title">Отмены</h2>
+        <div class="cancellations-container">
+            <div class="stat-card">
+                <p class="label">Отменено записей</p>
+                <p class="value">{{ info.canceled_records }}</p>
+            </div>
+            <div class="stat-card">
+                <p class="label">Процент отмен</p>
+                <p class="value">{{ info.cancellation_percentage }}%</p>
+            </div>
+            <div class="stat-card">
+                <p class="label">Основная причина</p>
+                <p class="value">{{ info.most_common_cancel_reason }}</p>
+            </div>
         </div>
     </div>
 </template>
@@ -40,13 +43,18 @@ export default {
 </script>
 
 <style scoped>
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-color);
+}
+
 .cancellations-container {
     display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
+    justify-content: space-between;
     gap: 20px;
-    margin: 20px 0;
-    padding-bottom: 10px;
+    width: 100%;
 }
 
 .stat-card {
@@ -58,6 +66,7 @@ export default {
     text-align: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     flex-shrink: 0;
+    flex: 1;
     /* предотвратить сжатие карточек */
 }
 
