@@ -51,6 +51,38 @@ export function getWorkers(org_id, limit, page) {
     });
 }
 
+export function getWorker(org_id, worker_id) {
+
+  const url = `/orgs/${org_id}/workers/${worker_id}`;
+
+  return axiosInstance.get(url)
+    .then(response => {
+      if (response.status === 200) {
+        console.log("Успешный ответ:", response.data);
+
+        const worker = {
+          org_id: response.data.org_id,
+          worker_id: response.data.worker_id,
+          degree: response.data.worker_info.degree,
+          first_name: response.data.worker_info.first_name,
+          last_name: response.data.worker_info.last_name,
+          position: response.data.worker_info.position,
+          uuid: response.data.worker_info.uuid,
+        }
+        return worker
+      }
+    })
+    .catch(error => {
+      if (error.response && error.response.status === 400) {
+        console.log("Ошибка 400:", error.response.data);
+        throw new Error(error.response.data);
+      } else {
+        console.log("Ошибка:", error.message);
+        throw new Error("Произошла ошибка запроса");
+      }
+    });
+}
+
 export function deleteWorker(org_id, worker_id) {
 
   // Формирование URL с использованием id

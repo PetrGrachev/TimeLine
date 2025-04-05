@@ -31,14 +31,15 @@
 
 <script>
 export default {
-    name: 'MetricsCards',
+    props: {
+        metrics: {
+            type: Object,
+            required: true,
+        }
+    },
     data() {
         return {
-            metrics: {
-                avg_booking_cost: "1208.77",
-                total_bookings: 19,
-                total_revenue: "127528.92"
-            },
+
         }
     },
     computed: {

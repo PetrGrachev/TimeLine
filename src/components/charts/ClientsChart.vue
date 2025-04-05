@@ -32,6 +32,9 @@ import UserAvatar from '../UserAvatar.vue';
 
 export default {
     components: { UserAvatar },
+    props: {
+
+    },
     data() {
         return {
             unique_customers: 1,

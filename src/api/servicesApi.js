@@ -47,6 +47,36 @@ export function getServices(org_id, limit, page) {
     });
 }
 
+export function getService(org_id, service_id) {
+
+  const url = `/orgs/${org_id}/services/${service_id}`;
+
+  return axiosInstance.get(url)
+    .then(response => {
+      if (response.status === 200) {
+        console.log("Успешный ответ:", response.data);
+
+        const service = {
+          org_id: response.data.org_id,
+          service_id: response.data.service_id,
+          cost: response.data.service_info.cost,
+          description: response.data.service_info.description,
+          name: response.data.service_info.name,
+        }
+        return service
+      }
+    })
+    .catch(error => {
+      if (error.response && error.response.status === 400) {
+        console.log("Ошибка 400:", error.response.data);
+        throw new Error(error.response.data);
+      } else {
+        console.log("Ошибка:", error.message);
+        throw new Error("Произошла ошибка запроса");
+      }
+    });
+}
+
 export function createService(org_id, service) {
 
   const data = {

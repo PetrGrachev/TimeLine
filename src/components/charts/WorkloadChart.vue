@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import { getWorkload } from '../../api/analytics/generalApi';
+import { getWorker } from '../../api/workersApi';
 import UserAvatar from '../UserAvatar.vue';
 import GaugeChart from './GaugeChart.vue';
 
@@ -48,7 +50,49 @@ export default {
                 },
             ]
         }
+    },
+    mounted() {
+        this.loadData()
+    },
+    methods: {
+        loadData() {
+            const org_id = localStorage.getItem('id');
+
+            getWorkload(org_id).then(async (data) => {
+                // Получаем массив с базовой инфой о работниках
+                const baseWorkers = data.workers;
+
+                // Для каждого работника делаем запрос getWorker и объединяем данные
+                const enrichedWorkers = await Promise.all(
+                    baseWorkers.map(async (worker) => {
+                        try {
+                            const detailed = await getWorker(org_id, worker.worker_id);
+
+                            return {
+                                first_name: detailed.first_name,
+                                last_name: detailed.last_name,
+                                position: detailed.position,
+                                uuid: detailed.uuid,
+                                workload_percentage: worker.workload_percentage,
+                            };
+                        } catch (error) {
+                            console.error(`Ошибка при получении данных работника с ID ${worker.worker_id}:`, error);
+                            return {
+                                ...worker,
+                                first_name: 'Ошибка',
+                                last_name: '',
+                                position: '',
+                                uuid: '',
+                            };
+                        }
+                    })
+                );
+
+                this.workers = enrichedWorkers;
+            });
+        }
     }
+
 };
 </script>
 
