@@ -46,32 +46,16 @@
 <script>
 import UserAvatar from '../UserAvatar.vue';
 
-
-
 export default {
     name: 'BestWorstWorker',
-    data() {
-        return {
-            workers: {
-                best_worker: {
-                    rating: "3.20",
-                    first_name: "Имя",
-                    last_name: "Фамилия",
-                    position: "Позиция",
-                    uuid: ""
-                },
-                worst_worker: {
-                    rating: "3.15",
-                    first_name: "Имя",
-                    last_name: "Фамилия",
-                    position: "Позиция",
-                    uuid: ""
-                }
-            }
-        }
-    },
     components: {
         UserAvatar,
+    },
+    props: {
+        workers: {
+            type: Object,
+            required: true,
+        }
     }
 };
 </script>

@@ -102,7 +102,7 @@ export function getSummary(id) {
                         popular_service_id: response.data.services.popular_service_id,
                         worst_service: {
                             rating: response.data.services.worst_service.rating,
-                            worker_id: response.data.services.worst_service.service_id,
+                            service_id: response.data.services.worst_service.service_id,
                         },
                     },
                     workers: {

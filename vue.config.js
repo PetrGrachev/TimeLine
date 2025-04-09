@@ -11,7 +11,7 @@ module.exports = defineConfig({
       },
       // Прокси для аналитики
       '/analytics': {
-        target: 'http://localhost:5000',
+        target: 'http://localhost:10000',
         changeOrigin: true,
         pathRewrite: { '^/analytics': '' },
       },

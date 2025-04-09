@@ -2,10 +2,11 @@
   <div class="chart-container">
     <IncomeBookingsChart class="dashboard-card" />
     <MetricsChart :metrics="summary.metrics" class="dashboard-card" />
-    <ClientsChart class="dashboard-card" />
-    <WorkersChart :workers="summary.workers" class="dashboard-card" />
+    <ClientsChart v-if="summary && summary.clients" :unique_customers="summary.clients.unique_customers"
+      :most_frequent_client="summary.clients.most_frequent_client" class="dashboard-card" />
+    <WorkersChart v-if="summary && summary.workers" :workers="summary.workers" class="dashboard-card" />
     <WorkloadChart class="dashboard-card" />
-    <ServicesChart :services="summary.services" class="dashboard-card" />
+    <ServicesChart v-if="summary && summary.services" :services="summary.services" class="dashboard-card" />
 
     <CancellationsChart class="dashboard-card" />
 
@@ -45,11 +46,7 @@ export default {
     }
   },
   mounted() {
-    const org_id = localStorage.getItem('id');
-    getSummary(org_id)
-      .then((summary) => {
-        this.summary = summary
-      })
+    this.load()
   },
   methods: {
     async load() {

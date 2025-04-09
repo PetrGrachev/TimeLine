@@ -10,15 +10,20 @@
             </span>
             <span v-else>Выходной</span>
         </div>
+
     </div>
+    <OrganizationLoadChart />
     <div class="actions">
         <slot name="actions"></slot>
     </div>
 </template>
 
 <script>
-
+import OrganizationLoadChart from '@/components/charts/OrganizationLoadChart.vue'
 export default {
+    components: {
+        OrganizationLoadChart,
+    },
     props: {
         timetable: {
             type: Object,

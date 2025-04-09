@@ -27,7 +27,7 @@ export default {
                     {
                         data: [this.value, 100 - this.value],
                         backgroundColor: [
-                            this.value < 50 ? '#FF5252' : this.value < 80 ? '#FFC107' : '#4CAF50',
+                            this.value < 50 ? '#4CAF50' : this.value < 80 ? '#FFC107' : '#FF5252',
                             '#E0E0E0'
                         ],
                         borderWidth: 0,

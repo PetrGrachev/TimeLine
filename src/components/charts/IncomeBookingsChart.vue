@@ -27,14 +27,25 @@ export default {
     computed: {
         chartData() {
             const weekdays = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'];
-            const sortedData = [...this.distribution].sort((a, b) => a.day_of_week - b.day_of_week);
+
+            // Создаем структуру по умолчанию на каждый день недели
+            const fullWeekData = Array.from({ length: 7 }, (_, i) => ({
+                day_of_week: i + 1,
+                info: [{ bookings: 0, income: 0 }]
+            }));
+
+            // Объединяем с пришедшими данными, заменяя дефолтные значения, если есть реальные
+            const filledData = fullWeekData.map(day => {
+                const match = this.distribution.find(d => d.day_of_week === day.day_of_week);
+                return match || day;
+            });
 
             return {
-                labels: sortedData.map(d => weekdays[d.day_of_week - 1]),
+                labels: weekdays,
                 datasets: [
                     {
                         label: 'Доход (₽)',
-                        data: sortedData.map(d => d.info[0].income),
+                        data: filledData.map(d => d.info[0].income),
                         borderColor: '#0F4EB3',
                         backgroundColor: '#0F4EB3',
                         yAxisID: 'y-income',
@@ -44,7 +55,7 @@ export default {
                     {
                         type: 'bar',
                         label: 'Бронирования',
-                        data: sortedData.map(d => d.info[0].bookings),
+                        data: filledData.map(d => d.info[0].bookings),
                         backgroundColor: 'rgba(0, 184, 217, 0.2)',
                         yAxisID: 'y-bookings',
                         tension: 0.3,

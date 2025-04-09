@@ -39,20 +39,10 @@
 
 <script>
 export default {
-
-    data() {
-        return {
-            services: {
-                best_service: {
-                    rating: "3.50",
-                    name: "Лучшая услуга"
-                },
-                popular_service_name: "Популярная услуга",
-                worst_service: {
-                    rating: "2.00",
-                    name: " Худшая услуга"
-                }
-            },
+    props: {
+        services: {
+            type: Object,
+            required: true,
         }
     },
     methods: {

@@ -33,18 +33,15 @@ import UserAvatar from '../UserAvatar.vue';
 export default {
     components: { UserAvatar },
     props: {
-
+        unique_customers: {
+            type: Number,
+            required: true,
+        },
+        most_frequent_client: {
+            type: Object,
+            required: true,
+        },
     },
-    data() {
-        return {
-            unique_customers: 1,
-            most_frequent_client: {
-                first_name: "Петр",
-                last_name: "Грачев",
-                uuid: "",
-            }
-        }
-    }
 };
 </script>
 

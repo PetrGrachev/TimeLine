@@ -12,7 +12,7 @@
             </div>
             <div class="stat-card">
                 <p class="label">Основная причина</p>
-                <p class="value">{{ info.most_common_cancel_reason }}</p>
+                <p class="value">{{ info.most_common_cancel_reason || 'Пока не было отмен' }}</p>
             </div>
         </div>
     </div>
