@@ -19,7 +19,7 @@
           {{ order.employee_first_name }} {{ order.employee_last_name }}
         </span>
         <span class="order-detail">
-          {{ formatDateForDisplay(order.date) }} {{ convertToTimezone(order.time) }}
+          {{ formatDateForDisplay(order.date) }} {{ order.time }}
         </span>
         <div class="order-actions">
           <slot name="actions" :order="order"></slot>

@@ -1,6 +1,6 @@
 <template>
     <div class="distribution-chart-container">
-        <h2>Посещаемость</h2>
+        <h3>Загруженность</h3>
 
         <!-- Навигация по дням недели -->
         <div class="day-selector">
@@ -120,14 +120,15 @@ export default {
 
 <style scoped>
 .distribution-chart-container {
-    width: 400px;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    /* 👈 добавлено */
 }
 
 .day-selector {
     display: flex;
     justify-content: space-between;
-    max-width: 400px;
     margin-bottom: 10px;
 }
 
@@ -155,6 +156,6 @@ export default {
 }
 
 .chart {
-    height: 250px;
+    max-height: 100%;
 }
 </style>

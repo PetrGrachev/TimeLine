@@ -17,12 +17,16 @@ export default {
         value: {
             type: Number,
             required: true
+        },
+        bookings: {
+            type: Number,
+            default: 0
         }
     },
     computed: {
         gaugeData() {
             return {
-                labels: ['Workload', 'Empty'],
+                labels: ['Загруженность', 'Свободно'],
                 datasets: [
                     {
                         data: [this.value, 100 - this.value],
@@ -43,11 +47,20 @@ export default {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: {
-                        display: false
-                    },
+                    legend: { display: false },
                     tooltip: {
-                        enabled: false
+                        enabled: true,
+                        callbacks: {
+                            label: (tooltipItem) => {
+                                if (tooltipItem.label === 'Загруженность') {
+                                    return [
+                                        `Загруженность: ${this.value}%`,
+                                        `Бронирований: ${this.bookings}`
+                                    ];
+                                }
+                                return '';
+                            }
+                        }
                     }
                 }
             };

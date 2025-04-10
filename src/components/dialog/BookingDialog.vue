@@ -41,7 +41,6 @@ import Toast from 'primevue/toast';
 import { getServiceWorkers } from '../../api/servicesApi';
 import { getSlots } from '../../api/slotsApi';
 import { addRecord } from '../../api/recordsApi';
-import { convertTimeToTimeZone } from '../../utils/utilsDate';
 
 
 export default {
@@ -121,7 +120,7 @@ export default {
             .sort((a, b) => a.begin.localeCompare(b.begin))
             .map(slot => ({
               ...slot,
-              begin: convertTimeToTimeZone(slot.begin)
+              begin: slot.begin
             }));
         })
         .catch(error => {

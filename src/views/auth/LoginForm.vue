@@ -22,7 +22,7 @@ export default {
   name: "LoginForm",
   data() {
     return {
-      
+
     };
   },
   computed: {
@@ -32,7 +32,7 @@ export default {
     logoSrc() {
       // Получаем тему из localStorage
       const theme = localStorage.getItem("theme");
-      
+
       // Возвращаем путь к нужному изображению
       return theme === "dark"
         ? require("@/assets/full-logo-white.png")
@@ -91,7 +91,7 @@ export default {
   width: 48%;
   padding: 10px;
   background-color: #0F4EB3;
-  color: var(--text-color);
+  color: var(--light-text);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -163,11 +163,11 @@ export default {
   border-radius: 50%;
 }
 
-input:checked + .slider {
+input:checked+.slider {
   background-color: #2196F3;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   transform: translateX(26px);
 }
 
@@ -185,7 +185,8 @@ input:checked + .slider:before {
 }
 
 input {
-  width: calc(100% - 24px); /* Учитываем отступы, чтобы выровнять с кнопкой */
+  width: calc(100% - 24px);
+  /* Учитываем отступы, чтобы выровнять с кнопкой */
   padding: 12px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
@@ -232,16 +233,20 @@ button:hover {
 
 .radio-container {
   display: flex;
-  flex-direction: column; /* Выровнять элементы друг под другом */
-  gap: 10px; /* Зазор между радиокнопками */
+  flex-direction: column;
+  /* Выровнять элементы друг под другом */
+  gap: 10px;
+  /* Зазор между радиокнопками */
 }
 
 .radio-item {
   display: flex;
-  align-items: right; /* Выровнять радиокнопку и текст по центру */
+  align-items: right;
+  /* Выровнять радиокнопку и текст по центру */
 }
 
 .radio-label {
-  margin-left: 8px; /* Отступ между радиокнопкой и текстом */
+  margin-left: 8px;
+  /* Отступ между радиокнопкой и текстом */
 }
 </style>

@@ -51,7 +51,7 @@ export function getWorkload(id) {
                 return {
                     workers: response.data.workers.map(worker => ({
                         busy_slots: worker.busy_slots,
-                        bookings: worker.total_slots,
+                        total_slots: worker.total_slots,
                         worker_id: worker.worker_id,
                         workload_percentage: worker.workload_percentage,
                     })),

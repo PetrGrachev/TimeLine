@@ -6,7 +6,7 @@
                 <UserAvatar :avatarUrl="worker.uuid" :name="worker.first_name" class="avatar" />
                 <p class="worker-name">{{ worker.first_name }} {{ worker.last_name }}</p>
                 <p class="worker-position">{{ worker.position }}</p>
-                <GaugeChart :value="worker.workload_percentage" />
+                <GaugeChart :value="worker.workload_percentage" :bookings="worker.busy_slots" />
             </div>
         </div>
     </div>
@@ -74,6 +74,7 @@ export default {
                                 position: detailed.position,
                                 uuid: detailed.uuid,
                                 workload_percentage: worker.workload_percentage,
+                                busy_slots: worker.busy_slots,
                             };
                         } catch (error) {
                             console.error(`Ошибка при получении данных работника с ID ${worker.worker_id}:`, error);

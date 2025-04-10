@@ -3,30 +3,13 @@
   <RadioUserOrg v-model="isOrganization" />
   <form @submit.prevent="handleLogin">
     <div class="form-group">
-      <InputText
-        v-model="email"
-        id="email"
-        type="email"
-        placeholder="Email"
-        class="mb-4"
-        :class="{ 'p-invalid': emailError }"
-        @blur="validateEmail"
-        required
-      />
+      <InputText v-model="email" id="email" type="email" placeholder="Email" class="mb-4"
+        :class="{ 'p-invalid': emailError }" @blur="validateEmail" required />
       <small v-if="emailError" class="p-error">Введите корректный email.</small>
     </div>
     <div class="form-group">
-      <Password
-        v-model="password"
-        id="password"
-        placeholder="Пароль"
-        :feedback="false"
-        :toggleMask="true"
-        class="mb-4"
-        :class="{ 'p-invalid': passwordError }"
-        @blur="validatePassword"
-        required
-      />
+      <Password v-model="password" id="password" placeholder="Пароль" :feedback="false" :toggleMask="true" class="mb-4"
+        :class="{ 'p-invalid': passwordError }" @blur="validatePassword" required />
       <small v-if="passwordError" class="p-error">Пароль должен содержать не менее 12 символов.</small>
     </div>
     <Button label="Войти" type="submit"></Button>
@@ -57,9 +40,9 @@ export default {
       passwordError: false,
       errorMessage: '',
     };
-},
-methods:{
-  validateEmail() {
+  },
+  methods: {
+    validateEmail() {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       this.emailError = !emailPattern.test(this.email);
     },
@@ -73,16 +56,16 @@ methods:{
         this.loginUser();
       }
     },
-      loginUser(){
-        login(this.email, this.password, this.isOrganization)
+    loginUser() {
+      login(this.email, this.password, this.isOrganization)
         .then(tokens => {
-    console.log("Полученные токены:", tokens);
-    this.$router.push({ name: 'MainPage' });
-  })
-  .catch(error => {
-    console.error("Ошибка авторизации:", error.message);
-  });
-      }
+          console.log("Полученные токены:", tokens);
+          this.$router.push({ name: 'MainPage' });
+        })
+        .catch(error => {
+          console.error("Ошибка авторизации:", error.message);
+        });
+    }
   }
 }
 </script>
@@ -193,11 +176,11 @@ methods:{
   border-radius: 50%;
 }
 
-input:checked + .slider {
+input:checked+.slider {
   background-color: #2196F3;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   transform: translateX(26px);
 }
 
@@ -216,7 +199,8 @@ input:checked + .slider:before {
 }
 
 input {
-  width: calc(100% - 24px); /* Учитываем отступы, чтобы выровнять с кнопкой */
+  width: calc(100% - 24px);
+  /* Учитываем отступы, чтобы выровнять с кнопкой */
   padding: 12px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
@@ -237,7 +221,7 @@ button {
   width: 100%;
   padding: 12px;
   background-color: #0F4EB3;
-  color: var(--text-color);
+  color: var(--light-text);
   border: none;
   border-radius: 8px;
   font-size: 16px;
@@ -253,10 +237,12 @@ button:hover {
   font-weight: bold;
   margin-bottom: 5px;
 }
+
 .p-error {
   color: #f00;
   font-size: 0.875rem;
 }
+
 .error {
   color: #f00;
   margin-top: 1rem;
@@ -269,12 +255,15 @@ button:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-:deep(.p-password){
-  width: 100%; /* Учитываем отступы, чтобы выровнять с кнопкой */
+:deep(.p-password) {
+  width: 100%;
+  /* Учитываем отступы, чтобы выровнять с кнопкой */
   padding: 12px;
 }
-:deep(.p-password-input){
-  width: calc(100% - 24px); /* Учитываем отступы, чтобы выровнять с кнопкой */
+
+:deep(.p-password-input) {
+  width: calc(100% - 24px);
+  /* Учитываем отступы, чтобы выровнять с кнопкой */
   padding: 12px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
@@ -284,5 +273,4 @@ button:hover {
   background-color: var(--background-color);
   color: var(--text-color);
 }
-
 </style>

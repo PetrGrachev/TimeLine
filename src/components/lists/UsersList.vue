@@ -28,7 +28,7 @@
         </span>
 
         <!-- Дата и время -->
-        <span class="order-detail">{{ formatDateForDisplay(order.date) }} {{ convertToTimeZone(order.time) }}</span>
+        <span class="order-detail">{{ formatDateForDisplay(order.date) }} {{ order.time }}</span>
       </li>
     </ul>
   </div>
