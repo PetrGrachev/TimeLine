@@ -28,7 +28,6 @@
 import { downloadMedia } from '../../api/mediaApi';
 import { useOrganizationStore } from '../../stores/useOrganizationStore';
 import { mapState } from 'pinia';
-//TODO серификация телефона и копирование кнопкой
 export default {
   props: {
     id: {

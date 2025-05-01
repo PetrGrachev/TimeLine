@@ -27,8 +27,8 @@ export function getUserLocation() {
 }
 
 const axiosInstance = axios.create({
-  baseURL: '/api/v1', // Базовый URL для всех запросов
-  timeout: 10000, // Максимальное время ожидания ответа
+  baseURL: '/api/v1/', // Базовый URL для всех запросов
+  timeout: 2000, // Максимальное время ожидания ответа
   headers: { 'Content-Type': 'application/json' }, // Заголовки по умолчанию
 });
 

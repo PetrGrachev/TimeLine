@@ -14,7 +14,7 @@
 
 <script>
 import { getWorkload } from '../../api/analytics/generalApi';
-import { getWorker } from '../../api/workersApi';
+import { getWorkers } from '../../api/workersApi';
 import UserAvatar from '../UserAvatar.vue';
 import GaugeChart from './GaugeChart.vue';
 
@@ -66,8 +66,8 @@ export default {
                 const enrichedWorkers = await Promise.all(
                     baseWorkers.map(async (worker) => {
                         try {
-                            const detailed = await getWorker(org_id, worker.worker_id);
-
+                            const resp = await getWorkers(org_id, worker.worker_id);
+                            const detailed = resp.workers[0]
                             return {
                                 first_name: detailed.first_name,
                                 last_name: detailed.last_name,

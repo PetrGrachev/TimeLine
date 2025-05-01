@@ -4,21 +4,21 @@ export function getRecords(id, isOrg, fresh) {
     let params;
     if (isOrg) {
         params = {
-            org_id: id,
             limit: 100,
             page: 1,
             fresh: fresh,
+            as_list: true
         };
     }
     else {
         params = {
-            user_id: id,
             limit: 100,
             page: 1,
             fresh: fresh,
+            as_list: true
         };
     }
-    const url = `/records/list`;
+    const url = `/records`;
 
     return axiosInstance.get(url, { params })
         .then(response => {
@@ -79,7 +79,7 @@ export function addRecord(org_id, service_id, slot_id, user_id, worker_id) {
         worker_id: Number(worker_id),
     };
     // Формирование URL с использованием id
-    const url = `/records/creation`;
+    const url = `/records`;
 
     return axiosInstance.post(url, data)
         .then(response => {
@@ -105,7 +105,7 @@ export function cancelRecord(record_id, reason) {
         reason: reason,
     };
     // Формирование URL с использованием id
-    const url = `/records/info/${record_id}`;
+    const url = `/records`;
 
     return axiosInstance.put(url, data)
         .then(response => {

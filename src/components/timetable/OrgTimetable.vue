@@ -18,7 +18,7 @@
         </div>
 
         <!-- Диаграмма -->
-        <OrganizationLoadChart class="fixed-chart" />
+        <OrganizationLoadChart :id="id" class="fixed-chart" />
     </div>
 
     <div class="actions">
@@ -33,8 +33,13 @@ export default {
         OrganizationLoadChart,
     },
     props: {
+
         timetable: {
             type: Object,
+            required: true,
+        },
+        id: {
+            type: Number,
             required: true,
         }
     },

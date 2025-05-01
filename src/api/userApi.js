@@ -3,12 +3,12 @@ import axiosInstance from './axiosInstance';
 export function showMap(southWest, northEast) {
   const params = {
     min_lat: southWest.lat,
-    min_long: southWest.lng,
+    min_lon: southWest.lng,
     max_lat: northEast.lat,
-    max_long: northEast.lng
+    max_lon: northEast.lng
   }
 
-  return axiosInstance.get('/users/map/orgs', { params })
+  return axiosInstance.get('/users/orgmap', { params })
     .then(response => {
       if (response.status === 200) {
         console.log("Успешный ответ:", response.data);
@@ -58,8 +58,8 @@ export function findOrgs(limit, page, name, type, is_rate_sort, is_name_sort) {
   if (page) params.page = page;
   if (name) params.name = name;
   if (type) params.type = type;
-  if (is_rate_sort) params.is_rate_sort = is_rate_sort;
-  if (is_name_sort) params.is_name_sort = is_name_sort;
+  if (is_rate_sort) params.sort_by = "rate";
+  if (is_name_sort) params.sort_by = "name";
 
   return axiosInstance.get('/users/search/orgs', { params })
     .then(response => {
@@ -109,17 +109,16 @@ export function findOrgs(limit, page, name, type, is_rate_sort, is_name_sort) {
 }
 
 export function getUser(id) {
-
-  // Проверка, что id существует
-  if (!id) {
-    console.error("ID пользователя отсутствует в localStorage");
-    return Promise.reject(new Error("ID пользователя отсутствует в localStorage"));
+  const params = {};
+  // Проверяем, что id не пустой, не "undefined", не null
+  if (id && id !== 'undefined') {
+    params.user_id = id;
   }
 
   // Формирование URL с использованием id
-  const url = `/users/info/${id}`;
+  const url = `/users`;
 
-  return axiosInstance.get(url)
+  return axiosInstance.get(url, { params })
     .then(response => {
       if (response.status === 200) {
         console.log("Успешный ответ:", response.data);
@@ -159,7 +158,7 @@ export function updateUser(about, first_name, last_name, city, telephone, id) {
     id: id,
   };
 
-  return axiosInstance.put("/users/update", data)
+  return axiosInstance.put("/users", data)
     .then(response => {
       if (response.status === 200) {
         console.log("Успешный ответ:", response.data);

@@ -3,7 +3,6 @@ import axiosInstance from './axiosInstance';
 export function uploadMedia(entity, entity_id, file) {
     const formData = new FormData();
     formData.append('entity', entity);
-    formData.append('entityID', entity_id);
     formData.append('file', file);
 
     return axiosInstance.post('/media', formData, {

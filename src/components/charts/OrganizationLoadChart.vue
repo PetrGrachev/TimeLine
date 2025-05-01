@@ -29,7 +29,12 @@ import Chart from 'primevue/chart';
 export default {
     name: 'OrganizationDistributionChart',
     components: { Chart },
-
+    props: {
+        id: {
+            type: Number,
+            required: true,
+        }
+    },
     data() {
         return {
             distribution: null,
@@ -38,8 +43,7 @@ export default {
         };
     },
     mounted() {
-        const id = localStorage.getItem('id');
-        getBookingsDistribution(id)
+        getBookingsDistribution(this.id)
             .then((distribution) => {
                 this.distribution = distribution
             })

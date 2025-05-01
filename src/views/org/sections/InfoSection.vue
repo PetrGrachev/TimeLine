@@ -16,7 +16,7 @@
     <div class="info-item">
       <i class="fas fa-clock"></i>
 
-      <OrgTimetable :timetable="org.timetable" />
+      <OrgTimetable :id="org.org_id" :timetable="org.timetable" />
 
     </div>
   </section>

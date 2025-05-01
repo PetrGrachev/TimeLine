@@ -1,14 +1,24 @@
 import axiosInstance from './axiosInstance';
 
-export function getServices(org_id, limit, page) {
-  const params = {
-    limit: limit,
-    page: page
-  };
-  // Формирование URL с использованием id
-  const url = `/orgs/${org_id}/services`;
+export function getServices(org_id, limitOrServiceId, page = null) {
+  const params = {};
+  // Проверяем, что id не пустой, не "undefined", не null
+  if (org_id && org_id !== 'undefined') {
+    params.org_id = org_id;
+  }
 
-  return axiosInstance.get(url, { params })
+  // Если передан page — значит это запрос на список
+  if (page !== null) {
+    params.limit = limitOrServiceId;
+    params.page = page;
+    params.as_list = true;
+  } else {
+    // Иначе считаем что это запрос на одну услугу
+    params.service_id = limitOrServiceId;
+    params.as_list = false;
+  }
+
+  return axiosInstance.get('/orgs/services', { params })
     .then(response => {
       if (response.status === 200) {
         console.log("Успешный ответ:", response.data);
@@ -34,36 +44,6 @@ export function getServices(org_id, limit, page) {
           services: services,
           found: response.data.found,
         };
-      }
-    })
-    .catch(error => {
-      if (error.response && error.response.status === 400) {
-        console.log("Ошибка 400:", error.response.data);
-        throw new Error(error.response.data);
-      } else {
-        console.log("Ошибка:", error.message);
-        throw new Error("Произошла ошибка запроса");
-      }
-    });
-}
-
-export function getService(org_id, service_id) {
-
-  const url = `/orgs/${org_id}/services/${service_id}`;
-
-  return axiosInstance.get(url)
-    .then(response => {
-      if (response.status === 200) {
-        console.log("Успешный ответ:", response.data);
-
-        const service = {
-          org_id: response.data.org_id,
-          service_id: response.data.service_id,
-          cost: response.data.service_info.cost,
-          description: response.data.service_info.description,
-          name: response.data.service_info.name,
-        }
-        return service
       }
     })
     .catch(error => {
@@ -141,9 +121,9 @@ export function updateService(org_id, service_id, service) {
 export function deleteService(org_id, service_id) {
 
   // Формирование URL с использованием id
-  const url = `/orgs/${org_id}/services/${service_id}`;
-
-  return axiosInstance.delete(url)
+  const url = `/orgs/services`;
+  const params = { org_id, service_id };
+  return axiosInstance.delete(url, { params })
     .then(response => {
       if (response.status === 200) {
         console.log("Успешный ответ:", response.data);
@@ -163,9 +143,9 @@ export function deleteService(org_id, service_id) {
 export function getServiceWorkers(org_id, service_id) {
 
   // Формирование URL с использованием id
-  const url = `/orgs/${org_id}/services/${service_id}/workers`;
-
-  return axiosInstance.get(url)
+  const url = `/orgs/workers/services`;
+  const params = { org_id, service_id };
+  return axiosInstance.get(url, { params })
     .then(response => {
       if (response.status === 200) {
         console.log("Успешный ответ:", response.data);
@@ -207,7 +187,7 @@ export function assignWorker(org_id, worker_id, service_id) {
     worker_id: Number(worker_id),
   };
   // Формирование URL с использованием id
-  const url = `/orgs/workers/service`;
+  const url = `/orgs/workers/services`;
 
   return axiosInstance.post(url, data)
     .then(response => {
@@ -229,9 +209,9 @@ export function assignWorker(org_id, worker_id, service_id) {
 export function unsignWorker(org_id, worker_id, service_id) {
 
   // Формирование URL с использованием id
-  const url = `orgs/${org_id}/workers/${worker_id}/service/${service_id}`;
-
-  return axiosInstance.delete(url)
+  const url = `/orgs/workers/services`;
+  const params = { org_id, worker_id, service_id };
+  return axiosInstance.delete(url, { params })
     .then(response => {
       if (response.status === 200) {
         console.log("Успешный ответ:", response.data);

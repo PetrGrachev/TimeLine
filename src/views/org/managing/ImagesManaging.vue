@@ -105,10 +105,9 @@ export default {
             );
         },
         uploadBanner(event) {
-            const id = localStorage.getItem('id');
             const file = event.files[0];
 
-            uploadMedia("banner", id, file)
+            uploadMedia("banner", 0, file)
                 .then(() => {
                     this.updateImages()
                     this.bannerUrl = URL.createObjectURL(file);

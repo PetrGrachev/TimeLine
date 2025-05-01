@@ -1,11 +1,15 @@
 import axiosInstance from './axiosInstance';
 
 export function getTimetable(org_id) {
-
+    const params = {};
+    // Проверяем, что id не пустой, не "undefined", не null
+    if (org_id && org_id !== 'undefined') {
+        params.org_id = org_id;
+    }
     // Формирование URL с использованием id
-    const url = `/orgs/${org_id}/timetable`;
+    const url = `/orgs/timetables`;
 
-    return axiosInstance.get(url)
+    return axiosInstance.get(url, { params })
         .then(response => {
             if (response.status === 200) {
                 console.log("Успешный ответ:", response.data);
@@ -22,7 +26,7 @@ export function getTimetable(org_id) {
                     break_start: day.break_start,
                     close: day.close,
                     open: day.open,
-                    weekday: day.weekday,
+                    weekday: day.weekday
                 }));
                 return timetable;
             }
@@ -45,7 +49,7 @@ export function updateTimetable(org_id, timetable) {
         timetable: timetable   // Передача расписания
     };
     // Формирование URL с использованием id
-    const url = `/orgs/timetable`;
+    const url = `/orgs/timetables`;
 
     return axiosInstance.put(url, data)
         .then(response => {
@@ -71,7 +75,7 @@ export function addTimetable(org_id, timetable) {
         timetable: timetable   // Передача расписания
     };
     // Формирование URL с использованием id
-    const url = `/orgs/timetable`;
+    const url = `/orgs/timetables`;
 
     return axiosInstance.post(url, data)
         .then(response => {
@@ -93,8 +97,9 @@ export function addTimetable(org_id, timetable) {
 export function deleteTimetable(org_id, weekday) {
 
     // Формирование URL с использованием id
-    const url = `/orgs/${org_id}/timetable`;
+    const url = `/orgs/timetables`;
     const params = weekday ? { weekday } : {};
+    params.org_id = org_id
     return axiosInstance.delete(url, { params })
         .then(response => {
             if (response.status === 200) {

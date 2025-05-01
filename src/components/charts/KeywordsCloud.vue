@@ -37,9 +37,13 @@ export default {
     },
     mounted() {
         const id = localStorage.getItem('id');
-        getAIFeedbacks(id).then((data) => {
-            this.keywords = data.keywords
-        })
+        getAIFeedbacks(id)
+            .then((data) => {
+                this.keywords = data.keywords
+            })
+            .catch((error) => {
+                console.error(error)
+            })
     },
 }
 </script>

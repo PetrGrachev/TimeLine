@@ -38,6 +38,9 @@ export default {
             .then((data) => {
                 this.info = data.info
             })
+            .catch((error) => {
+                console.error(error)
+            })
     },
 };
 </script>

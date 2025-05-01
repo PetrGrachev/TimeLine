@@ -23,6 +23,9 @@ export default {
             .then((distribution) => {
                 this.distribution = distribution
             })
+            .catch((error) => {
+                console.error(error)
+            })
     },
     computed: {
         chartData() {

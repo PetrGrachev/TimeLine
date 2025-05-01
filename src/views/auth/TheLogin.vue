@@ -60,10 +60,16 @@ export default {
       login(this.email, this.password, this.isOrganization)
         .then(tokens => {
           console.log("Полученные токены:", tokens);
-          this.$router.push({ name: 'MainPage' });
+          console.log("isOrg: ", this.isOrganization);
+          if (this.isOrganization) {
+            this.$router.push({ name: 'OrgMainPage' });
+          }
+          else {
+            this.$router.push({ name: 'MainPage' });
+          }
         })
         .catch(error => {
-          console.error("Ошибка авторизации:", error.message);
+          console.error("Ошибка авторизации:", error);
         });
     }
   }

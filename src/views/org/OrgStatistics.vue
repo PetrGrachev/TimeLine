@@ -15,9 +15,9 @@
 
 <script>
 import { getSummary } from '../../api/analytics/generalApi';
-import { getService } from '../../api/servicesApi';
+import { getServices } from '../../api/servicesApi';
 import { getUser } from '../../api/userApi';
-import { getWorker } from '../../api/workersApi';
+import { getWorkers } from '../../api/workersApi';
 import CancellationsChart from '../../components/charts/CancellationsChart.vue';
 import ClientsChart from '../../components/charts/ClientsChart.vue';
 import IncomeBookingsChart from '../../components/charts/IncomeBookingsChart.vue';
@@ -50,12 +50,11 @@ export default {
   },
   methods: {
     async load() {
-      const org_id = localStorage.getItem('id');
 
 
       try {
         // 1. Получаем основную сводку
-        const summary = await getSummary(org_id);
+        const summary = await getSummary();
 
         // 2. Делаем параллельные доп. запросы
         const [
@@ -67,11 +66,11 @@ export default {
           worstWorker
         ] = await Promise.all([
           getUser(summary.clients.most_frequent_client_id),
-          getService(org_id, summary.services.best_service.service_id),
-          getService(org_id, summary.services.worst_service.service_id),
-          getService(org_id, summary.services.popular_service_id),
-          getWorker(org_id, summary.workers.best_worker.worker_id),
-          getWorker(org_id, summary.workers.worst_worker.worker_id),
+          getServices(summary.services.best_service.service_id),
+          getServices(summary.services.worst_service.service_id),
+          getServices(summary.services.popular_service_id),
+          getWorkers(summary.workers.best_worker.worker_id),
+          getWorkers(summary.workers.worst_worker.worker_id),
         ]);
         // 3. Объединяем все в структуру summary
         this.summary = {
@@ -84,22 +83,22 @@ export default {
             ...summary.services,
             best_service: {
               ...summary.services.best_service,
-              ...bestService,
+              ...bestService.services[0],
             },
             worst_service: {
               ...summary.services.worst_service,
-              ...worstService,
+              ...worstService.services[0],
             },
-            popular_service_name: popularService.name,
+            popular_service_name: popularService.services[0].name,
           },
           workers: {
             best_worker: {
               ...summary.workers.best_worker,
-              ...bestWorker,
+              ...bestWorker.workers[0],
             },
             worst_worker: {
               ...summary.workers.worst_worker,
-              ...worstWorker,
+              ...worstWorker.workers[0],
             },
           }
         };

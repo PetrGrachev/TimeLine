@@ -72,7 +72,8 @@ export default {
       if (this.selectedSortOrder && this.selectedSortOrder.value == 'rating') {
         sort = true
       }
-      findOrgs(limit, page, name, type, sort, sort)
+      const id = localStorage.getItem('id');
+      findOrgs(limit, page, name, type, sort, sort, id)
         .then(data => {
           if (Array.isArray(data.orgs) && data.orgs.length > 0) {
             this.orgsList = data.orgs;

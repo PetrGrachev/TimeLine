@@ -1,15 +1,25 @@
 import axiosInstance from './axiosInstance';
 
-export function getWorkers(org_id, limit, page) {
+export function getWorkers(org_id, limitOrWorkerId, page = null) {
+  const params = {};
+  // Проверяем, что id не пустой, не "undefined", не null
+  if (org_id && org_id !== 'undefined') {
+    params.org_id = org_id;
+  }
 
-  const params = {
-    limit: limit,
-    page: page
-  };
-  // Формирование URL с использованием id
-  const url = `/orgs/${org_id}/workers`;
+  // Если передан page — значит это запрос на список
+  if (page !== null) {
+    params.limit = limitOrWorkerId;
+    params.page = page;
+    params.as_list = true;
+  } else {
+    // Иначе считаем что это запрос на одну услугу
+    params.worker_id = limitOrWorkerId;
+    params.as_list = false;
+  }
 
-  return axiosInstance.get(url, { params })
+
+  return axiosInstance.get('/orgs/workers', { params })
     .then(response => {
       if (response.status === 200) {
         console.log("Успешный ответ:", response.data);
@@ -51,44 +61,12 @@ export function getWorkers(org_id, limit, page) {
     });
 }
 
-export function getWorker(org_id, worker_id) {
-
-  const url = `/orgs/${org_id}/workers/${worker_id}`;
-
-  return axiosInstance.get(url)
-    .then(response => {
-      if (response.status === 200) {
-        console.log("Успешный ответ:", response.data);
-
-        const worker = {
-          org_id: response.data.org_id,
-          worker_id: response.data.worker_id,
-          degree: response.data.worker_info.degree,
-          first_name: response.data.worker_info.first_name,
-          last_name: response.data.worker_info.last_name,
-          position: response.data.worker_info.position,
-          uuid: response.data.worker_info.uuid,
-        }
-        return worker
-      }
-    })
-    .catch(error => {
-      if (error.response && error.response.status === 400) {
-        console.log("Ошибка 400:", error.response.data);
-        throw new Error(error.response.data);
-      } else {
-        console.log("Ошибка:", error.message);
-        throw new Error("Произошла ошибка запроса");
-      }
-    });
-}
-
 export function deleteWorker(org_id, worker_id) {
 
   // Формирование URL с использованием id
-  const url = `/orgs/${org_id}/workers/${worker_id}`;
-
-  return axiosInstance.delete(url)
+  const url = `/orgs/workers`;
+  const params = { org_id, worker_id };
+  return axiosInstance.delete(url, { params })
     .then(response => {
       if (response.status === 200) {
         console.log("Успешный ответ:", response.data);

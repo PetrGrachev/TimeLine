@@ -2,16 +2,15 @@ import axiosInstance from './axiosInstance';
 
 export function getOrg(id) {
 
-  // Проверка, что id существует
-  if (!id) {
-    console.error("ID пользователя отсутствует в localStorage");
-    return Promise.reject(new Error("ID пользователя отсутствует в localStorage"));
+  const params = {};
+  // Проверяем, что id не пустой, не "undefined", не null
+  if (id && id !== 'undefined') {
+    params.org_id = id;
   }
 
-  // Формирование URL с использованием id
-  const url = `/orgs/info/${id}`;
+  const url = `/orgs`;
 
-  return axiosInstance.get(url)
+  return axiosInstance.get(url, { params })
     .then(response => {
       if (response.status === 200) {
         console.log("Успешный ответ:", response.data);
@@ -34,11 +33,11 @@ export function getOrg(id) {
           lat: response.data.info.lat,
           long: response.data.info.long,
           name: response.data.info.name,
-          org_id: response.data.id,
+          org_id: response.data.org_id,
           telephone: response.data.info.telephone,
           type: response.data.info.type,
           rating: response.data.info.rating,
-          timetable: response.data.timetable.map(item => ({
+          timetable: (response.data.timetable || []).map(item => ({
             break_end: item.break_end,
             break_start: item.break_start,
             close: item.close,
@@ -75,7 +74,7 @@ export function updateOrg(about, address, name, city, telephone, id, lat, long, 
     type,
   };
 
-  return axiosInstance.put("/orgs/update", data)
+  return axiosInstance.put("/orgs", data)
     .then(response => {
       if (response.status === 200) {
         console.log("Успешный ответ:", response.data);

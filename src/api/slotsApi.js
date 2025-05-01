@@ -2,9 +2,12 @@ import axiosInstance from './axiosInstance';
 
 export function getSlots(org_id, worker_id) {
     // Формирование URL с использованием id
-    const url = `/orgs/${org_id}/slots/workers/${worker_id}`;
-
-    return axiosInstance.get(url)
+    const url = `/orgs/workers/slots`;
+    const params = {
+        org_id: org_id,
+        worker_id: worker_id
+    }
+    return axiosInstance.get(url, { params })
         .then(response => {
             if (response.status === 200) {
                 console.log("Успешный ответ:", response.data);
@@ -25,33 +28,6 @@ export function getSlots(org_id, worker_id) {
                     busy: slot.busy,
                 }));
                 return slots;
-            }
-        })
-        .catch(error => {
-            if (error.response && error.response.status === 400) {
-                console.log("Ошибка 400:", error.response.data);
-                throw new Error(error.response.data);
-            } else {
-                console.log("Ошибка:", error.message);
-                throw new Error("Произошла ошибка запроса");
-            }
-        });
-}
-
-export function bookSlot(org_id, worker_id, slot_id) {
-
-    const data = {
-        busy: true,
-        worker_id: Number(worker_id),
-        slot_id: Number(slot_id),
-    };
-    // Формирование URL с использованием id
-    const url = `/orgs/${org_id}/slots`;
-
-    return axiosInstance.put(url, data)
-        .then(response => {
-            if (response.status === 200) {
-                console.log("Успешный ответ:", response.data);
             }
         })
         .catch(error => {

@@ -1,12 +1,17 @@
 import axiosInstance from './axiosInstance';
 
 export function getSchedules(org_id, limit, page) {
-    const params = {
-        limit: limit,
-        page: page
-    };
+    const params = {};
+    // Проверяем, что id не пустой, не "undefined", не null
+    if (org_id && org_id !== 'undefined') {
+        params.org_id = org_id;
+    }
+    params.as_list = true
+    params.limit = limit
+    params.page = page
+
     // Формирование URL с использованием id
-    const url = `/orgs/${org_id}/schedules`;
+    const url = `/orgs/workers/schedules`;
 
     return axiosInstance.get(url, { params })
         .then(response => {
@@ -60,7 +65,7 @@ export function updateSchedule(org_id, worker_id, schedule, session_duration) {
         session_duration: session_duration,
     };
     // Формирование URL с использованием id
-    const url = `/orgs/schedules`;
+    const url = `/orgs/workers/schedules`;
 
     return axiosInstance.put(url, data)
         .then(response => {
@@ -88,7 +93,7 @@ export function AddSchedule(org_id, worker_id, schedule, session_duration) {
         session_duration: session_duration,
     };
     // Формирование URL с использованием id
-    const url = `/orgs/schedules`;
+    const url = `/orgs/workers/schedules`;
 
     return axiosInstance.post(url, data)
         .then(response => {
@@ -110,8 +115,11 @@ export function AddSchedule(org_id, worker_id, schedule, session_duration) {
 export function deleteSchedule(org_id, worker_id, weekday) {
 
     // Формирование URL с использованием id
-    const url = `/orgs/${org_id}/schedules/${worker_id}`;
+    const url = `/orgs/workers/schedules`;
     const params = weekday ? { weekday } : {};
+    params.org_id = org_id
+    params.worker_id = worker_id
+
     return axiosInstance.delete(url, { params })
         .then(response => {
             if (response.status === 200) {

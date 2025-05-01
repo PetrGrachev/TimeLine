@@ -113,8 +113,8 @@ export default {
       }
     },
     selectedEmployee(newVal) {
-      const id = localStorage.getItem('id');
-      getSlots(id, newVal.worker_id)
+
+      getSlots(this.service.org_id, newVal.worker_id)
         .then((slots) => {
           this.slots = slots
             .sort((a, b) => a.begin.localeCompare(b.begin))
